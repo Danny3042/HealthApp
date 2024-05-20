@@ -1,5 +1,6 @@
 package Authentication
 
+import Home.HomePageScreen
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.OutlinedButton
@@ -75,6 +76,9 @@ class Authentication {
             }
         }
         //TODO: navigate to hero screen
+        if(firebaseUser != null) {
+            navController.navigate(HomePageScreen)
+        }
     }
 
     @Composable
@@ -128,6 +132,8 @@ class Authentication {
                 }
             }
         }
+        if (firebaseUser != null) {
+            navController.navigate(HomePageScreen)
+        }
     }
-    // TODO: navigate to hero screen
 }
