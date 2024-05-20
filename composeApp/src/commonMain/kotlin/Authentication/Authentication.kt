@@ -129,4 +129,5 @@ class Authentication {
             }
         }
     }
+    // TODO: navigate to hero screen
 }
