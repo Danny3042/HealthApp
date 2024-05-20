@@ -29,7 +29,7 @@ class Authentication {
         var userEmail by remember { mutableStateOf("") }
         var userPassword by remember { mutableStateOf("") }
 
-        if (firebaseUser != null) {
+        if (firebaseUser == null) {
             Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
