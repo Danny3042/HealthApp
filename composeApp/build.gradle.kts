@@ -1,6 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
-
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
@@ -38,6 +35,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.okhttp)
             implementation(libs.sqldelight.androidDriver)
+
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -56,6 +54,10 @@ kotlin {
             // Firebase
             implementation(libs.firebase.auth)
             implementation("org.jetbrains.androidx.navigation:navigation-compose:2.7.0-alpha03")
+            // voyager TabNav
+            implementation("cafe.adriel.voyager:voyager-tab-navigator:1.0.0")
+            // extended icons
+            implementation("org.jetbrains.compose.material:material-icons-extended:1.6.2")
 
         }
         iosMain.dependencies {
