@@ -24,6 +24,7 @@ import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.FirebaseUser
 import dev.gitlive.firebase.auth.auth
 import kotlinx.coroutines.launch
+import pages.HeroScreen
 import pages.HomePageScreen
 
 const val SignUpScreen = "SignUp"
@@ -86,7 +87,7 @@ class Authentication {
         }
         //TODO: navigate to hero screen
         if(firebaseUser != null) {
-            navController.navigate(HomePageScreen)
+            navController.navigate(HeroScreen)
         }
     }
 

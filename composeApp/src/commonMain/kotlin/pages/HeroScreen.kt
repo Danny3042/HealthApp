@@ -17,6 +17,7 @@ import tabs.HomeTab
 import tabs.ProfileTab
 import tabs.ScheduleTab
 
+const val HeroScreen = "HeroScreen"
 
 @Composable
 fun HeroScreen() {

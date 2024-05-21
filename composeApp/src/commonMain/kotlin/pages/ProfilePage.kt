@@ -23,24 +23,8 @@ fun ProfilePage() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text("Welcome to the Profile Page")
-    }
-
-    Button(onClick = {
-        coroutineScope.launch {
-            if (auth.currentUser != null) {
-                println("Signing out user: ${auth.currentUser?.email}")
-                auth.signOut()
-                if (auth.currentUser == null) {
-                    println("User signed out")
-                } else {
-                    println("Failed to sign out user")
-                }
-            } else {
-                println("No user to sign out")
-            }
+        Button(onClick = { coroutineScope.launch { auth.signOut() } }) {
+            Text("Sign Out")
         }
-    }) {
-        Text("Sign Out")
     }
-
 }

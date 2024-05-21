@@ -23,7 +23,7 @@ fun App() {
             composable(LoginScreen) { Authentication().Login(navController) }
             composable(SignUpScreen) { Authentication().signUp(navController) }
             composable(HomePageScreen) { HomePage() }
-            composable("HeroScreen") { HeroScreen() }
+            composable(HeroScreen) { HeroScreen() }
         }
     }
 }
