@@ -58,6 +58,7 @@ kotlin {
             implementation("cafe.adriel.voyager:voyager-tab-navigator:1.0.0")
             // extended icons
             implementation("org.jetbrains.compose.material:material-icons-extended:1.6.2")
+            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
 
         }
         iosMain.dependencies {
@@ -114,5 +115,6 @@ android {
 }
 dependencies {
     implementation(libs.firebase.common.ktx)
+    implementation(libs.androidx.material3.android)
 }
 

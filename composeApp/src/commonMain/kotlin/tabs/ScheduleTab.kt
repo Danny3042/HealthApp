@@ -19,7 +19,7 @@ object ScheduleTab : Tab {
             return remember {
                 TabOptions(
                     index = 2u,
-                    title = "Profile",
+                    title = "Schedule",
                     icon = icon
                 )
             }
