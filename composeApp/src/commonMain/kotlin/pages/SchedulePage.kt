@@ -1,7 +1,7 @@
 package pages
 
-import Calendar.CalendarDataSource
-import Calendar.ScheduleView
+import calendar.CalendarDataSource
+import calendar.ScheduleView
 import androidx.compose.runtime.Composable
 
 @Composable
