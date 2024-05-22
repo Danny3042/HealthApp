@@ -1,9 +1,11 @@
 package pages
 
-import androidx.compose.material.Text
+import calendar.CalendarDataSource
+import calendar.ScheduleView
 import androidx.compose.runtime.Composable
 
 @Composable
 fun SchedulePage() {
-    Text("Welcome to the Schedule Page")
+   val dataSource = CalendarDataSource()
+   ScheduleView(dataSource = dataSource)
 }
