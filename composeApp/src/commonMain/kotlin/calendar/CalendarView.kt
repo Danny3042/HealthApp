@@ -192,7 +192,7 @@ fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(bottom = 80.dp),
         contentAlignment = Alignment.BottomEnd
     ) {
         FloatingActionButton(onClick = { /* Show Date Range Picker Dialog */ }) {
