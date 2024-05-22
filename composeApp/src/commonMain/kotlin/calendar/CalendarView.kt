@@ -25,6 +25,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.Today
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -105,6 +106,7 @@ fun Header(
     data: CalendarUiModel,
     onPrevClickListener: (LocalDate) -> Unit,
     onNextClickListener: (LocalDate) -> Unit,
+    onTodayClickListener: () -> Unit,
 ) {
     Row {
         Text(
@@ -117,6 +119,13 @@ fun Header(
                 .weight(1f)
                 .align(Alignment.CenterVertically)
         )
+        IconButton(onClick = { onTodayClickListener() }) {
+            Icon(
+                imageVector = Icons.Filled.Today,
+                contentDescription = "Today"
+
+            )
+        }
         IconButton(onClick = { onPrevClickListener(data.startDate.date) }) {
             Icon(
                 imageVector = Icons.Filled.ChevronLeft,
@@ -146,6 +155,9 @@ fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) 
             onNextClickListener = { endDate ->
                 val finalStartDate = endDate.plus(2, DateTimeUnit.DAY)
                 calendarUiModel = dataSource.getData(startDate = finalStartDate, lastSelectedDate = calendarUiModel.selectedDate.date)
+            },
+            onTodayClickListener = {
+                calendarUiModel = dataSource.getData(lastSelectedDate = dataSource.today)
             }
         )
         Content(

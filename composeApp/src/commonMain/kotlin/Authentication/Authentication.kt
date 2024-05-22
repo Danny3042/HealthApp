@@ -85,7 +85,6 @@ class Authentication {
                 }
             }
         }
-        //TODO: navigate to hero screen
         if(firebaseUser != null) {
             navController.navigate(HeroScreen)
         }
