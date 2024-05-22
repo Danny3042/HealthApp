@@ -9,6 +9,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -17,10 +18,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.auth.FirebaseAuthInvalidCredentialsException
 import dev.gitlive.firebase.auth.FirebaseUser
 import dev.gitlive.firebase.auth.auth
 import kotlinx.coroutines.launch
@@ -40,6 +43,8 @@ class Authentication {
         var userEmail by remember { mutableStateOf("") }
         var userPassword by remember { mutableStateOf("") }
 
+        var isPasswordIncorrect by remember { mutableStateOf(false) }
+
         if (firebaseUser == null) {
             Column(
                 modifier = Modifier.fillMaxSize(),
@@ -56,9 +61,17 @@ class Authentication {
                     value = userPassword,
                     onValueChange = { userPassword = it },
                     placeholder = { Text("Password") },
-                    visualTransformation = PasswordVisualTransformation()
+                    visualTransformation = PasswordVisualTransformation(),
+                    colors = if(isPasswordIncorrect) TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.Red
+                    ) else TextFieldDefaults.textFieldColors()
                 )
                 Spacer(modifier = Modifier.height(24.dp))
+
+                var errorMessage by remember { mutableStateOf<String?>(null) }
+                if (errorMessage != null) {
+                    Text(errorMessage!!)
+                }
                 Button(onClick = {
                     scope.launch {
                         try {
@@ -67,6 +80,8 @@ class Authentication {
                                 password = userPassword
                             )
                             firebaseUser = result.user
+                        } catch (e: FirebaseAuthInvalidCredentialsException) {
+                            errorMessage = "Invalid password, please try again"
                         } catch (e: Exception) {
                             val result = auth.signInWithEmailAndPassword(
                                 email = userEmail,
