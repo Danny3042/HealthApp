@@ -8,6 +8,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavController
 import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
@@ -20,13 +21,13 @@ import tabs.ScheduleTab
 const val HeroScreen = "HeroScreen"
 
 @Composable
-fun HeroScreen() {
+fun HeroScreen(navController: NavController) {
     TabNavigator(
         HomeTab,
         tabDisposable = {
             TabDisposable(
                 navigator = it,
-                tabs = listOf(HomeTab, ScheduleTab, ProfileTab)
+                tabs = listOf(HomeTab, ScheduleTab, ProfileTab(navController))
             )
         }
     ) { tabNavigator ->
@@ -43,7 +44,7 @@ fun HeroScreen() {
                 BottomNavigation {
                     TabNavigationItem(HomeTab)
                     TabNavigationItem(ScheduleTab)
-                    TabNavigationItem(ProfileTab)
+                    TabNavigationItem(ProfileTab(navController))
                 }
             }
         )

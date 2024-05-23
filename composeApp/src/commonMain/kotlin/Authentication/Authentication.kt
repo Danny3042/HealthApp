@@ -39,11 +39,15 @@ class Authentication {
     fun Login(navController: NavController) {
         val scope = rememberCoroutineScope()
         val auth = remember { Firebase.auth }
-        var firebaseUser: FirebaseUser? by remember { mutableStateOf(null) }
+        var firebaseUser: FirebaseUser? by remember { mutableStateOf(auth.currentUser) }
         var userEmail by remember { mutableStateOf("") }
         var userPassword by remember { mutableStateOf("") }
 
         var isPasswordIncorrect by remember { mutableStateOf(false) }
+
+        if (firebaseUser != null) {
+            navController.navigate(HomePageScreen)
+        }
 
         if (firebaseUser == null) {
             Column(
