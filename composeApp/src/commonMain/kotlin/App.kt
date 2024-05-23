@@ -12,6 +12,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import pages.HeroScreen
 import pages.HomePage
 import pages.HomePageScreen
+import tabs.ProfileTab
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -23,7 +24,8 @@ fun App() {
             composable(LoginScreen) { Authentication().Login(navController) }
             composable(SignUpScreen) { Authentication().signUp(navController) }
             composable(HomePageScreen) { HomePage() }
-            composable(HeroScreen) { HeroScreen() }
+            composable(HeroScreen) { HeroScreen(navController) }
+            composable("profile") { ProfileTab(navController).Content() }
         }
     }
 }
