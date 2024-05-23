@@ -1,4 +1,4 @@
-package calendar
+package components
 
 
 import androidx.compose.foundation.clickable
@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,24 +17,31 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Today
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
@@ -141,6 +149,7 @@ fun Header(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) {
     var calendarUiModel by remember { mutableStateOf(dataSource.getData(lastSelectedDate = dataSource.today)) }
@@ -200,15 +209,57 @@ fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) 
     }
 
     // DatePickerDialog and TimePickerDialog implementations here...
+    val healthCards = remember{ mutableStateOf(listOf(
+        HealthCard(
+            title = "Schedule a new appointment",
+            description = "Schedule a new appointment with your doctor",
+            action = {}
+        ),
+        HealthCard(
+            title = "View upcoming appointments",
+            description = "View all your upcoming appointments",
+            action = {}
+        ),
+        HealthCard(
+            title = "View past appointments",
+            description = "View all your past appointments",
+            action = {}
+        )
+    ))}
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(bottom = 80.dp),
-        contentAlignment = Alignment.BottomEnd
+    val coroutineScope = rememberCoroutineScope()
+    val bottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    ModalBottomSheetLayout(
+        sheetState = bottomSheetState,
+        sheetContent =  {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(1f)
+                    .padding(16.dp),
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Text("Mental Health Wellbeing Questionnaire", Modifier.padding(16.dp))
+            }
+        },
+        sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+        sheetBackgroundColor = MaterialTheme.colors.surface,
+        scrimColor = Color.Black.copy(alpha = 0.6f),
     ) {
-        FloatingActionButton(onClick = { /* Show Date Range Picker Dialog */ }) {
-            Icon(Icons.Filled.Add, contentDescription = "Add Event")
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 80.dp),
+            contentAlignment = Alignment.BottomEnd
+        ) {
+            FloatingActionButton(onClick = {
+                coroutineScope.launch {
+                    bottomSheetState.show()
+                }
+            }) {
+                Icon(Icons.Filled.Add, contentDescription = "Add Event")
+            }
         }
     }
 }
