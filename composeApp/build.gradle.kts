@@ -35,6 +35,10 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.okhttp)
             implementation(libs.sqldelight.androidDriver)
+            implementation ("com.google.firebase:firebase-analytics-ktx:22.0.0")
+
+
+
 
         }
         commonMain.dependencies {
@@ -115,6 +119,6 @@ android {
 }
 dependencies {
     implementation(libs.firebase.common.ktx)
-    implementation(libs.androidx.material3.android)
+    implementation(libs.play.services.measurement.api)
 }
 
