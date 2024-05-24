@@ -140,7 +140,7 @@ fun AlertDialogExample(
                 onClick = { onDismissRequest() },
                 colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.secondary)
             ) {
-                Text("Dismiss", color = MaterialTheme.colors.onPrimary)
+                Text("Dismiss")
             }
         }
     )
