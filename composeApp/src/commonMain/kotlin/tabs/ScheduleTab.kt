@@ -7,7 +7,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
-import pages.SchedulePage
+import pages.CombinedView
 
 object ScheduleTab : Tab {
 
@@ -27,6 +27,6 @@ object ScheduleTab : Tab {
 
     @Composable
     override fun Content() {
-        SchedulePage()
+        CombinedView()
     }
 }

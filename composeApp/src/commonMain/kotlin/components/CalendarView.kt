@@ -159,11 +159,17 @@ fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) 
             data = calendarUiModel,
             onPrevClickListener = { startDate ->
                 val finalStartDate = startDate.minus(1, DateTimeUnit.DAY)
-                calendarUiModel = dataSource.getData(startDate = finalStartDate, lastSelectedDate = calendarUiModel.selectedDate.date)
+                calendarUiModel = dataSource.getData(
+                    startDate = finalStartDate,
+                    lastSelectedDate = calendarUiModel.selectedDate.date
+                )
             },
             onNextClickListener = { endDate ->
                 val finalStartDate = endDate.plus(2, DateTimeUnit.DAY)
-                calendarUiModel = dataSource.getData(startDate = finalStartDate, lastSelectedDate = calendarUiModel.selectedDate.date)
+                calendarUiModel = dataSource.getData(
+                    startDate = finalStartDate,
+                    lastSelectedDate = calendarUiModel.selectedDate.date
+                )
             },
             onTodayClickListener = {
                 calendarUiModel = dataSource.getData(lastSelectedDate = dataSource.today)
@@ -209,23 +215,6 @@ fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) 
     }
 
     // DatePickerDialog and TimePickerDialog implementations here...
-    val healthCards = remember{ mutableStateOf(listOf(
-        HealthCard(
-            title = "Schedule a new appointment",
-            description = "Schedule a new appointment with your doctor",
-            action = {}
-        ),
-        HealthCard(
-            title = "View upcoming appointments",
-            description = "View all your upcoming appointments",
-            action = {}
-        ),
-        HealthCard(
-            title = "View past appointments",
-            description = "View all your past appointments",
-            action = {}
-        )
-    ))}
 
     val coroutineScope = rememberCoroutineScope()
     val bottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
