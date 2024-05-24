@@ -1,8 +1,8 @@
 package pages
 
-import calendar.CalendarDataSource
-import calendar.ScheduleView
 import androidx.compose.runtime.Composable
+import components.CalendarDataSource
+import components.ScheduleView
 
 @Composable
 fun SchedulePage() {
