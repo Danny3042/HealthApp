@@ -1,5 +1,6 @@
 package Authentication
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -7,6 +8,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.Button
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Snackbar
 import androidx.compose.material.Text
@@ -21,7 +24,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -52,7 +54,7 @@ class Authentication {
         var showSnackbar by remember { mutableStateOf(false) }
         var snackbarMessage by remember { mutableStateOf("") }
 
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.background)) {
             if (showSnackbar) {
                 Snackbar(
                     action = {
@@ -80,6 +82,13 @@ class Authentication {
                         value = userEmail,
                         onValueChange = { userEmail = it },
                         placeholder = { Text("Email address") },
+                        colors = TextFieldDefaults.textFieldColors(
+                            textColor = MaterialTheme.colors.onSurface,
+                            backgroundColor = MaterialTheme.colors.surface,
+                            cursorColor = MaterialTheme.colors.onSurface,
+                            focusedIndicatorColor = MaterialTheme.colors.primary,
+                            unfocusedIndicatorColor = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
+                        )
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     TextField(
@@ -87,9 +96,13 @@ class Authentication {
                         onValueChange = { userPassword = it },
                         placeholder = { Text("Password") },
                         visualTransformation = PasswordVisualTransformation(),
-                        colors = if (isPasswordIncorrect) TextFieldDefaults.textFieldColors(
-                            backgroundColor = Color.Red
-                        ) else TextFieldDefaults.textFieldColors()
+                        colors = TextFieldDefaults.textFieldColors(
+                            textColor = MaterialTheme.colors.onSurface,
+                            backgroundColor = MaterialTheme.colors.surface,
+                            cursorColor = MaterialTheme.colors.onSurface,
+                            focusedIndicatorColor = MaterialTheme.colors.primary,
+                            unfocusedIndicatorColor = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
+                        )
                     )
                     Spacer(modifier = Modifier.height(24.dp))
 
@@ -133,15 +146,16 @@ class Authentication {
         }
     }
 
-        @Composable
-        fun signUp(navController: NavController) {
-            val scope = rememberCoroutineScope()
-            val auth = remember { Firebase.auth }
-            var firebaseUser: FirebaseUser? by remember { mutableStateOf(null) }
-            var userEmail by remember { mutableStateOf("") }
-            var userPassword by remember { mutableStateOf("") }
+    @Composable
+    fun signUp(navController: NavController) {
+        val scope = rememberCoroutineScope()
+        val auth = remember { Firebase.auth }
+        var firebaseUser: FirebaseUser? by remember { mutableStateOf(null) }
+        var userEmail by remember { mutableStateOf("") }
+        var userPassword by remember { mutableStateOf("") }
 
-            if (firebaseUser == null) {
+        if (firebaseUser == null) {
+            Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.background)) {
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
@@ -151,13 +165,27 @@ class Authentication {
                         value = userEmail,
                         onValueChange = { userEmail = it },
                         placeholder = { Text("Email address") },
+                        colors = TextFieldDefaults.textFieldColors(
+                            textColor = MaterialTheme.colors.onSurface,
+                            backgroundColor = MaterialTheme.colors.surface,
+                            cursorColor = MaterialTheme.colors.onSurface,
+                            focusedIndicatorColor = MaterialTheme.colors.primary,
+                            unfocusedIndicatorColor = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
+                        )
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     TextField(
                         value = userPassword,
                         onValueChange = { userPassword = it },
                         placeholder = { Text("Password") },
-                        visualTransformation = PasswordVisualTransformation()
+                        visualTransformation = PasswordVisualTransformation(),
+                        colors = TextFieldDefaults.textFieldColors(
+                            textColor = MaterialTheme.colors.onSurface,
+                            backgroundColor = MaterialTheme.colors.surface,
+                            cursorColor = MaterialTheme.colors.onSurface,
+                            focusedIndicatorColor = MaterialTheme.colors.primary,
+                            unfocusedIndicatorColor = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
+                        )
                     )
                     Spacer(modifier = Modifier.height(24.dp))
                     Button(onClick = {
@@ -189,3 +217,4 @@ class Authentication {
             }
         }
     }
+}
