@@ -2,6 +2,9 @@
 import Authentication.Authentication
 import Authentication.LoginScreen
 import Authentication.SignUpScreen
+import Colors.DarkColors
+import Colors.LightColors
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
@@ -18,7 +21,9 @@ import tabs.ProfileTab
 @Composable
 @Preview
 fun App() {
-    MaterialTheme {
+    val colors = if (isSystemInDarkTheme()) DarkColors else LightColors
+
+    MaterialTheme(colors = colors) {
         val navController = rememberNavController()
         NavHost(navController, startDestination = LoginScreen) {
             composable(LoginScreen) { Authentication().Login(navController) }
