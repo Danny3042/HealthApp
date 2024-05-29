@@ -36,6 +36,7 @@ kotlin {
             implementation(libs.ktor.client.okhttp)
             implementation(libs.sqldelight.androidDriver)
             implementation ("com.google.firebase:firebase-analytics-ktx:22.0.0")
+            implementation ("androidx.health.connect:connect-client:1.1.0-alpha07")
 
 
 
