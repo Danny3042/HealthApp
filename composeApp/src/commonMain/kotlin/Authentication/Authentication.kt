@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.Button
 import androidx.compose.material.ContentAlpha
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Snackbar
@@ -16,6 +18,9 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import dev.gitlive.firebase.Firebase
@@ -50,6 +56,7 @@ class Authentication {
         var userPassword by remember { mutableStateOf("") }
 
         var isPasswordIncorrect by remember { mutableStateOf(false) }
+        var isPasswordVisible by remember { mutableStateOf(false) }
 
         var showSnackbar by remember { mutableStateOf(false) }
         var snackbarMessage by remember { mutableStateOf("") }
@@ -95,7 +102,13 @@ class Authentication {
                         value = userPassword,
                         onValueChange = { userPassword = it },
                         placeholder = { Text("Password") },
-                        visualTransformation = PasswordVisualTransformation(),
+                        visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        trailingIcon = {
+                            val image = if (isPasswordVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
+                            IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
+                                Icon(image, contentDescription = "Toggle password visibility")
+                            }
+                        },
                         colors = TextFieldDefaults.textFieldColors(
                             textColor = MaterialTheme.colors.onSurface,
                             backgroundColor = MaterialTheme.colors.surface,
@@ -153,6 +166,7 @@ class Authentication {
         var firebaseUser: FirebaseUser? by remember { mutableStateOf(null) }
         var userEmail by remember { mutableStateOf("") }
         var userPassword by remember { mutableStateOf("") }
+        var isPasswordVisible by remember { mutableStateOf(false) }
 
         if (firebaseUser == null) {
             Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.background)) {
@@ -178,7 +192,13 @@ class Authentication {
                         value = userPassword,
                         onValueChange = { userPassword = it },
                         placeholder = { Text("Password") },
-                        visualTransformation = PasswordVisualTransformation(),
+                        visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        trailingIcon = {
+                            val image = if (isPasswordVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
+                            IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
+                                Icon(image, contentDescription = "Toggle password visibility")
+                            }
+                        },
                         colors = TextFieldDefaults.textFieldColors(
                             textColor = MaterialTheme.colors.onSurface,
                             backgroundColor = MaterialTheme.colors.surface,
