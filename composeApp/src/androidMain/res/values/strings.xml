@@ -1,3 +1,17 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">HealthApp</string>
+
+    <!-- Sleep Session screen -->
+    <string name="generate_sleep_data">Generate sleep data</string>
+    <string-array name="sleep_notes_array" tools:ignore="InconsistentArrays">
+        <item>I slept great!</item>
+        <item>I got woken up</item>
+        <item>Struggled to sleep</item>
+        <item>Much needed sleep</item>
+        <item>Restful sleep</item>
+    </string-array>
+    <string name="sleep_notes">Notes:</string>
+    <string name="sleep_duration">Duration:</string>
+    <string name="sleep_time">Time:</string>
+    <string name="sleep_stages">Sleep stages:</string>
 </resources>
