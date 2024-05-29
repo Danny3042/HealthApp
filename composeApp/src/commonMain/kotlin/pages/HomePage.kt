@@ -13,15 +13,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 const val HomePageScreen = "HomePage"
-data class Feature (val title: String, val description: String)
+
 @Composable
 fun HomePage() {
 
     val features = listOf(
-        Feature("Made possible by Compose Multiplatform", "Compose multiplatform is a toolkit for building UI for both iOS and Android."),
-        Feature("Track your progress", "Track your progress with daily tasks and goals."),
-        Feature("Compose yourself", "Compose yourself with the latest in UI development."),
-        Feature("Thank you for joining us", "Thank you for joining us on this journey.")
+        Feature("Coming Soon", "Exciting things to come "),
     )
 
     LazyColumn(

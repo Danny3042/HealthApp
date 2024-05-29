@@ -73,16 +73,7 @@ kotlin {
     }
 }
 
-sqldelight {
-    databases {
-        //Note: Name of your Database and .sq file should be same
-        create("Database") {
-            packageName.set("com.example.firebaseauthentication")
-        }
-    }
-    // Add this line to avoid library linking issues
-    linkSqlite = true
-}
+
 
 android {
     namespace = "org.example.project"

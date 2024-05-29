@@ -12,6 +12,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import pages.AboutPage
+import pages.AboutPageScreen
 import pages.HeroScreen
 import pages.HomePage
 import pages.HomePageScreen
@@ -31,6 +33,7 @@ fun App() {
             composable(HomePageScreen) { HomePage() }
             composable(HeroScreen) { HeroScreen(navController) }
             composable("profile") { ProfileTab(navController).Content() }
+            composable(AboutPageScreen) { AboutPage(navController) }
         }
     }
 }
