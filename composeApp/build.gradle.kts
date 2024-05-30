@@ -36,6 +36,7 @@ kotlin {
             implementation(libs.ktor.client.okhttp)
             implementation(libs.sqldelight.androidDriver)
             implementation ("com.google.firebase:firebase-analytics-ktx:22.0.0")
+            implementation ("androidx.health.connect:connect-client:1.1.0-alpha07")
 
 
 
@@ -55,6 +56,8 @@ kotlin {
             // SQLDelight
             implementation(libs.sqldelight.coroutines)
             implementation(libs.sqldelight.primitiveAdapters)
+            // resources
+            implementation(compose.components.resources)
             // Firebase
             implementation(libs.firebase.auth)
             implementation("org.jetbrains.androidx.navigation:navigation-compose:2.7.0-alpha03")
@@ -63,6 +66,9 @@ kotlin {
             // extended icons
             implementation("org.jetbrains.compose.material:material-icons-extended:1.6.2")
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
+            // Health APIs
+            implementation("com.vitoksmile.health-kmp:core:0.0.3")
+
 
         }
         iosMain.dependencies {
@@ -85,7 +91,7 @@ android {
 
     defaultConfig {
         applicationId = "org.example.project"
-        minSdk = libs.versions.android.minSdk.get().toInt()
+        minSdk = 26
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
