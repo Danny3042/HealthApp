@@ -56,6 +56,8 @@ kotlin {
             // SQLDelight
             implementation(libs.sqldelight.coroutines)
             implementation(libs.sqldelight.primitiveAdapters)
+            // resources
+            implementation(compose.components.resources)
             // Firebase
             implementation(libs.firebase.auth)
             implementation("org.jetbrains.androidx.navigation:navigation-compose:2.7.0-alpha03")
@@ -64,6 +66,7 @@ kotlin {
             // extended icons
             implementation("org.jetbrains.compose.material:material-icons-extended:1.6.2")
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
+
 
         }
         iosMain.dependencies {
