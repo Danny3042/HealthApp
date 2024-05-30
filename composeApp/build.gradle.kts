@@ -66,6 +66,8 @@ kotlin {
             // extended icons
             implementation("org.jetbrains.compose.material:material-icons-extended:1.6.2")
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
+            // Health APIs
+            implementation("com.vitoksmile.health-kmp:core:0.0.3")
 
 
         }
