@@ -35,6 +35,8 @@ import org.example.project.R
 /**
  * Welcome screen shown when the app is first launched.
  */
+
+const val WelcomeScreen = "welcome"
 @Composable
 fun WelcomeScreen(
     healthConnectAvailability: Int,
