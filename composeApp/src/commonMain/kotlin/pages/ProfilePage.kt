@@ -50,6 +50,13 @@ fun ProfilePage(navController: NavController) {
             }) {
                 Text("Sign Out")
             }
+            Button(onClick = {
+                coroutineScope.launch {
+                    navController.navigate(AboutPageScreen)
+                }
+            }) {
+                Text("About")
+            }
             Button(
                 onClick = { showDeleteDialog = true },
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)

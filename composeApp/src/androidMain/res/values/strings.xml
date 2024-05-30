@@ -1,3 +1,49 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">HealthApp</string>
+
+    <!-- Sleep Session screen -->
+    <string name="generate_sleep_data">Generate sleep data</string>
+    <string-array name="sleep_notes_array" tools:ignore="InconsistentArrays">
+        <item>I slept great!</item>
+        <item>I got woken up</item>
+        <item>Struggled to sleep</item>
+        <item>Much needed sleep</item>
+        <item>Restful sleep</item>
+    </string-array>
+    <string name="sleep_notes">Notes:</string>
+    <string name="sleep_duration">Duration:</string>
+    <string name="sleep_time">Time:</string>
+    <string name="sleep_stages">Sleep stages:</string>
+
+    <!-- Not installed on device -->
+    <string name="not_installed_tag">not_installed_tag</string>
+    <string name="market_url">market://details</string>
+    <string name="health_connect_package">com.google.android.apps.healthdata</string>
+    <string name="onboarding_url">healthconnect://onboarding</string>
+    <string name="not_installed_description">
+        Health Connect is supported on this device, but is either not installed, or requires an update.
+    </string>
+    <string name="not_installed_link_text">
+        To use this sample, please install or update the Health Connect package via Google Play.
+    </string>
+
+    <!-- Not supported on device -->
+    <string name="not_supported_tag">not_supported_tag</string>
+    <string name="not_supported_url">https://developer.android.com/health-connect</string>
+    <string name="not_supported_description">
+        Health Connect is only supported on Android devices running API level %1$d or above.
+    </string>
+    <string name="not_supported_link_text">
+        Please visit the Health Connect guides to learn more about device compatibility and using
+        Health Connect.
+    </string>
+
+    <!-- Welcome screen -->
+    <string name="welcome_message">Welcome to Health Connect!</string>
+    <string name="health_connect_logo">Health Connect logo</string>
+    <string name="installed_welcome_message">
+        Health Connect is installed on this device. Use the menu to explore the sample, with each
+        screen demonstrating a different aspect of Health Connect functionality.
+    </string>
+
 </resources>
