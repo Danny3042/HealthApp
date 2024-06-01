@@ -2,6 +2,9 @@ package pages
 
 
 import Authentication.LoginScreen
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -65,26 +68,35 @@ fun ProfilePage(navController: NavController) {
             }
 
             if (showDeleteDialog) {
-                AlertDialog(
-                    onDismissRequest = { showDeleteDialog = false },
-                    title = { Text("Confirm Account Deletion") },
-                    text = { Text("Are you sure you want to delete your account? This action cannot be undone.") },
-                    confirmButton = {
-                        Button(onClick = {
-                            coroutineScope.launch {
-                                deleteUser(auth, navController, snackbarHostState)
+                AnimatedVisibility(
+                    visible = showDeleteDialog,
+                    enter = fadeIn(),
+                    exit = fadeOut(),
+                ) {
+                    AlertDialog(
+                        onDismissRequest = { showDeleteDialog = false },
+                        title = { Text("Confirm Account Deletion") },
+                        text = { Text("Are you sure you want to delete your account? This action cannot be undone.") },
+                        confirmButton = {
+                            Button(
+                                onClick = {
+                                    coroutineScope.launch {
+                                        deleteUser(auth, navController, snackbarHostState)
+                                    }
+                                    showDeleteDialog = false
+                                },
+                                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)
+                            ) {
+                                Text("Confirm", color = Color.White)
                             }
-                            showDeleteDialog = false
-                        }) {
-                            Text("Confirm")
+                        },
+                        dismissButton = {
+                            OutlinedButton(onClick = { showDeleteDialog = false }) {
+                                Text("Dismiss")
+                            }
                         }
-                    },
-                    dismissButton = {
-                        OutlinedButton(onClick = { showDeleteDialog = false }) {
-                            Text("Dismiss")
-                        }
-                    }
-                )
+                    )
+                }
             }
         }
 
