@@ -12,6 +12,10 @@
 		086786B72BFAB3210004FEBB /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 086786B62BFAB3210004FEBB /* FirebaseAnalytics */; };
 		086786B92BFAB3210004FEBB /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 086786B82BFAB3210004FEBB /* FirebaseAuth */; };
 		08744AE62BFA76D700BF0FF6 /* CareKit in Frameworks */ = {isa = PBXBuildFile; productRef = 08744AE52BFA76D700BF0FF6 /* CareKit */; };
+		089B72AB2C0BC07A0045625E /* ResearchKitActiveTask.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08D07E1A2BFA712D00C7C391 /* ResearchKitActiveTask.framework */; };
+		089B72AC2C0BC07A0045625E /* ResearchKitActiveTask.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08D07E1A2BFA712D00C7C391 /* ResearchKitActiveTask.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		089B72AD2C0BC0810045625E /* ResearchKitUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08D07E182BFA712D00C7C391 /* ResearchKitUI.framework */; };
+		089B72AE2C0BC0810045625E /* ResearchKitUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08D07E182BFA712D00C7C391 /* ResearchKitUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08A5F03F2BFBF6F400FE13D3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 08A5F03E2BFBF6F400FE13D3 /* GoogleService-Info.plist */; };
 		08D07E1B2BFA713900C7C391 /* ResearchKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08D07E142BFA712D00C7C391 /* ResearchKit.framework */; };
 		08D07E1C2BFA713900C7C391 /* ResearchKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08D07E142BFA712D00C7C391 /* ResearchKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -57,7 +61,9 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				089B72AE2C0BC0810045625E /* ResearchKitUI.framework in Embed Frameworks */,
 				08D07E1C2BFA713900C7C391 /* ResearchKit.framework in Embed Frameworks */,
+				089B72AC2C0BC07A0045625E /* ResearchKitActiveTask.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -82,9 +88,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				089B72AD2C0BC0810045625E /* ResearchKitUI.framework in Frameworks */,
 				08744AE62BFA76D700BF0FF6 /* CareKit in Frameworks */,
 				08D07E1B2BFA713900C7C391 /* ResearchKit.framework in Frameworks */,
 				086786B72BFAB3210004FEBB /* FirebaseAnalytics in Frameworks */,
+				089B72AB2C0BC07A0045625E /* ResearchKitActiveTask.framework in Frameworks */,
 				086786B92BFAB3210004FEBB /* FirebaseAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -98,6 +106,14 @@
 				058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		085C22182C0BBDDD0003C4ED /* ResearchKit */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = ResearchKit;
+			path = "../../../Downloads/WWDC21-RecoverApp-main/ResearchKit";
 			sourceTree = "<group>";
 		};
 		08D07E0D2BFA712D00C7C391 /* Products */ = {
@@ -114,6 +130,7 @@
 		42799AB246E5F90AF97AA0EF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				085C22182C0BBDDD0003C4ED /* ResearchKit */,
 				08D07E0C2BFA712D00C7C391 /* ResearchKit.xcodeproj */,
 			);
 			name = Frameworks;

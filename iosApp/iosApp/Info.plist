@@ -14,6 +14,8 @@
     <string>HealthCompose does not access your location.</string>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>HealthCompose does not require access to location services to provide location-based features when the app is in use.</string>
+    <key>ITSAppUsesNonExemptEncryption</key>
+    <false/>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
