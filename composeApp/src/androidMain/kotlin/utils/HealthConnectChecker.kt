@@ -11,7 +11,7 @@ actual object HealthConnectChecker {
         return if (isAvailableResult.getOrNull() == true) {
             HealthConnectClient.SDK_AVAILABLE
         } else {
-            HealthConnectClient.SDK_UNAVAILABLE
+            HealthConnectClient.SDK_UNAVAILABLE_PROVIDER_UPDATE_REQUIRED
         }
     }
 

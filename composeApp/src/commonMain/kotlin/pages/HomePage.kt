@@ -40,9 +40,12 @@ const val HomePageScreen = "HomePage"
 
 @Composable
 fun HomePage() {
+    var isAvailableResult by remember { mutableStateOf(Result.success(false)) }
+    var isAuthorizedResult by remember { mutableStateOf<Result<Boolean>?>(null) }
+    var isRevokeSupported by remember { mutableStateOf(false) }
 
     val healthConnectAvailability = HealthConnectChecker.checkHealthConnectAvailability()
-    if (isAndroid()) {
+    if (isAndroid() && isAuthorizedResult?.getOrNull() != true) {
         WelcomeScreen(
             healthConnectAvailability = healthConnectAvailability,
             onResumeAvailabilityCheck = {},
@@ -63,9 +66,6 @@ fun HomePage() {
         )
     }
 
-    var isAvailableResult by remember { mutableStateOf(Result.success(false)) }
-    var isAuthorizedResult by remember { mutableStateOf<Result<Boolean>?>(null) }
-    var isRevokeSupported by remember { mutableStateOf(false) }
 
     val data = remember { mutableStateMapOf<HealthDataType, Result<List<HealthRecord>>>() }
 

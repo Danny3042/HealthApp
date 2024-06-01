@@ -38,6 +38,8 @@ kotlin {
             implementation ("com.google.firebase:firebase-analytics-ktx:22.0.0")
             implementation ("androidx.health.connect:connect-client:1.1.0-alpha07")
             implementation("androidx.appcompat:appcompat:1.7.0")
+            implementation("com.google.firebase:firebase-appcheck-playintegrity")
+
 
 
 
@@ -92,7 +94,7 @@ android {
 
     defaultConfig {
         applicationId = "org.example.project"
-        minSdk = 26
+        minSdk = 27
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
