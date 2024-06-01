@@ -4,13 +4,16 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Card
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -31,8 +34,6 @@ import com.vitoksmile.kmp.health.HealthDataType
 import com.vitoksmile.kmp.health.HealthManagerFactory
 import com.vitoksmile.kmp.health.HealthRecord
 import com.vitoksmile.kmp.health.records.StepsRecord
-import com.vitoksmile.kmp.health.records.WeightRecord
-import com.vitoksmile.kmp.health.units.Mass
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlin.time.Duration.Companion.days
@@ -41,6 +42,22 @@ import kotlin.time.Duration.Companion.hours
 const val HomePageScreen = "HomePage"
 
 
+@Composable
+fun StepsCard(record: StepsRecord) {
+    Card(
+        shape = RoundedCornerShape(8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        elevation = 4.dp
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(text = "Steps: ${record.count} Steps")
+        }
+    }
+}
 @Composable
 fun HomePage() {
     val coroutineScope = rememberCoroutineScope()
@@ -87,7 +104,7 @@ fun HomePage() {
 
             isAvailableResult
                 .onSuccess { isAvailable ->
-                    Text("HealthManager isAvailable=$isAvailable")
+                    println("HealthManager isAvailable=$isAvailable")
                 }
                 .onFailure {
                     Text("HealthManager isAvailable=$it")
@@ -95,11 +112,26 @@ fun HomePage() {
 
             isAuthorizedResult
                 ?.onSuccess {
-                    Text("HealthManager isAuthorized=$it")
+                    println("HealthManager isAuthorized=$it")
                 }
                 ?.onFailure {
-                    Text("HealthManager isAuthorized=$it")
+                    println("HealthManager isAuthorized=$it")
                 }
+
+            coroutineScope.launch {
+                val stepsRecord = StepsRecord(
+                    startTime = Clock.System.now().minus(1.days),
+                    endTime = Clock.System.now(),
+                    count = 100
+                )
+                val result = health.writeData(listOf(stepsRecord))
+
+                result.onSuccess {
+                    println("Data written successfully")
+                }.onFailure {
+                    println("Failed to write data")
+                }
+            }
             if (isAvailableResult.getOrNull() == true && isAuthorizedResult?.getOrNull() != true)
                 Button(
                     onClick = {
@@ -108,13 +140,16 @@ fun HomePage() {
                                 readTypes = readTypes,
                                 writeTypes = writeTypes,
                             )
+                            if (isAuthorizedResult?.getOrNull() == false) {
+                                println("authorization failed ")
+                            }
                         }
                     },
                 ) {
                     Text("Request authorization")
                 }
 
-            if (isAvailableResult.getOrNull() == true && isRevokeSupported && isAuthorizedResult?.getOrNull() == true)
+            if (isAvailableResult.getOrNull() == true && isRevokeSupported && isAuthorizedResult?.getOrNull() == true) {
                 Button(
                     onClick = {
                         coroutineScope.launch {
@@ -133,9 +168,29 @@ fun HomePage() {
                     Text("Revoke authorization")
                 }
 
+            }
+
             if (isAvailableResult.getOrNull() == true && isAuthorizedResult?.getOrNull() == true) {
                 Column {
                     readTypes.forEach { type ->
+                        data[type]
+                            ?.onSuccess { records ->
+                                Column {
+                                    Text("count ${records.size}")
+
+                                    records.forEach { record ->
+                                        if (record is StepsRecord) {
+                                            StepsCard(record)
+                                        } else {
+                                            Text("Record $record")
+                                        }
+                                    }
+                                }
+                            }
+                            ?.onFailure {
+                                Text("Failed to read records $it")
+                            }
+
                         Button(
                             onClick = {
                                 coroutineScope.launch {
@@ -151,23 +206,8 @@ fun HomePage() {
                             Text("Read $type")
                         }
 
-                        data[type]
-                            ?.onSuccess { records ->
-                                Column {
-                                    Text("count ${records.size}")
-
-                                    records.forEach { record ->
-                                        Text("Record $record")
-                                    }
-                                }
-                            }
-                            ?.onFailure {
-                                Text("Failed to read records $it")
-                            }
-
                         Divider()
                     }
-
                     Spacer(modifier = Modifier.height(64.dp))
                     var steps by remember { mutableStateOf(100) }
                     TextField(
@@ -202,42 +242,11 @@ fun HomePage() {
                         ?.onFailure {
                             Text("Failed to write steps $it")
                         }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-                    var weight by remember { mutableStateOf(61) }
-                    TextField(
-                        value = weight.toString(),
-                        onValueChange = { weight = it.toIntOrNull() ?: 0 },
-                        label = { Text("Weight") },
-                        keyboardOptions = remember { KeyboardOptions(keyboardType = KeyboardType.Number) },
-                    )
-                    var writeWeight by remember { mutableStateOf<Result<Unit>?>(null) }
-                    Button(
-                        onClick = {
-                            coroutineScope.launch {
-                                writeWeight = health.writeData(
-                                    listOf(
-                                        WeightRecord(
-                                            time = Clock.System.now(),
-                                            weight = Mass.kilograms(weight.toDouble()),
-                                        )
-                                    )
-                                )
-                            }
-                        },
-                    ) {
-                        Text("Write $weight weight")
-                    }
-                    writeWeight
-                        ?.onSuccess {
-                            Text("Weight wrote successfully")
-                        }
-                        ?.onFailure {
-                            Text("Failed to write weight $it")
-                        }
                 }
             }
+
         }
+
     }
 }
 
