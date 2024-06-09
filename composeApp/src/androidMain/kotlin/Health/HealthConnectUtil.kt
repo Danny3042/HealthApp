@@ -1,7 +1,6 @@
 package Health
 
-import android.os.Build
-import androidx.annotation.RequiresApi
+import android.annotation.SuppressLint
 import androidx.health.connect.client.records.SleepSessionRecord
 import java.time.Duration
 import java.time.Instant
@@ -16,7 +15,6 @@ import kotlin.random.Random
  * may be correct in a number of circumstances, but may also not apply in others, so is used here
  * just as an example.
  */
-@RequiresApi(Build.VERSION_CODES.O)
 fun dateTimeWithOffsetOrDefault(time: Instant, offset: ZoneOffset?): ZonedDateTime =
     if (offset != null) {
         ZonedDateTime.ofInstant(time, offset)
@@ -24,7 +22,7 @@ fun dateTimeWithOffsetOrDefault(time: Instant, offset: ZoneOffset?): ZonedDateTi
         ZonedDateTime.ofInstant(time, ZoneId.systemDefault())
     }
 
-@RequiresApi(Build.VERSION_CODES.O)
+@SuppressLint("DefaultLocale")
 fun Duration.formatTime() = String.format(
     "%02d:%02d:%02d",
     this.toHours() % 24,
@@ -32,7 +30,7 @@ fun Duration.formatTime() = String.format(
     this.seconds % 60
 )
 
-@RequiresApi(Build.VERSION_CODES.O)
+@SuppressLint("DefaultLocale")
 fun Duration.formatHoursMinutes() = String.format(
     "%01dh%02dm",
     this.toHours() % 24,

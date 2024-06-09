@@ -15,13 +15,7 @@ struct ContentView: View {
     var body: some View {
         ComposeView()
                 .ignoresSafeArea(.keyboard) // Compose has own keyboard handler
-                .onTapGesture {
-                    dismissKeyboard()
-                }
-    }
-    
-    func dismissKeyboard() {
-        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+
     }
 }
 

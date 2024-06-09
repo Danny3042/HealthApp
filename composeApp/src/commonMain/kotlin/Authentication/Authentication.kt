@@ -15,9 +15,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
-import androidx.compose.material.Snackbar
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
@@ -69,17 +67,8 @@ class Authentication {
 
 
         Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.background)) {
-            if (showSnackbar) {
-                Snackbar(
-                    action = {
-                        TextButton(onClick = { showSnackbar = false }) {
-                            Text("Dismiss")
-                        }
-                    },
-                    modifier = Modifier.align(Alignment.BottomCenter)
-                ) {
-                    Text(snackbarMessage)
-                }
+            if (snackbarMessage.isNotEmpty()) {
+                Text(snackbarMessage, color = MaterialTheme.colors.error)
             }
 
             if (firebaseUser != null) {
@@ -139,6 +128,7 @@ class Authentication {
                         Text(errorMessage!!)
                     }
                     Button(onClick = {
+                        hideKeyboard()
                         scope.launch {
                             try {
                                 val result = auth.signInWithEmailAndPassword(
@@ -232,6 +222,7 @@ class Authentication {
                     )
                     Spacer(modifier = Modifier.height(24.dp))
                     Button(onClick = {
+                        hideKeyboard()
                         scope.launch {
                             try {
                                 val result = auth.createUserWithEmailAndPassword(
