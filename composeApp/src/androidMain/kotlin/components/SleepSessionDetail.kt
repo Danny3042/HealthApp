@@ -1,5 +1,6 @@
 package components
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,6 +16,7 @@ import formatDisplayTimeStartEnd
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import java.time.ZonedDateTime
 
+@SuppressLint("RestrictedApi")
 @Composable
 fun SleepStagesDetail(sleepStages: List<SleepSessionRecord.Stage>) {
     sleepStages.forEach { stage ->

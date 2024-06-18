@@ -1,7 +1,5 @@
-package navigation.sleep
+package Health
 
-import Health.HealthConnectManager
-import utils.SleepSessionData
 import android.os.RemoteException
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -13,6 +11,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import navigation.sleep.SleepSessionViewModel
+import utils.SleepSessionData
 import java.io.IOException
 import java.util.UUID
 

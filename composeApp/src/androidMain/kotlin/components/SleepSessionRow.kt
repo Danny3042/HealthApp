@@ -1,6 +1,5 @@
 package components
 
-import Health.SleepSessionData
 import Health.dateTimeWithOffsetOrDefault
 import Health.formatHoursMinutes
 import androidx.compose.foundation.clickable
@@ -29,6 +28,7 @@ import androidx.health.connect.client.records.SleepSessionRecord
 import formatDisplayTimeStartEnd
 import org.example.project.R
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import utils.SleepSessionData
 import java.time.Duration
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter

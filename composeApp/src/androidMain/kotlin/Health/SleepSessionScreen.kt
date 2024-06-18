@@ -1,6 +1,5 @@
-package navigation.sleep
+package Health
 
-import utils.SleepSessionData
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -17,17 +17,24 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.health.connect.client.records.SleepSessionRecord
 import components.SleepSessionRow
+import navigation.sleep.SleepSessionViewModel
 import org.example.project.R
+import utils.SleepSessionData
+import java.time.Duration
+import java.time.ZonedDateTime
 import java.util.UUID
 
 /**
  * Shows a week's worth of sleep data.
  */
+
 @Composable
 fun SleepSessionScreen(
-    permissions: Set<String>,
+    permisssions: Set<String>,
     permissionsGranted: Boolean,
     sessionsList: List<SleepSessionData>,
     uiState: SleepSessionViewModel.UiState,
@@ -35,14 +42,14 @@ fun SleepSessionScreen(
     onError: (Throwable?) -> Unit = {},
     onPermissionsResult: () -> Unit = {},
     onPermissionsLaunch: (Set<String>) -> Unit = {}
-) {
+    ) {
 
     // Remember the last error ID, such that it is possible to avoid re-launching the error
     // notification for the same error when the screen is recomposed, or configuration changes etc.
     val errorId = rememberSaveable { mutableStateOf(UUID.randomUUID()) }
 
     LaunchedEffect(uiState) {
-        // If the initial data load has not taken place, attempt to load the data.
+        // if the initial data load has not taken place, attempt to load the data
         if (uiState is SleepSessionViewModel.UiState.Uninitialized) {
             onPermissionsResult()
         }
@@ -66,7 +73,7 @@ fun SleepSessionScreen(
             if (!permissionsGranted) {
                 item {
                     Button(
-                        onClick = { onPermissionsLaunch(permissions) }
+                        onClick = { onPermissionsLaunch(permisssions) }
                     ) {
                         Text(text = stringResource(R.string.permissions_button_label))
                     }
@@ -91,5 +98,57 @@ fun SleepSessionScreen(
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun SleepSessionScreenPreview() {
+    MaterialTheme {
+        val end2 = ZonedDateTime.now()
+        val start2 = end2.minusHours(5)
+        val end1 = end2.minusDays(1)
+        val start1 = end1.minusHours(5)
+        SleepSessionScreen(
+            permisssions = setOf(),
+            permissionsGranted = true,
+            sessionsList = listOf(
+                SleepSessionData(
+                    uid = "123",
+                    title = "My sleep",
+                    notes = "Slept well",
+                    startTime = start1.toInstant(),
+                    startZoneOffset = start1.offset,
+                    endTime = end1.toInstant(),
+                    endZoneOffset = end1.offset,
+                    duration = Duration.between(start1, end1),
+                    stages = listOf(
+                        SleepSessionRecord.Stage(
+                            stage = SleepSessionRecord.STAGE_TYPE_DEEP,
+                            startTime = start1.toInstant(),
+                            endTime = end1.toInstant()
+                        )
+                    )
+                ),
+                SleepSessionData(
+                    uid = "123",
+                    title = "My sleep",
+                    notes = "Slept well",
+                    startTime = start2.toInstant(),
+                    startZoneOffset = start2.offset,
+                    endTime = end2.toInstant(),
+                    endZoneOffset = end2.offset,
+                    duration = Duration.between(start2, end2),
+                    stages = listOf(
+                        SleepSessionRecord.Stage(
+                            stage = SleepSessionRecord.STAGE_TYPE_DEEP,
+                            startTime = start2.toInstant(),
+                            endTime = end2.toInstant()
+                        )
+                    )
+                )
+            ),
+            uiState = SleepSessionViewModel.UiState.Done
+        )
     }
 }
