@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.sqlDelight)
     alias(libs.plugins.googleServices)
+    alias(libs.plugins.kotlinSerialization)
 
 }
 
@@ -41,6 +42,7 @@ kotlin {
             implementation("com.google.firebase:firebase-appcheck-playintegrity")
             implementation("com.google.android.play:integrity:1.3.0")
             implementation("com.google.accompanist:accompanist-drawablepainter:0.34.0")
+            implementation("com.arkivanov.decompose:decompose:2.2.0")
 
 
 
@@ -68,6 +70,7 @@ kotlin {
             implementation(libs.jetbrains.navigation.compose)
             // voyager TabNav
             implementation(libs.voyager.tabNavigator)
+            implementation("com.arkivanov.decompose:decompose:2.2.0")
             // extended icons
             implementation("org.jetbrains.compose.material:material-icons-extended:1.6.2")
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")

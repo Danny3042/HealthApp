@@ -1,6 +1,5 @@
 package navigation.sleep
 
-import utils.SleepSessionData
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,7 +19,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import components.SleepSessionRow
 import org.example.project.R
+import utils.SleepSessionData
 import java.util.UUID
+
 
 /**
  * Shows a week's worth of sleep data.
@@ -36,6 +37,7 @@ fun SleepSessionScreen(
     onPermissionsResult: () -> Unit = {},
     onPermissionsLaunch: (Set<String>) -> Unit = {}
 ) {
+    Text("Hello World")
 
     // Remember the last error ID, such that it is possible to avoid re-launching the error
     // notification for the same error when the screen is recomposed, or configuration changes etc.
@@ -46,6 +48,7 @@ fun SleepSessionScreen(
         if (uiState is SleepSessionViewModel.UiState.Uninitialized) {
             onPermissionsResult()
         }
+
 
         // The [SleepSessionViewModel.UiState] provides details of whether the last action was a
         // success or resulted in an error. Where an error occurred, for example in reading and
@@ -91,5 +94,6 @@ fun SleepSessionScreen(
                 }
             }
         }
+
     }
 }

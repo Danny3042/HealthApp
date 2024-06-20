@@ -132,7 +132,6 @@ class HealthConnectManager(private val context: Context) {
      * Writes an [ExerciseSessionRecord] to Health Connect, and additionally writes underlying data for
      * the session too, such as [StepsRecord], [DistanceRecord] etc.
      */
-    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun writeExerciseSession(
         start: ZonedDateTime,
         end: ZonedDateTime
@@ -249,7 +248,6 @@ class HealthConnectManager(private val context: Context) {
     /**
      * Deletes all existing sleep data.
      */
-    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun deleteAllSleepData() {
         val now = Instant.now()
         healthConnectClient.deleteRecords(SleepSessionRecord::class, TimeRangeFilter.before(now))
@@ -260,7 +258,6 @@ class HealthConnectManager(private val context: Context) {
      * period of sleep, with multiple [SleepSessionRecord.Stage] periods which cover the entire
      * [SleepSessionRecord]. For the purposes of this sample, the sleep stage data is generated randomly.
      */
-    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun generateSleepData() {
         val records = mutableListOf<Record>()
         // Make yesterday the last day of the sleep data
@@ -294,7 +291,6 @@ class HealthConnectManager(private val context: Context) {
      * In addition to reading [SleepSessionRecord]s, for each session, the duration is calculated to
      * demonstrate aggregation, and the underlying [SleepSessionRecord.Stage] data is also read.
      */
-    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun readSleepSessions(): List<SleepSessionData> {
         val lastDay = ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS)
             .minusDays(1)
@@ -447,7 +443,6 @@ class HealthConnectManager(private val context: Context) {
         return healthConnectClient.readRecords(request).records
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun buildHeartRateSeries(
         sessionStartTime: ZonedDateTime,
         sessionEndTime: ZonedDateTime
@@ -472,7 +467,6 @@ class HealthConnectManager(private val context: Context) {
         )
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun buildSpeedSeries(
         sessionStartTime: ZonedDateTime,
         sessionEndTime: ZonedDateTime
