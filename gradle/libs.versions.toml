@@ -26,7 +26,6 @@ voyager = "1.0.0"
 firebaseAnalytics = "22.0.1"
 playServicesMeasurementApi = "22.0.0"
 coreI18n = "1.0.0-alpha01"
-decompose = "2.2.0"
 kotlinxSerializationJson = "1.6.1"
 
 
@@ -63,7 +62,6 @@ voyager-tabNavigator = { module = "cafe.adriel.voyager:voyager-tab-navigator", v
 firebase-analytics = { module = "com.google.firebase:firebase-analytics-ktx", version.ref = "firebaseAnalytics" }
 play-services-measurement-api = { group = "com.google.android.gms", name = "play-services-measurement-api", version.ref = "playServicesMeasurementApi" }
 androidx-core-i18n = { group = "androidx.core", name = "core-i18n", version.ref = "coreI18n" }
-decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 
 

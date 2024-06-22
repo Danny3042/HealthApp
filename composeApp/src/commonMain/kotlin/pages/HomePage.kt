@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
 import utils.HealthConnectChecker
 import utils.HealthConnectScreen
+import utils.HealthKitManager
 import utils.isAndroid
 
 const val HomePageScreen = "HomePage"
@@ -18,10 +19,14 @@ fun HomePage(navController: NavController) {
     var showSleepScreen by remember { mutableStateOf(false) }
     var isAuthorizedResult by remember { mutableStateOf<Result<Boolean>?>(null) }
     var isRevokeSupported by remember { mutableStateOf(false) }
+    val healthKitManager = HealthKitManager()
 
     val healthConnectAvailability = HealthConnectChecker.checkHealthConnectAvailability()
 
     if (isAndroid() && isAuthorizedResult?.getOrNull() != true) {
+        HealthConnectScreen()
+    }
+    if (!isAndroid() && isAuthorizedResult?.getOrNull() != true) {
         HealthConnectScreen()
     }
 }
