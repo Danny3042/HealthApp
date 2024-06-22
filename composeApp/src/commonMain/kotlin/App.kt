@@ -18,7 +18,6 @@ import pages.HeroScreen
 import pages.HomePage
 import pages.HomePageScreen
 import tabs.ProfileTab
-import utils.getSleepSessionScreen
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -32,11 +31,9 @@ fun App() {
             composable(LoginScreen) { Authentication().Login(navController) }
             composable(SignUpScreen) { Authentication().signUp(navController) }
             composable(HomePageScreen) { HomePage(navController) }
-            composable("SleepSession") { getSleepSessionScreen(navController) }
             composable(HeroScreen) { HeroScreen(navController) }
             composable("profile") { ProfileTab(navController).Content() }
             composable(AboutPageScreen) { AboutPage(navController) }
         }
-
     }
 }
