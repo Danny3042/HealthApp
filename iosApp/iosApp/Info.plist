@@ -14,6 +14,14 @@
     <string>HealthCompose does not access your location.</string>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>HealthCompose does not require access to location services to provide location-based features when the app is in use.</string>
+    <key>ITSAppUsesNonExemptEncryption</key>
+    <false/>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>HealthCompose does not use microphone access.</string>
+    <key>NSCameraUsageDescription</key>
+    <string>HealthCompose does not use the camera.</string>
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>The app does not need speech recognition access.</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>

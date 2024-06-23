@@ -7,15 +7,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
-import androidx.compose.material.Snackbar
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
@@ -29,6 +29,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -38,6 +39,7 @@ import dev.gitlive.firebase.auth.FirebaseAuthInvalidCredentialsException
 import dev.gitlive.firebase.auth.FirebaseAuthInvalidUserException
 import dev.gitlive.firebase.auth.FirebaseUser
 import dev.gitlive.firebase.auth.auth
+import hideKeyboard
 import kotlinx.coroutines.launch
 import pages.HeroScreen
 import pages.HomePageScreen
@@ -46,6 +48,7 @@ const val SignUpScreen = "SignUp"
 const val LoginScreen = "Login"
 
 class Authentication {
+
 
     @Composable
     fun Login(navController: NavController) {
@@ -61,18 +64,11 @@ class Authentication {
         var showSnackbar by remember { mutableStateOf(false) }
         var snackbarMessage by remember { mutableStateOf("") }
 
+
+
         Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.background)) {
-            if (showSnackbar) {
-                Snackbar(
-                    action = {
-                        TextButton(onClick = { showSnackbar = false }) {
-                            Text("Dismiss")
-                        }
-                    },
-                    modifier = Modifier.align(Alignment.BottomCenter)
-                ) {
-                    Text(snackbarMessage)
-                }
+            if (snackbarMessage.isNotEmpty()) {
+                Text(snackbarMessage, color = MaterialTheme.colors.error)
             }
 
             if (firebaseUser != null) {
@@ -89,6 +85,10 @@ class Authentication {
                         value = userEmail,
                         onValueChange = { userEmail = it },
                         placeholder = { Text("Email address") },
+                        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(onDone = {
+                           hideKeyboard()
+                        }),
                         colors = TextFieldDefaults.textFieldColors(
                             textColor = MaterialTheme.colors.onSurface,
                             backgroundColor = MaterialTheme.colors.surface,
@@ -102,6 +102,10 @@ class Authentication {
                         value = userPassword,
                         onValueChange = { userPassword = it },
                         placeholder = { Text("Password") },
+                        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(onDone = {
+                            hideKeyboard()
+                        }),
                         visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         trailingIcon = {
                             val image = if (isPasswordVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
@@ -124,6 +128,7 @@ class Authentication {
                         Text(errorMessage!!)
                     }
                     Button(onClick = {
+                        hideKeyboard()
                         scope.launch {
                             try {
                                 val result = auth.signInWithEmailAndPassword(
@@ -179,6 +184,10 @@ class Authentication {
                         value = userEmail,
                         onValueChange = { userEmail = it },
                         placeholder = { Text("Email address") },
+                        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(onDone = {
+                            hideKeyboard()
+                        }),
                         colors = TextFieldDefaults.textFieldColors(
                             textColor = MaterialTheme.colors.onSurface,
                             backgroundColor = MaterialTheme.colors.surface,
@@ -192,6 +201,10 @@ class Authentication {
                         value = userPassword,
                         onValueChange = { userPassword = it },
                         placeholder = { Text("Password") },
+                        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(onDone = {
+                            hideKeyboard()
+                        }),
                         visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         trailingIcon = {
                             val image = if (isPasswordVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
@@ -209,6 +222,7 @@ class Authentication {
                     )
                     Spacer(modifier = Modifier.height(24.dp))
                     Button(onClick = {
+                        hideKeyboard()
                         scope.launch {
                             try {
                                 val result = auth.createUserWithEmailAndPassword(

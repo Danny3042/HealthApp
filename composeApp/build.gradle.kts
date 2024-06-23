@@ -2,8 +2,10 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.sqlDelight)
     alias(libs.plugins.googleServices)
+    alias(libs.plugins.kotlinSerialization)
 
 }
 
@@ -37,6 +39,11 @@ kotlin {
             implementation(libs.sqldelight.androidDriver)
             implementation ("com.google.firebase:firebase-analytics-ktx:22.0.0")
             implementation ("androidx.health.connect:connect-client:1.1.0-alpha07")
+            implementation("androidx.appcompat:appcompat:1.7.0")
+            implementation("com.google.firebase:firebase-appcheck-playintegrity")
+            implementation("com.google.android.play:integrity:1.3.0")
+            implementation("com.google.accompanist:accompanist-drawablepainter:0.34.0")
+
 
 
 
@@ -60,9 +67,9 @@ kotlin {
             implementation(compose.components.resources)
             // Firebase
             implementation(libs.firebase.auth)
-            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.7.0-alpha03")
+            implementation(libs.jetbrains.navigation.compose)
             // voyager TabNav
-            implementation("cafe.adriel.voyager:voyager-tab-navigator:1.0.0")
+            implementation(libs.voyager.tabNavigator)
             // extended icons
             implementation("org.jetbrains.compose.material:material-icons-extended:1.6.2")
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
@@ -90,8 +97,8 @@ android {
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
     defaultConfig {
-        applicationId = "org.example.project"
-        minSdk = 26
+        applicationId = "org.danielramzani.HealthCompose"
+        minSdk = 27
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"

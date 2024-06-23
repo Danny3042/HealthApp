@@ -36,6 +36,7 @@ import kotlin.math.roundToInt
 @Composable
 fun ExpandableCard(title: String, onSave: (String) -> Unit){
     var expanded by remember { mutableStateOf(false) }
+    var sliderValue by remember { mutableStateOf("") }
 
     Card(
         shape = RoundedCornerShape(8.dp),
@@ -65,16 +66,20 @@ fun ExpandableCard(title: String, onSave: (String) -> Unit){
                 }
             }
             if (expanded) {
-                SliderExample(onSave = onSave)
+                SliderExample(sliderValue, onSave = { value -> sliderValue = value; onSave(value) })
+            } else {
+                Text(text = sliderValue)
             }
         }
     }
 }
 
 @Composable
-fun SliderExample(onSave : (String) -> Unit) {
+fun SliderExample(currentValue: String, onSave : (String) -> Unit) {
     val sliderLabels = listOf("Low", "Medium", "High")
-    var sliderPosition by remember { mutableStateOf(0f) }
+    var sliderPosition by remember { mutableStateOf(
+        if (sliderLabels.contains(currentValue)) sliderLabels.indexOf(currentValue).toFloat() else 0f
+    )}
     Column {
         Slider(
             value = sliderPosition,
@@ -147,7 +152,6 @@ fun AlertDialogExample(
 }
 @Composable
 fun HealthView(onNavigateToTimerView : () -> Unit) {
-    var savedValue by remember { mutableStateOf("") }
     var showDialog by remember { mutableStateOf(false) }
     var selectedOption by remember { mutableStateOf(0) }
 
@@ -157,12 +161,14 @@ fun HealthView(onNavigateToTimerView : () -> Unit) {
         listOf("Are you feeling academic pressure", "What can the supervisor do to help?")
     )
 
+    // Create a list to hold the values of each slider
+    var sliderValues by remember { mutableStateOf(List(cardTitles[selectedOption].size) { "" }) }
+
     Column(modifier = Modifier.padding(top = 300.dp)) {
 
-
         // Display the cards for the selected option
-        cardTitles[selectedOption].forEach { title ->
-            ExpandableCard(title = title, onSave = { value -> savedValue = value })
+        cardTitles[selectedOption].forEachIndexed { index, title ->
+            ExpandableCard(title = title, onSave = { value -> sliderValues = sliderValues.toMutableList().apply { this[index] = value } })
         }
 
         MyButton(onClick = { showDialog = true })
@@ -173,7 +179,7 @@ fun HealthView(onNavigateToTimerView : () -> Unit) {
                     println("Navigating to TimerView")
                     onNavigateToTimerView(); showDialog = false },
                 dialogTitle = "Meditation Request",
-                dialogText = "Based on the information we suggest to start a meditation session: $savedValue"
+                dialogText = "Based on the information we suggest to start a meditation session: ${sliderValues.joinToString(", ")}"
             )
         }
     }
