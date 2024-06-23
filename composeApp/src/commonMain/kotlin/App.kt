@@ -1,4 +1,3 @@
-
 import Authentication.Authentication
 import Authentication.LoginScreen
 import Authentication.SignUpScreen
@@ -18,6 +17,9 @@ import pages.HeroScreen
 import pages.HomePage
 import pages.HomePageScreen
 import tabs.ProfileTab
+import utils.HealthKitServiceImpl
+import utils.iOSHealthKitManager
+
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -27,10 +29,12 @@ fun App() {
 
     MaterialTheme(colors = colors) {
         val navController = rememberNavController()
+        val healthKitManager = iOSHealthKitManager()
+        val healthKitService = HealthKitServiceImpl(healthKitManager)
         NavHost(navController, startDestination = LoginScreen) {
             composable(LoginScreen) { Authentication().Login(navController) }
             composable(SignUpScreen) { Authentication().signUp(navController) }
-            composable(HomePageScreen) { HomePage(navController) }
+            composable(HomePageScreen) { HomePage(healthKitService) }
             composable(HeroScreen) { HeroScreen(navController) }
             composable("profile") { ProfileTab(navController).Content() }
             composable(AboutPageScreen) { AboutPage(navController) }

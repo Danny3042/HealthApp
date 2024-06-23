@@ -3,6 +3,4 @@ package utils
 import androidx.compose.runtime.Composable
 
 @Composable
-actual fun HealthConnectScreen() {
-    return
-}
+expect fun HealthDataView(healthKitService: HealthKitService)

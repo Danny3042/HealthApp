@@ -1,8 +1,8 @@
 package utils
 
+import kotlinx.coroutines.flow.Flow
 
-
-actual class HealthKitManager actual constructor() {
-    actual fun checkAuthorization(completion: (Boolean) -> Unit){
-    }
+actual interface HealthKitService {
+    actual fun requestAuthorization()
+    actual fun readData(): Flow<HealthData>
 }

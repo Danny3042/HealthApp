@@ -15,7 +15,7 @@ compose-plugin = "1.6.10"
 firebaseAuth = "1.12.0"
 jetbrainsNavigationCompose = "2.7.7"
 junit = "4.13.2"
-kotlin = "1.9.23"
+kotlin = "2.0.0"
 ktor = "2.3.10"
 navigationComposeVersion = "2.7.0-alpha03"
 sqlDelight = "2.0.2"
@@ -74,3 +74,4 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 sqlDelight = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
 googleServices = { id = "com.google.gms.google-services", version.ref = "gservices" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
