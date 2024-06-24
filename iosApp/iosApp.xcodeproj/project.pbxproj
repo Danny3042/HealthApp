@@ -11,8 +11,6 @@
 		058557D9273AAEEB004C7B11 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */; };
 		086786B72BFAB3210004FEBB /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 086786B62BFAB3210004FEBB /* FirebaseAnalytics */; };
 		086786B92BFAB3210004FEBB /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 086786B82BFAB3210004FEBB /* FirebaseAuth */; };
-		08683C0B2C287E8D00180F44 /* HealthKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08683C0A2C287E8D00180F44 /* HealthKitManager.swift */; };
-		08683C0D2C28801300180F44 /* HealthConnectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08683C0C2C28801300180F44 /* HealthConnectView.swift */; };
 		08744AE62BFA76D700BF0FF6 /* CareKit in Frameworks */ = {isa = PBXBuildFile; productRef = 08744AE52BFA76D700BF0FF6 /* CareKit */; };
 		089B72AB2C0BC07A0045625E /* ResearchKitActiveTask.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08D07E1A2BFA712D00C7C391 /* ResearchKitActiveTask.framework */; };
 		089B72AC2C0BC07A0045625E /* ResearchKitActiveTask.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08D07E1A2BFA712D00C7C391 /* ResearchKitActiveTask.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -76,8 +74,6 @@
 		058557BA273AAA24004C7B11 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		080078952C07E488009FBCA1 /* iosApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iosApp.entitlements; sourceTree = "<group>"; };
-		08683C0A2C287E8D00180F44 /* HealthKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitManager.swift; sourceTree = "<group>"; };
-		08683C0C2C28801300180F44 /* HealthConnectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthConnectView.swift; sourceTree = "<group>"; };
 		08A5F03E2BFBF6F400FE13D3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		08D07E0C2BFA712D00C7C391 /* ResearchKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ResearchKit.xcodeproj; path = "../../../Downloads/ResearchKit-main/ResearchKit.xcodeproj"; sourceTree = "<group>"; };
 		2152FB032600AC8F00CF470E /* iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSApp.swift; sourceTree = "<group>"; };
@@ -168,8 +164,6 @@
 				7555FF8C242A565B00829871 /* Info.plist */,
 				2152FB032600AC8F00CF470E /* iOSApp.swift */,
 				058557D7273AAEEB004C7B11 /* Preview Content */,
-				08683C0A2C287E8D00180F44 /* HealthKitManager.swift */,
-				08683C0C2C28801300180F44 /* HealthConnectView.swift */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -323,9 +317,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
-				08683C0D2C28801300180F44 /* HealthConnectView.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
-				08683C0B2C287E8D00180F44 /* HealthKitManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
