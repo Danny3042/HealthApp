@@ -76,11 +76,12 @@ fun ExpandableCard(title: String, onSave: (String) -> Unit){
 
 @Composable
 fun SliderExample(currentValue: String, onSave : (String) -> Unit) {
-    val sliderLabels = listOf("Low", "Medium", "High")
+    val sliderLabels = (1..10).map { it.toString() } // Create labels from 1 to 10
     var sliderPosition by remember { mutableStateOf(
         if (sliderLabels.contains(currentValue)) sliderLabels.indexOf(currentValue).toFloat() else 0f
     )}
     Column {
+        Text("1 - Best, 10 - Worst", style = MaterialTheme.typography.caption)
         Slider(
             value = sliderPosition,
             onValueChange = { sliderPosition = it },
@@ -90,7 +91,7 @@ fun SliderExample(currentValue: String, onSave : (String) -> Unit) {
                 activeTrackColor = MaterialTheme.colors.secondary,
                 inactiveTrackColor = MaterialTheme.colors.onSurface.copy(alpha = 0.5f)
             ),
-            steps = 3,
+            steps = 10, // Set steps to 10
             modifier = Modifier.padding(16.dp)
         )
         Text(text = sliderLabels[sliderPosition.roundToInt()])
@@ -152,24 +153,12 @@ fun AlertDialogExample(
 }
 @Composable
 fun HealthView(onNavigateToTimerView : () -> Unit) {
+    var sleepRating by remember { mutableStateOf(5f) }
+    var painRating by remember { mutableStateOf(5f) }
     var showDialog by remember { mutableStateOf(false) }
-    var selectedOption by remember { mutableStateOf(0) }
-
-    // Card titles for each option
-    val cardTitles = listOf(
-        listOf("How are you feeling?", "How well did you Sleep?", "Are you experiencing any discomfort?"),
-        listOf("Are you feeling academic pressure", "What can the supervisor do to help?")
-    )
-
-    // Create a list to hold the values of each slider
-    var sliderValues by remember { mutableStateOf(List(cardTitles[selectedOption].size) { "" }) }
-
-    Column(modifier = Modifier.padding(top = 300.dp)) {
-
-        // Display the cards for the selected option
-        cardTitles[selectedOption].forEachIndexed { index, title ->
-            ExpandableCard(title = title, onSave = { value -> sliderValues = sliderValues.toMutableList().apply { this[index] = value } })
-        }
+    Column {
+       ExpandableCard("Sleep Rating") { value -> sleepRating = value.toFloat() }
+         ExpandableCard("Pain Rating") { value -> painRating = value.toFloat() }
 
         MyButton(onClick = { showDialog = true })
         if(showDialog) {
@@ -179,7 +168,7 @@ fun HealthView(onNavigateToTimerView : () -> Unit) {
                     println("Navigating to TimerView")
                     onNavigateToTimerView(); showDialog = false },
                 dialogTitle = "Meditation Request",
-                dialogText = "Based on the information we suggest to start a meditation session: ${sliderValues.joinToString(", ")}"
+                dialogText = "Based on the information we suggest to start a meditation session: ${sleepRating.toInt()} sleep rating and ${painRating.toInt()} pain rating"
             )
         }
     }

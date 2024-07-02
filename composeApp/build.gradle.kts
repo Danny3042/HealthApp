@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.sqlDelight)
     alias(libs.plugins.googleServices)
     alias(libs.plugins.kotlinSerialization)
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin") version "2.0.0"
 
 }
 
@@ -48,6 +49,7 @@ kotlin {
 
 
 
+
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -75,6 +77,9 @@ kotlin {
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
             // Health APIs
             implementation("com.vitoksmile.health-kmp:core:0.0.3")
+            implementation("io.ktor:ktor-client-logging:2.3.10")
+            implementation("com.google.ai.client.generativeai:generativeai:0.8.0")
+            implementation("com.mikepenz:multiplatform-markdown-renderer:0.10.0")
 
 
         }
@@ -82,10 +87,10 @@ kotlin {
             implementation(libs.ktor.client.darwin)
             // SQLDelight
             implementation(libs.sqldelight.nativeDriver)
+            implementation("io.ktor:ktor-client-darwin:2.3.10")
         }
     }
 }
-
 
 
 android {

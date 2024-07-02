@@ -1,4 +1,7 @@
 import platform.UIKit.UIApplication
+import platform.UIKit.UITextField
+import platform.UIKit.UITextFieldDelegateProtocol
+import platform.darwin.NSObject
 import platform.darwin.sel_registerName
 
 
@@ -11,4 +14,12 @@ actual fun hideKeyboard() {
         from = null,
         forEvent = null
     )
+
+    val delegate = object : NSObject(), UITextFieldDelegateProtocol {
+        override fun textFieldShouldReturn(textField: UITextField): Boolean {
+            hideKeyboard()
+            return true
+        }
+
+    }
 }
