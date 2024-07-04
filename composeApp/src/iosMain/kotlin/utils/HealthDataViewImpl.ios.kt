@@ -21,8 +21,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
-import kotlin.math.absoluteValue
-import kotlin.math.pow
 
 @Composable
 actual fun HealthDataView(healthKitService: HealthKitService) {
@@ -36,10 +34,10 @@ actual fun HealthDataView(healthKitService: HealthKitService) {
     MaterialTheme {
         Column {
             healthData.value?.let { data ->
-                HealthDataItem(label = "Steps", value = "${data.stepCount ?: 0}", duration = "Today")
-                HealthDataItem(label = "Sleep Duration", value = formatDuration(data.sleepDurationMinutes ?: 0), duration = "Last Session")
-                HealthDataItem(label = "Exercise Duration (minutes)", value = "${data.exerciseDurationMinutes ?: 0}", duration = "Today")
-                HealthDataItem(label = "Distance (meters)", value = roundToThreeSigFigs((data.exerciseDurationMinutes ?: 0).toDouble()), duration = "Today")
+                HealthDataItem(label = "Steps", value = "${data.stepCount}", duration = "Today")
+                HealthDataItem(label = "Sleep Duration (minutes)", value = "${data.sleepDurationMinutes}", duration = "Last Session")
+                HealthDataItem(label = "Exercise Duration (minutes)", value = "${data.exerciseDurationMinutes}", duration = "Today")
+                HealthDataItem(label = "Distance (meters)", value = "${data.distanceMeters}", duration = "Today")
             } ?: run {
                 Text(text = "No health data available ", color = MaterialTheme.colors.onSurface)
             }
@@ -47,19 +45,7 @@ actual fun HealthDataView(healthKitService: HealthKitService) {
     }
 }
 
-fun formatDuration(totalMinutes: Int): String {
-    val hours = totalMinutes / 60
-    val minutes = totalMinutes % 60
-    return "$hours hours $minutes minutes"
-}
 
-fun roundToThreeSigFigs(number: Double): String {
-    if (number == 0.0) return "0"
-    val magnitude = kotlin.math.floor(kotlin.math.log10(number.absoluteValue)).toInt()
-    val scale = 10.0.pow(2 - magnitude)
-    val scaledAndRoundedNumber = kotlin.math.round(number * scale) / scale
-    return scaledAndRoundedNumber.toString()
-}
 
 @Composable
 fun HealthDataItem(label: String, value: String, duration: String) {
