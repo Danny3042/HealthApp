@@ -130,4 +130,3 @@ dependencies {
     implementation(libs.firebase.common.ktx)
     implementation(libs.play.services.measurement.api)
 }
-

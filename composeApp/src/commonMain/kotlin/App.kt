@@ -1,4 +1,3 @@
-
 import Authentication.Authentication
 import Authentication.LoginScreen
 import Authentication.SignUpScreen
