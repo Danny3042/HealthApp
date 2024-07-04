@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -117,15 +116,6 @@ actual fun HealthConnectScreen() {
     }
 
     Scaffold(topBar = {
-        Text(
-            text = "Health Connect",
-            fontSize = 32.sp,
-            color = Color.White,
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.Gray, RoundedCornerShape(bottomEnd = 8.dp, bottomStart = 8.dp))
-                .padding(vertical = 16.dp, horizontal = 10.dp)
-        )
     }) {
         Surface(
             modifier = Modifier

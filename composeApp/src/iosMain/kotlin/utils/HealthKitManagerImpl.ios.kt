@@ -26,6 +26,8 @@ import platform.HealthKit.HKStatisticsOptionCumulativeSum
 import platform.HealthKit.HKStatisticsQuery
 import platform.HealthKit.HKUnit
 import platform.HealthKit.countUnit
+import platform.HealthKit.meterUnit
+import platform.HealthKit.minuteUnit
 import platform.HealthKit.predicateForSamplesWithStartDate
 
 actual interface HealthKitService {
@@ -78,11 +80,18 @@ class IOSHealthKitServiceImpl : HealthKitService {
         val predicate = HKQuery.predicateForSamplesWithStartDate(startDate, endDate, HKQueryOptionNone)
         var result: Double? = null
 
+        val unit = when (typeIdentifier) {
+            HKQuantityTypeIdentifierStepCount -> HKUnit.countUnit()
+            HKQuantityTypeIdentifierAppleExerciseTime -> HKUnit.minuteUnit()
+            HKQuantityTypeIdentifierDistanceWalkingRunning -> HKUnit.meterUnit()
+            else -> return null
+        }
+
         val semaphore = kotlinx.coroutines.sync.Semaphore(1)
         semaphore.acquire()
 
         val query = HKStatisticsQuery(type, predicate, HKStatisticsOptionCumulativeSum) { _, stats, _ ->
-            result = stats?.sumQuantity()?.doubleValueForUnit(HKUnit.countUnit())
+            result = stats?.sumQuantity()?.doubleValueForUnit(unit)
             semaphore.release()
         }
         healthStore.executeQuery(query)

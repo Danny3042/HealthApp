@@ -20,12 +20,11 @@ fun HomePage(healthKitService: HealthKitService) {
     var isAuthorizedResult by remember { mutableStateOf<Result<Boolean>?>(null) }
     var isRevokeSupported by remember { mutableStateOf(false) }
 
-
     val healthConnectAvailability = HealthConnectChecker.checkHealthConnectAvailability()
-
     if (isAndroid() && isAuthorizedResult?.getOrNull() != true) {
         HealthConnectScreen()
     } else {
         HealthDataView(healthKitService)
     }
+
 }

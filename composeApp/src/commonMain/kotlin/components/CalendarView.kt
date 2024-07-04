@@ -16,6 +16,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
@@ -25,6 +27,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronLeft
@@ -41,7 +44,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
@@ -148,11 +150,55 @@ fun Header(
         }
     }
 }
+@Composable
+fun EventInputDialog(
+    onConfirm: (String) -> Unit,
+    onDismissRequest: () -> Unit) {
+    var input by remember { mutableStateOf("") }
+    AlertDialog(
+        onDismissRequest = {onDismissRequest() },
+        title = { Text("New Event") },
+        text = {
+            TextField(
+                value = input,
+                onValueChange = { input = it },
+                label = { Text("Event Title") }
+            )
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    onConfirm(input)
+                }
+            ) {
+                Text("Confirm")
+            }
+        },
+        dismissButton = {
+            Button(
+                onClick = {onDismissRequest() }
 
+            ) {
+                Text("Cancel")
+            }
+        }
+    )
+}
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) {
     var calendarUiModel by remember { mutableStateOf(dataSource.getData(lastSelectedDate = dataSource.today)) }
+    var showDialog by remember { mutableStateOf(false) }
+
+    if (showDialog) {
+        EventInputDialog(
+            onConfirm = { title ->
+                dataSource.addEvent(Event(date = dataSource.today, title = title))
+                showDialog = false
+            },
+            onDismissRequest = { showDialog = false }
+        )
+    }
 
     Column(modifier = Modifier.padding(top = 50.dp)) {
         Header(
@@ -243,9 +289,7 @@ fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) 
             contentAlignment = Alignment.BottomEnd
         ) {
             FloatingActionButton(onClick = {
-                coroutineScope.launch {
-                    bottomSheetState.show()
-                }
+                showDialog = true
             }) {
                 Icon(Icons.Filled.Add, contentDescription = "Add Event")
             }
