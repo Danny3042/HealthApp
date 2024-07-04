@@ -35,11 +35,11 @@ fun App() {
         NavHost(navController, startDestination = LoginScreen) {
             composable(LoginScreen) { Authentication().Login(navController) }
             composable(SignUpScreen) { Authentication().signUp(navController) }
-            composable(HomePageScreen) { HomePage(navController, healthKitService) }
+            composable(HomePageScreen) { HomePage(healthKitService) }
             composable(HeroScreen) { HeroScreen(navController) }
             composable("profile") { ProfileTab(navController).Content() }
             composable(AboutPageScreen) { AboutPage(navController) }
             composable(ChatScreen) { ChatScreen() }
         }
     }
-    }
+}

@@ -39,6 +39,6 @@ object HomeTab : Tab {
     @Composable
     override fun Content() {
         val navController = rememberNavController()
-        HomePage(navController, healthKitService)
+        HomePage(healthKitService)
     }
 }
