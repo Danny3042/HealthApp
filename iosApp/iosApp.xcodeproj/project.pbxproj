@@ -14,11 +14,11 @@
 		08683C0B2C287E8D00180F44 /* HealthKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08683C0A2C287E8D00180F44 /* HealthKitManager.swift */; };
 		08683C0D2C28801300180F44 /* HealthConnectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08683C0C2C28801300180F44 /* HealthConnectView.swift */; };
 		08744AE62BFA76D700BF0FF6 /* CareKit in Frameworks */ = {isa = PBXBuildFile; productRef = 08744AE52BFA76D700BF0FF6 /* CareKit */; };
+		087F31262C4310BA00F6B3B2 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 087F31252C4310BA00F6B3B2 /* GoogleService-Info.plist */; };
 		089B72AB2C0BC07A0045625E /* ResearchKitActiveTask.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08D07E1A2BFA712D00C7C391 /* ResearchKitActiveTask.framework */; };
 		089B72AC2C0BC07A0045625E /* ResearchKitActiveTask.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08D07E1A2BFA712D00C7C391 /* ResearchKitActiveTask.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		089B72AD2C0BC0810045625E /* ResearchKitUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08D07E182BFA712D00C7C391 /* ResearchKitUI.framework */; };
 		089B72AE2C0BC0810045625E /* ResearchKitUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08D07E182BFA712D00C7C391 /* ResearchKitUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		08A5F03F2BFBF6F400FE13D3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 08A5F03E2BFBF6F400FE13D3 /* GoogleService-Info.plist */; };
 		08D07E1B2BFA713900C7C391 /* ResearchKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08D07E142BFA712D00C7C391 /* ResearchKit.framework */; };
 		08D07E1C2BFA713900C7C391 /* ResearchKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08D07E142BFA712D00C7C391 /* ResearchKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152FB032600AC8F00CF470E /* iOSApp.swift */; };
@@ -78,7 +78,7 @@
 		080078952C07E488009FBCA1 /* iosApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iosApp.entitlements; sourceTree = "<group>"; };
 		08683C0A2C287E8D00180F44 /* HealthKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitManager.swift; sourceTree = "<group>"; };
 		08683C0C2C28801300180F44 /* HealthConnectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthConnectView.swift; sourceTree = "<group>"; };
-		08A5F03E2BFBF6F400FE13D3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		087F31252C4310BA00F6B3B2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		08D07E0C2BFA712D00C7C391 /* ResearchKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ResearchKit.xcodeproj; path = "../../../Downloads/ResearchKit-main/ResearchKit.xcodeproj"; sourceTree = "<group>"; };
 		2152FB032600AC8F00CF470E /* iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSApp.swift; sourceTree = "<group>"; };
 		7555FF7B242A565900829871 /* HealthCompose.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HealthCompose.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -161,8 +161,8 @@
 		7555FF7D242A565900829871 /* iosApp */ = {
 			isa = PBXGroup;
 			children = (
+				087F31252C4310BA00F6B3B2 /* GoogleService-Info.plist */,
 				080078952C07E488009FBCA1 /* iosApp.entitlements */,
-				08A5F03E2BFBF6F400FE13D3 /* GoogleService-Info.plist */,
 				058557BA273AAA24004C7B11 /* Assets.xcassets */,
 				7555FF82242A565900829871 /* ContentView.swift */,
 				7555FF8C242A565B00829871 /* Info.plist */,
@@ -290,7 +290,7 @@
 			files = (
 				058557D9273AAEEB004C7B11 /* Preview Assets.xcassets in Resources */,
 				058557BB273AAA24004C7B11 /* Assets.xcassets in Resources */,
-				08A5F03F2BFBF6F400FE13D3 /* GoogleService-Info.plist in Resources */,
+				087F31262C4310BA00F6B3B2 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

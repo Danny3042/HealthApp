@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
@@ -22,6 +24,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,7 +36,12 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.mmk.kmpauth.firebase.google.GoogleButtonUiContainerFirebase
+import com.mmk.kmpauth.google.GoogleAuthCredentials
+import com.mmk.kmpauth.google.GoogleAuthProvider
+import com.mmk.kmpauth.uihelper.google.GoogleSignInButton
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.FirebaseAuthInvalidCredentialsException
 import dev.gitlive.firebase.auth.FirebaseAuthInvalidUserException
@@ -64,7 +72,25 @@ class Authentication {
         var showSnackbar by remember { mutableStateOf(false) }
         var snackbarMessage by remember { mutableStateOf("") }
 
+        var authready by remember { mutableStateOf(false) }
+        var onFirebaseResult: (Result<FirebaseUser?>) -> Unit = { result ->
+            if (result.isSuccess) {
+                val user = result.getOrNull()
+                println("User: $user")
+            } else {
+                val error = result.exceptionOrNull()
+                println("Error Result: ${result.exceptionOrNull()?.message}")
+            }
+        }
 
+        LaunchedEffect(Unit) {
+            GoogleAuthProvider.create(
+                credentials = GoogleAuthCredentials(
+                    serverId = "991501394909-ij12drqd040b9766t2t9s5d0itjs46h3.apps.googleusercontent.com"
+                )
+            )
+            authready = true
+        }
 
         Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.background)) {
             if (snackbarMessage.isNotEmpty()) {
@@ -156,12 +182,25 @@ class Authentication {
                     }) {
                         Text("Sign Up")
                     }
+                    if (authready) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            contentAlignment = Alignment.BottomCenter
+                        ) {
+                            GoogleButtonUiContainerFirebase(onResult = onFirebaseResult) {
+                                GoogleSignInButton(fontSize = 19.sp) { this.onClick() }
+                            }
+                        }
+                    }
                 }
             }
             if (firebaseUser != null) {
                 navController.navigate(HeroScreen)
             }
         }
+
     }
 
     @Composable

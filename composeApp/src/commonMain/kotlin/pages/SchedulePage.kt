@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import components.CalendarDataSource
 import components.Content
 import components.Event
@@ -28,8 +29,6 @@ import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import model.HealthViewModel
-import pages.DescriptionCard
-import pages.ExpandableCard
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -109,24 +108,16 @@ fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) 
 }
 
 @Composable
-fun SchedulePage() {
-   var viewModel = HealthViewModel()
+fun SchedulePage(healthViewComposable : @Composable () -> Unit) {
+   val viewModel: HealthViewModel = viewModel()
    var selectedDay by remember { mutableStateOf(0) }
    val dataSource = CalendarDataSource()
 
    Column {
       ScheduleView(dataSource = dataSource)
 
-      DescriptionCard()
+      healthViewComposable()
 
-      // Display cards for the selected day
-      ExpandableCard("Sleep Rating") { newRating: Float ->
-         viewModel.updateSleepRating(newRating)
-      }
-
-      ExpandableCard("Mood Rating") { newRating: Float ->
-         viewModel.updateMoodRating(newRating)
-      }
       // This is a placeholder for your logic to display cards based on the selected day
       println("Displaying cards for day: $selectedDay")
    }

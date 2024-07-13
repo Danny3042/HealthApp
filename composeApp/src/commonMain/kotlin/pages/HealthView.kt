@@ -195,9 +195,7 @@ fun HealthView(onNavigateToTimerView: () -> Unit) {
             viewModel.updateMoodRating(value)
         }
 
-        Button(onClick = { viewModel.saveRating() }) {
-            Text("Save Ratings")
-        }
+
 
         // Check for dialog condition
         if (viewModel.showDialog) {
