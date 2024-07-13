@@ -31,10 +31,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import model.HealthViewModel
 import kotlin.math.roundToInt
 
 @Composable
-fun ExpandableCard(title: String, onSave: (String) -> Unit){
+fun ExpandableCard(title: String, onSave: (Float) -> Unit){
     var expanded by remember { mutableStateOf(false) }
     var sliderValue by remember { mutableStateOf("") }
 
@@ -66,7 +68,7 @@ fun ExpandableCard(title: String, onSave: (String) -> Unit){
                 }
             }
             if (expanded) {
-                SliderExample(sliderValue, onSave = { value -> sliderValue = value; onSave(value) })
+                SliderExample(sliderValue, onSave = { value -> sliderValue = value.toString(); onSave(value) })
             } else {
                 Text(text = sliderValue)
             }
@@ -75,8 +77,30 @@ fun ExpandableCard(title: String, onSave: (String) -> Unit){
 }
 
 @Composable
-fun SliderExample(currentValue: String, onSave : (String) -> Unit) {
-    val sliderLabels = (1..10).map { it.toString() } // Create labels from 1 to 10
+fun DescriptionCard() {
+    var showDescription by remember { mutableStateOf(false) }
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .clickable { showDescription = !showDescription },
+        shape = RoundedCornerShape(8.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(text = "Expandable Cards Info", style = MaterialTheme.typography.h6)
+            if (showDescription) {
+                Text(text = "This app uses expandable cards to rate your sleep and mood. " +
+                        "Slide to select a value and hit save to update your ratings.")
+            }
+        }
+    }
+}
+
+
+@Composable
+fun SliderExample(currentValue: String, onSave: (Float) -> Unit) {
+    val sliderLabels = (1..10).map { it.toString() } // Labels from 1 to 10
     var sliderPosition by remember { mutableStateOf(
         if (sliderLabels.contains(currentValue)) sliderLabels.indexOf(currentValue).toFloat() else 0f
     )}
@@ -84,15 +108,17 @@ fun SliderExample(currentValue: String, onSave : (String) -> Unit) {
         Text("1 - Worst, 10 - Best", style = MaterialTheme.typography.caption)
         Slider(
             value = sliderPosition,
-            onValueChange = { sliderPosition = it },
+            onValueChange = {
+                sliderPosition = it
+                onSave(sliderLabels[sliderPosition.roundToInt()].toFloat()) // Convert position to value and pass it
+            },
             valueRange = 0f..(sliderLabels.size - 1).toFloat(),
             colors = SliderDefaults.colors(
                 thumbColor = MaterialTheme.colors.secondary,
                 activeTrackColor = MaterialTheme.colors.secondary,
                 inactiveTrackColor = MaterialTheme.colors.onSurface.copy(alpha = 0.5f)
             ),
-            steps = 10, // Set steps to 10
-            modifier = Modifier.padding(16.dp)
+            steps = 9 // 10 - 1 = 9 steps for values 1 to 10
         )
         Text(text = sliderLabels[sliderPosition.roundToInt()])
     }
@@ -151,30 +177,43 @@ fun AlertDialogExample(
         }
     )
 }
-@Composable
-fun HealthView(onNavigateToTimerView : () -> Unit) {
-    var sleepRating by remember { mutableStateOf(5f) }
-    var painRating by remember { mutableStateOf(5f) }
-    var showDialog by remember { mutableStateOf(false) }
-    Column {
-       ExpandableCard("Sleep Rating") { value -> sleepRating = value.toFloat() }
-        ExpandableCard("Mood Rating") { value -> println("Mood rating: $value") }
 
-        MyButton(onClick = { showDialog = true })
-        if(showDialog) {
+@Composable
+fun HealthView(onNavigateToTimerView: () -> Unit) {
+    val viewModel: HealthViewModel = viewModel()
+
+    Column {
+
+        DescriptionCard()
+        // Sleep Rating Card
+        ExpandableCard("Sleep Rating") { value ->
+            viewModel.updateSleepRating(value)
+        }
+
+        // Mood Rating Card
+        ExpandableCard("Mood Rating") { value ->
+            viewModel.updateMoodRating(value)
+        }
+
+        Button(onClick = { viewModel.saveRating() }) {
+            Text("Save Ratings")
+        }
+
+        // Check for dialog condition
+        if (viewModel.showDialog) {
             AlertDialogExample(
-                onDismissRequest = { showDialog = false },
+                onDismissRequest = { viewModel.showDialog = false },
                 onConfirmation = {
                     println("Navigating to TimerView")
-                    onNavigateToTimerView(); showDialog = false },
+                    onNavigateToTimerView()
+                    viewModel.showDialog = false
+                },
                 dialogTitle = "Meditation Request",
-                dialogText = "Based on the information we suggest to start a meditation session: ${sleepRating.toInt()} sleep rating and ${painRating.toInt()} pain rating"
+                dialogText = "Based on the information we suggest to start a meditation session."
             )
         }
     }
 }
-
-
 @Composable
 fun HealthViewScreen() {
     var currentScreen by remember { mutableStateOf("HealthView") }
