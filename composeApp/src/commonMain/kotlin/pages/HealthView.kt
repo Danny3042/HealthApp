@@ -81,7 +81,7 @@ fun SliderExample(currentValue: String, onSave : (String) -> Unit) {
         if (sliderLabels.contains(currentValue)) sliderLabels.indexOf(currentValue).toFloat() else 0f
     )}
     Column {
-        Text("1 - Best, 10 - Worst", style = MaterialTheme.typography.caption)
+        Text("1 - Worst, 10 - Best", style = MaterialTheme.typography.caption)
         Slider(
             value = sliderPosition,
             onValueChange = { sliderPosition = it },
@@ -112,7 +112,7 @@ fun MyButton(onClick: () -> Unit) {
                 onClick = onClick,
 
                 ) {
-                Text("Click Me", color = MaterialTheme.colors.onPrimary)
+                Text("Meditation", color = MaterialTheme.colors.onPrimary)
             }
         }
     }
@@ -158,7 +158,7 @@ fun HealthView(onNavigateToTimerView : () -> Unit) {
     var showDialog by remember { mutableStateOf(false) }
     Column {
        ExpandableCard("Sleep Rating") { value -> sleepRating = value.toFloat() }
-         ExpandableCard("Pain Rating") { value -> painRating = value.toFloat() }
+        ExpandableCard("Mood Rating") { value -> println("Mood rating: $value") }
 
         MyButton(onClick = { showDialog = true })
         if(showDialog) {
