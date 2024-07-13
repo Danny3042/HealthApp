@@ -30,13 +30,13 @@ class HealthViewModel : ViewModel() {
     }
 
     private fun updateDialogVisibility() {
-        val average = (sleepRating + moodRating) / 2
-        showDialog = average < 3f // Show dialog if average rating is less than 3
+        //val average = (sleepRating + moodRating) / 2
+        //showDialog = average < 3f // Show dialog if average rating is less than 3
     }
 
     fun updateSleepRating(newRating: Float) {
-        sleepRating = newRating
-        updateDialogVisibility()
+        //sleepRating = newRating
+        // updateDialogVisibility()
     }
 
     fun updateMoodRating(newRating: Float) {
@@ -44,8 +44,15 @@ class HealthViewModel : ViewModel() {
         updateDialogVisibility()
     }
 
-    fun saveRating() {
-        println("Saving ratings : Sleep = $sleepRating, Mood = $moodRating")
+
+    fun saveRating(newRating: Float) {
+        newRating.takeIf { it in 0f..5f }?.let {
+            when (currentRatings.dayOfWeek) {
+                0 -> sleepRating = it
+                1 -> moodRating = it
+            }
+        }
+
     }
 }
 

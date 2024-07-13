@@ -1,4 +1,4 @@
-
+package pages
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -19,7 +18,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import components.CalendarDataSource
 import components.Content
 import components.Event
@@ -28,9 +26,7 @@ import components.Header
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
-import model.HealthViewModel
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) {
    var calendarUiModel by remember { mutableStateOf(dataSource.getData(lastSelectedDate = dataSource.today)) }
@@ -109,16 +105,12 @@ fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) 
 
 @Composable
 fun SchedulePage(healthViewComposable : @Composable () -> Unit) {
-   val viewModel: HealthViewModel = viewModel()
-   var selectedDay by remember { mutableStateOf(0) }
    val dataSource = CalendarDataSource()
 
    Column {
       ScheduleView(dataSource = dataSource)
 
-      healthViewComposable()
+        healthViewComposable()
 
-      // This is a placeholder for your logic to display cards based on the selected day
-      println("Displaying cards for day: $selectedDay")
    }
 }

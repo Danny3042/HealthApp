@@ -195,6 +195,10 @@ fun HealthView(onNavigateToTimerView: () -> Unit) {
             viewModel.updateMoodRating(value)
         }
 
+//        Button(onClick = { viewModel.showDialog = true }) {
+//            Text("Check Meditation")
+//        }
+
 
 
         // Check for dialog condition
