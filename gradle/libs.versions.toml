@@ -7,17 +7,17 @@ androidx-activityCompose = "1.9.0"
 androidx-appcompat = "1.7.0"
 androidx-constraintlayout = "2.1.4"
 androidx-core-ktx = "1.13.1"
-androidx-espresso-core = "3.5.1"
+androidx-espresso-core =  "3.6.1"
 androidx-material = "1.12.0"
-androidx-test-junit = "1.1.5"
+androidx-test-junit = "1.2.1"
 compose = "1.6.8"
-compose-plugin = "1.6.10"
+compose-plugin = "1.6.11"
 firebaseAuth = "1.12.0"
 jetbrainsNavigationCompose = "2.7.7"
 junit = "4.13.2"
 kotlin = "2.0.0"
 ktor = "2.3.10"
-navigationComposeVersion = "2.7.0-alpha03"
+navigationComposeVersion = "2.7.0-alpha07"
 sqlDelight = "2.0.2"
 firebaseCommonKtx = "21.0.0"
 gservices = "4.4.2"
@@ -27,6 +27,8 @@ firebaseAnalytics = "22.0.1"
 playServicesMeasurementApi = "22.0.0"
 coreI18n = "1.0.0-alpha01"
 kotlinxSerializationJson = "1.6.1"
+firebaseCrashlytics = "19.0.3"
+googleFirebaseCrashlytics = "3.0.2"
 
 
 
@@ -63,6 +65,7 @@ firebase-analytics = { module = "com.google.firebase:firebase-analytics-ktx", ve
 play-services-measurement-api = { group = "com.google.android.gms", name = "play-services-measurement-api", version.ref = "playServicesMeasurementApi" }
 androidx-core-i18n = { group = "androidx.core", name = "core-i18n", version.ref = "coreI18n" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics", version.ref = "firebaseCrashlytics" }
 
 
 
@@ -75,3 +78,4 @@ sqlDelight = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
 googleServices = { id = "com.google.gms.google-services", version.ref = "gservices" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+google-firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "googleFirebaseCrashlytics" }

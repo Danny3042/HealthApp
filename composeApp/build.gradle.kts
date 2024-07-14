@@ -6,7 +6,8 @@ plugins {
     alias(libs.plugins.sqlDelight)
     alias(libs.plugins.googleServices)
     alias(libs.plugins.kotlinSerialization)
-    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin") version "2.0.0"
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin") version "2.0.1"
+    alias(libs.plugins.google.firebase.crashlytics)
 
 }
 
@@ -44,6 +45,7 @@ kotlin {
             implementation("com.google.firebase:firebase-appcheck-playintegrity")
             implementation("com.google.android.play:integrity:1.3.0")
             implementation("com.google.accompanist:accompanist-drawablepainter:0.34.0")
+            implementation("com.google.firebase:firebase-crashlytics")
 
 
 
@@ -80,6 +82,9 @@ kotlin {
             implementation("io.ktor:ktor-client-logging:2.3.10")
             implementation("com.google.ai.client.generativeai:generativeai:0.8.0")
             implementation("com.mikepenz:multiplatform-markdown-renderer:0.10.0")
+            implementation("io.github.mirzemehdi:kmpauth-google:2.0.0") //Google One Tap Sign-In
+            implementation("io.github.mirzemehdi:kmpauth-firebase:2.0.0") //Integrated Authentications with Firebase
+            implementation("io.github.mirzemehdi:kmpauth-uihelper:2.0.0") //UiHelper SignIn buttons (AppleSignIn, GoogleSignInButton)
 
 
         }
@@ -129,4 +134,5 @@ android {
 dependencies {
     implementation(libs.firebase.common.ktx)
     implementation(libs.play.services.measurement.api)
+    implementation(libs.firebase.crashlytics)
 }

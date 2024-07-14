@@ -1,7 +1,7 @@
 package tabs
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.MonitorHeart
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
@@ -14,7 +14,7 @@ object ScheduleTab : Tab {
     override val options: TabOptions
         @Composable
         get() {
-            val icon = rememberVectorPainter(Icons.Default.CalendarMonth)
+            val icon = rememberVectorPainter(Icons.Default.MonitorHeart)
 
             return remember {
                 TabOptions(
