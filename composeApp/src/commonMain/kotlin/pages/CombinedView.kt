@@ -9,6 +9,6 @@ import androidx.compose.ui.Modifier
 @Composable
 fun CombinedView() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-       SchedulePage(healthViewComposable = { HealthViewScreen() })
+        HealthViewScreen()
     }
 }

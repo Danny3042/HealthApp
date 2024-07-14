@@ -31,8 +31,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import model.HealthViewModel
+import components.CalendarDataSource
+import components.ScheduleView
+import model.HealthStateHolder
 import kotlin.math.roundToInt
 
 @Composable
@@ -180,35 +181,23 @@ fun AlertDialogExample(
 
 @Composable
 fun HealthView(onNavigateToTimerView: () -> Unit) {
-    val viewModel: HealthViewModel = viewModel()
+    val healthStateHolder = remember { HealthStateHolder() }
 
     Column {
-
         DescriptionCard()
-        // Sleep Rating Card
         ExpandableCard("Sleep Rating") { value ->
-            viewModel.updateSleepRating(value)
+            healthStateHolder.updateSleepRating(value)
         }
-
-        // Mood Rating Card
         ExpandableCard("Mood Rating") { value ->
-            viewModel.updateMoodRating(value)
+            healthStateHolder.updateMoodRating(value)
         }
-
-//        Button(onClick = { viewModel.showDialog = true }) {
-//            Text("Check Meditation")
-//        }
-
-
-
-        // Check for dialog condition
-        if (viewModel.showDialog) {
+        if (healthStateHolder.showDialog) {
             AlertDialogExample(
-                onDismissRequest = { viewModel.showDialog = false },
+                onDismissRequest = { healthStateHolder.showDialog = false },
                 onConfirmation = {
                     println("Navigating to TimerView")
                     onNavigateToTimerView()
-                    viewModel.showDialog = false
+                    healthStateHolder.showDialog = false
                 },
                 dialogTitle = "Meditation Request",
                 dialogText = "Based on the information we suggest to start a meditation session."
@@ -217,10 +206,16 @@ fun HealthView(onNavigateToTimerView: () -> Unit) {
     }
 }
 @Composable
-fun HealthViewScreen() {
-    var currentScreen by remember { mutableStateOf("HealthView") }
-    when (currentScreen) {
-        "HealthView" -> HealthView { currentScreen = "TimerView" }
-        "TimerView" -> TimerScreenContent(onBack = { currentScreen = "HealthView" })
+    fun HealthViewScreen() {
+        val dataSource = CalendarDataSource()
+
+        Column {
+            ScheduleView(dataSource = dataSource)
+
+        }
+        var currentScreen by remember { mutableStateOf("HealthView") }
+        when (currentScreen) {
+            "HealthView" -> HealthView { currentScreen = "TimerView" }
+            "TimerView" -> TimerScreenContent(onBack = { currentScreen = "HealthView" })
+        }
     }
-}
