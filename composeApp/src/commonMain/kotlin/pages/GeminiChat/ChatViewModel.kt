@@ -9,7 +9,6 @@ import model.Message
 import model.Sender
 import model.Status
 import repository.GeminiRepository
-import repository.GeminiRepositoryImpl
 
 class ChatViewModel : ViewModel() {
 
