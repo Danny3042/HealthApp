@@ -7,10 +7,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.TabRowDefaults.Divider
-import androidx.compose.material.Text
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
@@ -41,7 +42,7 @@ actual fun HealthDataView(healthKitService: HealthKitService) {
                 HealthDataItem(label = "Exercise Duration (minutes)", value = "${data.exerciseDurationMinutes ?: 0}", duration = "Today")
                 HealthDataItem(label = "Distance (meters)", value = roundToThreeSigFigs((data.exerciseDurationMinutes ?: 0).toDouble()), duration = "Today")
             } ?: run {
-                Text(text = "No health data available ", color = MaterialTheme.colors.onSurface)
+                Text(text = "No health data available", color = MaterialTheme.colorScheme.onSurface)
             }
         }
     }
@@ -64,17 +65,18 @@ fun roundToThreeSigFigs(number: Double): String {
 @Composable
 fun HealthDataItem(label: String, value: String, duration: String) {
     val isDarkTheme = isSystemInDarkTheme()
-    val backgroundColor = if (isDarkTheme) Color.DarkGray else Color.White
-    val textColor = if (isDarkTheme) Color.White else Color.Black
-    val secondaryTextColor = if (isDarkTheme) Color.LightGray else Color.Gray
+    val colorScheme = MaterialTheme.colorScheme
+    val backgroundColor = if (isDarkTheme) Color.DarkGray else colorScheme.background
+    val textColor = if (isDarkTheme) Color.White else colorScheme.onBackground
+    val secondaryTextColor = if (isDarkTheme) Color.LightGray else colorScheme.onSurfaceVariant
 
     Card(
         modifier = Modifier
-            .fillMaxWidth() // Makes the card take up the full width of its parent
+            .fillMaxWidth()
             .padding(vertical = 8.dp, horizontal = 4.dp),
-        elevation = 5.dp,
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         shape = RoundedCornerShape(6.dp),
-        backgroundColor = backgroundColor
+        colors = CardDefaults.cardColors(containerColor = backgroundColor)
     ) {
         Column(
             modifier = Modifier

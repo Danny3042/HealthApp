@@ -38,7 +38,6 @@ fun App() {
             composable(HeroScreen) { HeroScreen(navController) }
             composable("profile") { ProfileTab(navController).Content() }
             composable(AboutPageScreen) { AboutPage(navController) }
-            composable(ChatScreen) { ChatScreen() }
         }
     }
 }
