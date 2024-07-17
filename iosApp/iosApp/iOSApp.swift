@@ -16,7 +16,7 @@ struct iOSApp: App {
             ContentView()
                 .onOpenURL { url in
                 GIDSignIn.sharedInstance.handle(url)
-                    
+                    UIApplication.shared.endEditing()
             }
 		}
 	}
@@ -45,5 +45,10 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         
         // if not handled by this app return false
         return false
+    }
+}
+extension UIApplication {
+    func endEditing() {
+        sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }

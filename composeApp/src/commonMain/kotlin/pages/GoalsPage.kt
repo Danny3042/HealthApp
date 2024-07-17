@@ -8,14 +8,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -23,8 +23,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -43,14 +43,15 @@ data class Goals(val stepsGoal: Int, val exerciseGoal: Int)
 
 @Composable
 fun GoalsPage(viewModel: GoalsViewModel) {
-    var stepsGoal by remember { mutableStateOf("") }
-    var exerciseGoal by remember { mutableStateOf("") }
+    var stepsGoal by remember { mutableStateOf(0) }
+    var exerciseGoal by remember { mutableStateOf(0) }
     val currentGoals by viewModel.goals.collectAsState()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+        .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(
@@ -58,20 +59,18 @@ fun GoalsPage(viewModel: GoalsViewModel) {
             style = MaterialTheme.typography.headlineMedium
         )
 
-        OutlinedTextField(
+        Stepper(
+            title = "Steps Goal:",
             value = stepsGoal,
-            onValueChange = { stepsGoal = it },
-            label = { Text("Daily Steps Goal") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            modifier = Modifier.fillMaxWidth()
+            onIncrement = { stepsGoal++ },
+            onDecrement = { if (stepsGoal > 0) stepsGoal-- }
         )
 
-        OutlinedTextField(
+        Stepper(
+            title = "Exercise Goal (minutes):",
             value = exerciseGoal,
-            onValueChange = { exerciseGoal = it },
-            label = { Text("Daily Exercise Goal (minutes)") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            modifier = Modifier.fillMaxWidth()
+            onIncrement = { exerciseGoal++ },
+            onDecrement = { if (exerciseGoal > 0) exerciseGoal-- }
         )
 
         Row(
@@ -81,8 +80,8 @@ fun GoalsPage(viewModel: GoalsViewModel) {
             Button(
                 onClick = {
                     viewModel.setGoals(0, 0)
-                    stepsGoal = "0"
-                    exerciseGoal = "0"
+                    stepsGoal = 0
+                    exerciseGoal = 0
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
             ) {
@@ -91,8 +90,8 @@ fun GoalsPage(viewModel: GoalsViewModel) {
             Spacer(modifier = Modifier.width(8.dp))
             Button(
                 onClick = {
-                    val steps = stepsGoal.toIntOrNull() ?: 0
-                    val exercise = exerciseGoal.toIntOrNull() ?: 0
+                    val steps = stepsGoal
+                    val exercise = exerciseGoal
                     viewModel.setGoals(steps, exercise)
                 }
             ) {
@@ -128,6 +127,36 @@ fun GoalsCard(label: String, value: String) {
                 text = value,
                 style = MaterialTheme.typography.bodyLarge
             )
+        }
+    }
+}
+
+@Composable
+fun Stepper(title: String, value: Int, onIncrement: () -> Unit, onDecrement: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .padding(8.dp)
+            .fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        shape = RoundedCornerShape(6.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(text = title, style = MaterialTheme.typography.titleMedium)
+            Row(
+                modifier = Modifier.padding(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Button(onClick = onDecrement) {
+                    Text("-")
+                }
+                Text(
+                    text = value.toString(),
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                )
+                Button(onClick = onIncrement) {
+                    Text("+")
+                }
+            }
         }
     }
 }
