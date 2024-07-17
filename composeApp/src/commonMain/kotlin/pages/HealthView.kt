@@ -9,19 +9,20 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.Slider
-import androidx.compose.material.SliderDefaults
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -48,8 +49,11 @@ fun ExpandableCard(title: String, onSave: (Float) -> Unit){
             .padding(16.dp)
             .clickable(
                 onClick = { expanded = !expanded }
-            )
-    ) {
+            ),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+    )
+    ){
         Column {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -57,7 +61,7 @@ fun ExpandableCard(title: String, onSave: (Float) -> Unit){
             ) {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.body1,
+                    style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(8.dp)
                 )
                 IconButton(onClick = { expanded = !expanded }) {
@@ -86,10 +90,11 @@ fun DescriptionCard() {
             .fillMaxWidth()
             .padding(16.dp)
             .clickable { showDescription = !showDescription },
-        shape = RoundedCornerShape(8.dp)
+        shape = RoundedCornerShape(8.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = "Expandable Cards Info", style = MaterialTheme.typography.h6)
+            Text(text = "Expandable Cards Info", style = MaterialTheme.typography.titleMedium)
             if (showDescription) {
                 Text(text = "This app uses expandable cards to rate your sleep and mood. " +
                         "Slide to select a value and hit save to update your ratings.")
@@ -106,7 +111,7 @@ fun SliderExample(currentValue: String, onSave: (Float) -> Unit) {
         if (sliderLabels.contains(currentValue)) sliderLabels.indexOf(currentValue).toFloat() else 0f
     )}
     Column {
-        Text("1 - Worst, 10 - Best", style = MaterialTheme.typography.caption)
+        Text("1 - Worst, 10 - Best", style = MaterialTheme.typography.titleMedium)
         Slider(
             value = sliderPosition,
             onValueChange = {
@@ -115,9 +120,9 @@ fun SliderExample(currentValue: String, onSave: (Float) -> Unit) {
             },
             valueRange = 0f..(sliderLabels.size - 1).toFloat(),
             colors = SliderDefaults.colors(
-                thumbColor = MaterialTheme.colors.secondary,
-                activeTrackColor = MaterialTheme.colors.secondary,
-                inactiveTrackColor = MaterialTheme.colors.onSurface.copy(alpha = 0.5f)
+                thumbColor = MaterialTheme.colorScheme.secondary,
+                activeTrackColor = MaterialTheme.colorScheme.secondary,
+                inactiveTrackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
             ),
             steps = 9 // 10 - 1 = 9 steps for values 1 to 10
         )
@@ -137,9 +142,10 @@ fun MyButton(onClick: () -> Unit) {
         ) {
             Button(
                 onClick = onClick,
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
 
                 ) {
-                Text("Meditation", color = MaterialTheme.colors.onPrimary)
+                Text("Meditation", color = MaterialTheme.colorScheme.onPrimary)
             }
         }
     }
@@ -160,18 +166,18 @@ fun AlertDialogExample(
         confirmButton = {
             Button(
                 onClick = {
-                    println("AlertDialogExample: Confirm button clicked")
+                    println(" AlertDialogExample: Confirm button clicked")
                     onConfirmation()
                     onDismissRequest() },
-                colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary)
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
             ) {
-                Text("Confirm", color = MaterialTheme.colors.onPrimary)
+                Text("Confirm", color = MaterialTheme.colorScheme.onPrimary)
             }
         },
         dismissButton = {
             OutlinedButton(
                 onClick = { onDismissRequest() },
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.secondary)
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.secondary)
             ) {
                 Text("Dismiss")
             }

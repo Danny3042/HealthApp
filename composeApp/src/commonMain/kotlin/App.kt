@@ -13,7 +13,6 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import pages.AboutPage
 import pages.AboutPageScreen
-import pages.HeroScreen
 import pages.HomePage
 import pages.HomePageScreen
 import tabs.ProfileTab

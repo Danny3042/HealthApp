@@ -1,5 +1,6 @@
 package Authentication
 
+import HeroScreen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,18 +12,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
 import androidx.compose.material.ContentAlpha
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -49,7 +51,6 @@ import dev.gitlive.firebase.auth.FirebaseUser
 import dev.gitlive.firebase.auth.auth
 import hideKeyboard
 import kotlinx.coroutines.launch
-import pages.HeroScreen
 import pages.HomePageScreen
 
 const val SignUpScreen = "SignUp"
@@ -58,6 +59,7 @@ const val LoginScreen = "Login"
 class Authentication {
 
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun Login(navController: NavController) {
         val scope = rememberCoroutineScope()
@@ -92,9 +94,9 @@ class Authentication {
             authready = true
         }
 
-        Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.background)) {
+        Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
             if (snackbarMessage.isNotEmpty()) {
-                Text(snackbarMessage, color = MaterialTheme.colors.error)
+                Text(snackbarMessage, color = MaterialTheme.colorScheme.error)
             }
 
             if (firebaseUser != null) {
@@ -110,17 +112,16 @@ class Authentication {
                     TextField(
                         value = userEmail,
                         onValueChange = { userEmail = it },
-                        placeholder = { Text("Email address") },
+                        label = { Text("Email address") },
                         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
                         keyboardActions = KeyboardActions(onDone = {
                            hideKeyboard()
                         }),
                         colors = TextFieldDefaults.textFieldColors(
-                            textColor = MaterialTheme.colors.onSurface,
-                            backgroundColor = MaterialTheme.colors.surface,
-                            cursorColor = MaterialTheme.colors.onSurface,
-                            focusedIndicatorColor = MaterialTheme.colors.primary,
-                            unfocusedIndicatorColor = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
+                            containerColor = MaterialTheme.colorScheme.surface,
+                            cursorColor = MaterialTheme.colorScheme.onSurface,
+                            focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                            unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     )
                     Spacer(modifier = Modifier.height(12.dp))
@@ -140,11 +141,10 @@ class Authentication {
                             }
                         },
                         colors = TextFieldDefaults.textFieldColors(
-                            textColor = MaterialTheme.colors.onSurface,
-                            backgroundColor = MaterialTheme.colors.surface,
-                            cursorColor = MaterialTheme.colors.onSurface,
-                            focusedIndicatorColor = MaterialTheme.colors.primary,
-                            unfocusedIndicatorColor = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
+                            containerColor = MaterialTheme.colorScheme.surface,
+                            cursorColor = MaterialTheme.colorScheme.onSurface,
+                            focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                            unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.disabled)
                         )
                     )
                     Spacer(modifier = Modifier.height(24.dp))
@@ -203,6 +203,7 @@ class Authentication {
 
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun signUp(navController: NavController) {
         val scope = rememberCoroutineScope()
@@ -213,7 +214,7 @@ class Authentication {
         var isPasswordVisible by remember { mutableStateOf(false) }
 
         if (firebaseUser == null) {
-            Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.background)) {
+            Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
@@ -228,11 +229,10 @@ class Authentication {
                             hideKeyboard()
                         }),
                         colors = TextFieldDefaults.textFieldColors(
-                            textColor = MaterialTheme.colors.onSurface,
-                            backgroundColor = MaterialTheme.colors.surface,
-                            cursorColor = MaterialTheme.colors.onSurface,
-                            focusedIndicatorColor = MaterialTheme.colors.primary,
-                            unfocusedIndicatorColor = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
+                            containerColor = MaterialTheme.colorScheme.surface,
+                            cursorColor = MaterialTheme.colorScheme.onSurface,
+                            focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                            unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.disabled)
                         )
                     )
                     Spacer(modifier = Modifier.height(12.dp))
@@ -252,11 +252,10 @@ class Authentication {
                             }
                         },
                         colors = TextFieldDefaults.textFieldColors(
-                            textColor = MaterialTheme.colors.onSurface,
-                            backgroundColor = MaterialTheme.colors.surface,
-                            cursorColor = MaterialTheme.colors.onSurface,
-                            focusedIndicatorColor = MaterialTheme.colors.primary,
-                            unfocusedIndicatorColor = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
+                            containerColor = MaterialTheme.colorScheme.surface,
+                            cursorColor = MaterialTheme.colorScheme.onSurface,
+                            focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                            unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.disabled)
                         )
                     )
                     Spacer(modifier = Modifier.height(24.dp))

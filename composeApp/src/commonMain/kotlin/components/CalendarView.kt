@@ -16,24 +16,25 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Button
-import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Today
 import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -184,6 +185,7 @@ fun EventInputDialog(
         }
     )
 }
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) {
@@ -245,14 +247,14 @@ fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) 
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
                             "Event: ${event.title}",
-                            style = MaterialTheme.typography.body1,
-                            color = MaterialTheme.colors.onSurface
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             "Date: ${event.date}",
-                            style = MaterialTheme.typography.body2,
-                            color = MaterialTheme.colors.onSurface
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }
@@ -278,7 +280,7 @@ fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) 
             }
         },
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-        sheetBackgroundColor = MaterialTheme.colors.surface,
+        sheetBackgroundColor = MaterialTheme.colorScheme.surface,
         scrimColor = Color.Black.copy(alpha = 0.6f),
     ) {
 
@@ -307,11 +309,13 @@ fun ContentItem(
         modifier = Modifier
             .padding(vertical = 4.dp, horizontal = 4.dp)
             .clickable { onClickListener(date) },
-        backgroundColor = if (date.isSelected) {
-            MaterialTheme.colors.primary
-        } else {
-            MaterialTheme.colors.secondary
-        }
+        colors = CardDefaults.cardColors(
+            containerColor = if (date.isSelected) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.secondary
+            }
+        )
     ) {
         Column(
             modifier = Modifier
@@ -322,11 +326,13 @@ fun ContentItem(
             for (event in events) {
                 Card(
                     modifier = Modifier.padding(4.dp),
-                    backgroundColor = MaterialTheme.colors.secondary
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.secondary
+                    )
                 ) {
                     Text(
                         text = event.title,
-                        style = MaterialTheme.typography.body2,
+                        style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.padding(8.dp)
                     )
                 }
@@ -334,12 +340,12 @@ fun ContentItem(
             Text(
                 text = date.day,
                 modifier = Modifier.align(Alignment.CenterHorizontally),
-                style = MaterialTheme.typography.body2
+                style = MaterialTheme.typography.bodyMedium
             )
             Text(
                 text = date.date.dayOfMonth.toString(),
                 modifier = Modifier.align(Alignment.CenterHorizontally),
-                style = MaterialTheme.typography.body1,
+                style = MaterialTheme.typography.bodySmall,
             )
         }
     }
