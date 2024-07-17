@@ -19,7 +19,7 @@ class ProfileTab(private val navController: NavController) : Tab {
 
             return remember {
                 TabOptions(
-                    index = 3u,
+                    index = 4u,
                     title = "Profile",
                     icon = icon
                 )
