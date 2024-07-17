@@ -133,7 +133,7 @@ actual fun HealthConnectScreen() {
                             .fillMaxSize()
                             .align(Alignment.Center),
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                        verticalArrangement = Arrangement.Top
                     ) {
 
                         DataItem(label = "Steps", value = steps, duration = "Today")
@@ -186,7 +186,7 @@ fun DataItem(
 ) {
     Card(
         modifier = modifier
-            .padding(vertical = 8.dp, horizontal = 4.dp),
+            .padding(top = 48.dp, bottom = 8.dp, start = 4.dp, end = 4.dp),
         shape = RoundedCornerShape(6.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant

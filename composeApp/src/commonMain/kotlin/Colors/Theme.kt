@@ -1,8 +1,8 @@
 package Colors
 
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 
-val LightColors = lightColors()
+val LightColors = lightColorScheme()
 
-val DarkColors = darkColors()
+val DarkColors = darkColorScheme()
