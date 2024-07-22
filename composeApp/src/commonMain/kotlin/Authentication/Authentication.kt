@@ -115,7 +115,7 @@ class Authentication {
                         label = { Text("Email address") },
                         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
                         keyboardActions = KeyboardActions(onDone = {
-                           hideKeyboard()
+                            hideKeyboard()
                         }),
                         colors = TextFieldDefaults.textFieldColors(
                             containerColor = MaterialTheme.colorScheme.surface,
