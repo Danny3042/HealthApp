@@ -1,30 +1,34 @@
 [versions]
-agp = "8.4.1"
+agp = "8.5.1"
 android-compileSdk = "34"
 android-minSdk = "24"
 android-targetSdk = "34"
 androidx-activityCompose = "1.9.0"
-androidx-appcompat = "1.6.1"
+androidx-appcompat = "1.7.0"
 androidx-constraintlayout = "2.1.4"
-androidx-core-ktx = "1.13.0"
-androidx-espresso-core = "3.5.1"
-androidx-material = "1.11.0"
-androidx-test-junit = "1.1.5"
-compose = "1.6.6"
-compose-plugin = "1.6.2"
+androidx-core-ktx = "1.13.1"
+androidx-espresso-core =  "3.6.1"
+androidx-material = "1.12.0"
+androidx-test-junit = "1.2.1"
+compose = "1.6.8"
+compose-plugin = "1.6.11"
 firebaseAuth = "1.12.0"
 jetbrainsNavigationCompose = "2.7.7"
 junit = "4.13.2"
-kotlin = "1.9.23"
+kotlin = "2.0.0"
 ktor = "2.3.10"
-navigationComposeVersion = "2.7.0-alpha03"
+navigationComposeVersion = "2.7.0-alpha07"
 sqlDelight = "2.0.2"
 firebaseCommonKtx = "21.0.0"
-gservices = "4.4.1"
+gservices = "4.4.2"
 navigationCompose = "2.7.7"
 voyager = "1.0.0"
-firebaseAnalytics = "22.0.0"
+firebaseAnalytics = "22.0.1"
 playServicesMeasurementApi = "22.0.0"
+coreI18n = "1.0.0-alpha01"
+kotlinxSerializationJson = "1.6.1"
+firebaseCrashlytics = "19.0.3"
+googleFirebaseCrashlytics = "3.0.2"
 
 
 
@@ -59,7 +63,9 @@ navigation-compose = { module = "androidx.navigation:navigation-compose", versio
 voyager-tabNavigator = { module = "cafe.adriel.voyager:voyager-tab-navigator", version.ref = "voyager" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics-ktx", version.ref = "firebaseAnalytics" }
 play-services-measurement-api = { group = "com.google.android.gms", name = "play-services-measurement-api", version.ref = "playServicesMeasurementApi" }
-
+androidx-core-i18n = { group = "androidx.core", name = "core-i18n", version.ref = "coreI18n" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics", version.ref = "firebaseCrashlytics" }
 
 
 
@@ -70,3 +76,6 @@ jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 sqlDelight = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
 googleServices = { id = "com.google.gms.google-services", version.ref = "gservices" }
+kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+google-firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "googleFirebaseCrashlytics" }

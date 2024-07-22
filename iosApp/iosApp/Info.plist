@@ -4,6 +4,26 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>GIDClientID</key>
+	<string>991501394909-thu9k5dmtqr80p5gnk79e9mh8g6u3d2k.apps.googleusercontent.com</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>We will sync your data with the Apple Health app to give you better insights</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>We will sync your data with the Apple Health app to give you better insights</string>
+	<key>NSMotionUsageDescription</key>
+	<string>HealthCompose requires access to motion and fitness activity for tracking purposes.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>HealthCompose does not access your location.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>HealthCompose does not require access to location services to provide location-based features when the app is in use.</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>HealthCompose does not use microphone access.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>HealthCompose does not use the camera.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>The app does not need speech recognition access.</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -38,6 +58,17 @@
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>GIDServerClientID</key>
+	<string>991501394909-ij12drqd040b9766t2t9s5d0itjs46h3.apps.googleusercontent.com</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.991501394909-thu9k5dmtqr80p5gnk79e9mh8g6u3d2k</string>
+			</array>
+		</dict>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>

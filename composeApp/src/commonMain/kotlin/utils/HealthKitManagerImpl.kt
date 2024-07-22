@@ -1,0 +1,26 @@
+package utils
+
+import kotlinx.coroutines.flow.Flow
+import kotlinx.datetime.Instant
+
+
+expect interface HealthKitService {
+    fun requestAuthorization()
+    fun readData(): Flow<HealthData>
+}
+
+data class HealthData(
+    val timestamp: Instant,
+    val stepCount: Int? = null,
+    val sleepDurationMinutes: Int? = null,
+    val exerciseDurationMinutes: Int? = null,
+    val distanceMeters: Double? = null
+) {
+    fun toMap(): Map<String, Any?> = mapOf(
+        "timestamp" to timestamp.toString(),
+        "stepCount" to stepCount,
+        "sleepDurationMinutes" to sleepDurationMinutes,
+        "exerciseDurationMinutes" to exerciseDurationMinutes,
+        "distanceMeters" to distanceMeters
+    )
+}

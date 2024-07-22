@@ -2,8 +2,12 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.sqlDelight)
     alias(libs.plugins.googleServices)
+    alias(libs.plugins.kotlinSerialization)
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin") version "2.0.1"
+    alias(libs.plugins.google.firebase.crashlytics)
 
 }
 
@@ -36,6 +40,14 @@ kotlin {
             implementation(libs.ktor.client.okhttp)
             implementation(libs.sqldelight.androidDriver)
             implementation ("com.google.firebase:firebase-analytics-ktx:22.0.0")
+            implementation ("androidx.health.connect:connect-client:1.1.0-alpha07")
+            implementation("androidx.appcompat:appcompat:1.7.0")
+            implementation("com.google.firebase:firebase-appcheck-playintegrity")
+            implementation("com.google.android.play:integrity:1.3.0")
+            implementation("com.google.accompanist:accompanist-drawablepainter:0.34.0")
+            implementation("com.google.firebase:firebase-crashlytics")
+
+
 
 
 
@@ -55,34 +67,38 @@ kotlin {
             // SQLDelight
             implementation(libs.sqldelight.coroutines)
             implementation(libs.sqldelight.primitiveAdapters)
+            // resources
+            implementation(compose.components.resources)
             // Firebase
             implementation(libs.firebase.auth)
-            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.7.0-alpha03")
+            implementation(libs.jetbrains.navigation.compose)
             // voyager TabNav
-            implementation("cafe.adriel.voyager:voyager-tab-navigator:1.0.0")
+            implementation(libs.voyager.tabNavigator)
             // extended icons
             implementation("org.jetbrains.compose.material:material-icons-extended:1.6.2")
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
+            // Health APIs
+            implementation("com.vitoksmile.health-kmp:core:0.0.3")
+            implementation("io.ktor:ktor-client-logging:2.3.10")
+            implementation("com.google.ai.client.generativeai:generativeai:0.8.0")
+            implementation("com.mikepenz:multiplatform-markdown-renderer:0.10.0")
+            implementation("io.github.mirzemehdi:kmpauth-google:2.0.0") //Google One Tap Sign-In
+            implementation("io.github.mirzemehdi:kmpauth-firebase:2.0.0") //Integrated Authentications with Firebase
+            implementation("io.github.mirzemehdi:kmpauth-uihelper:2.0.0") //UiHelper SignIn buttons (AppleSignIn, GoogleSignInButton)
+            implementation(compose.material3)
+            implementation("androidx.datastore:datastore-preferences:1.1.1")
+
 
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
             // SQLDelight
             implementation(libs.sqldelight.nativeDriver)
+            implementation("io.ktor:ktor-client-darwin:2.3.10")
         }
     }
 }
 
-sqldelight {
-    databases {
-        //Note: Name of your Database and .sq file should be same
-        create("Database") {
-            packageName.set("com.example.firebaseauthentication")
-        }
-    }
-    // Add this line to avoid library linking issues
-    linkSqlite = true
-}
 
 android {
     namespace = "org.example.project"
@@ -93,8 +109,8 @@ android {
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
     defaultConfig {
-        applicationId = "org.example.project"
-        minSdk = libs.versions.android.minSdk.get().toInt()
+        applicationId = "org.danielramzani.HealthCompose"
+        minSdk = 27
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
@@ -120,5 +136,5 @@ android {
 dependencies {
     implementation(libs.firebase.common.ktx)
     implementation(libs.play.services.measurement.api)
+    implementation(libs.firebase.crashlytics)
 }
-

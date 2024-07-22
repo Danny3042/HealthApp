@@ -9,19 +9,20 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.Slider
-import androidx.compose.material.SliderDefaults
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,11 +32,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.dp
+import components.CalendarDataSource
+import components.ScheduleView
+import model.HealthStateHolder
 import kotlin.math.roundToInt
 
 @Composable
-fun ExpandableCard(title: String, onSave: (String) -> Unit){
+fun ExpandableCard(title: String, onSave: (Float) -> Unit){
     var expanded by remember { mutableStateOf(false) }
+    var sliderValue by remember { mutableStateOf("") }
 
     Card(
         shape = RoundedCornerShape(8.dp),
@@ -44,8 +49,11 @@ fun ExpandableCard(title: String, onSave: (String) -> Unit){
             .padding(16.dp)
             .clickable(
                 onClick = { expanded = !expanded }
-            )
-    ) {
+            ),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+    )
+    ){
         Column {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -53,7 +61,7 @@ fun ExpandableCard(title: String, onSave: (String) -> Unit){
             ) {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.body1,
+                    style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(8.dp)
                 )
                 IconButton(onClick = { expanded = !expanded }) {
@@ -65,28 +73,58 @@ fun ExpandableCard(title: String, onSave: (String) -> Unit){
                 }
             }
             if (expanded) {
-                SliderExample(onSave = onSave)
+                SliderExample(sliderValue, onSave = { value -> sliderValue = value.toString(); onSave(value) })
+            } else {
+                Text(text = sliderValue)
             }
         }
     }
 }
 
 @Composable
-fun SliderExample(onSave : (String) -> Unit) {
-    val sliderLabels = listOf("Low", "Medium", "High")
-    var sliderPosition by remember { mutableStateOf(0f) }
+fun DescriptionCard() {
+    var showDescription by remember { mutableStateOf(false) }
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .clickable { showDescription = !showDescription },
+        shape = RoundedCornerShape(8.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(text = "Expandable Cards Info", style = MaterialTheme.typography.titleMedium)
+            if (showDescription) {
+                Text(text = "This app uses expandable cards to rate your sleep and mood. " +
+                        "Slide to select a value and hit save to update your ratings.")
+            }
+        }
+    }
+}
+
+
+@Composable
+fun SliderExample(currentValue: String, onSave: (Float) -> Unit) {
+    val sliderLabels = (1..10).map { it.toString() } // Labels from 1 to 10
+    var sliderPosition by remember { mutableStateOf(
+        if (sliderLabels.contains(currentValue)) sliderLabels.indexOf(currentValue).toFloat() else 0f
+    )}
     Column {
+        Text("1 - Worst, 10 - Best", style = MaterialTheme.typography.titleMedium)
         Slider(
             value = sliderPosition,
-            onValueChange = { sliderPosition = it },
+            onValueChange = {
+                sliderPosition = it
+                onSave(sliderLabels[sliderPosition.roundToInt()].toFloat()) // Convert position to value and pass it
+            },
             valueRange = 0f..(sliderLabels.size - 1).toFloat(),
             colors = SliderDefaults.colors(
-                thumbColor = MaterialTheme.colors.secondary,
-                activeTrackColor = MaterialTheme.colors.secondary,
-                inactiveTrackColor = MaterialTheme.colors.onSurface.copy(alpha = 0.5f)
+                thumbColor = MaterialTheme.colorScheme.secondary,
+                activeTrackColor = MaterialTheme.colorScheme.secondary,
+                inactiveTrackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
             ),
-            steps = 3,
-            modifier = Modifier.padding(16.dp)
+            steps = 9 // 10 - 1 = 9 steps for values 1 to 10
         )
         Text(text = sliderLabels[sliderPosition.roundToInt()])
     }
@@ -104,9 +142,10 @@ fun MyButton(onClick: () -> Unit) {
         ) {
             Button(
                 onClick = onClick,
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
 
                 ) {
-                Text("Click Me", color = MaterialTheme.colors.onPrimary)
+                Text("Meditation", color = MaterialTheme.colorScheme.onPrimary)
             }
         }
     }
@@ -127,64 +166,62 @@ fun AlertDialogExample(
         confirmButton = {
             Button(
                 onClick = {
-                    println("AlertDialogExample: Confirm button clicked")
+                    println(" AlertDialogExample: Confirm button clicked")
                     onConfirmation()
                     onDismissRequest() },
-                colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary)
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
             ) {
-                Text("Confirm", color = MaterialTheme.colors.onPrimary)
+                Text("Confirm", color = MaterialTheme.colorScheme.onPrimary)
             }
         },
         dismissButton = {
             OutlinedButton(
                 onClick = { onDismissRequest() },
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.secondary)
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.secondary)
             ) {
-                Text("Dismiss", color = MaterialTheme.colors.onPrimary)
+                Text("Dismiss")
             }
         }
     )
 }
+
 @Composable
-fun HealthView(onNavigateToTimerView : () -> Unit) {
-    var savedValue by remember { mutableStateOf("") }
-    var showDialog by remember { mutableStateOf(false) }
-    var selectedOption by remember { mutableStateOf(0) }
+fun HealthView(onNavigateToTimerView: () -> Unit) {
+    val healthStateHolder = remember { HealthStateHolder() }
 
-    // Card titles for each option
-    val cardTitles = listOf(
-        listOf("How are you feeling?", "How well did you Sleep?", "Are you experiencing any discomfort?"),
-        listOf("Are you feeling academic pressure", "What can the supervisor do to help?")
-    )
-
-    Column(modifier = Modifier.padding(top = 300.dp)) {
-
-
-        // Display the cards for the selected option
-        cardTitles[selectedOption].forEach { title ->
-            ExpandableCard(title = title, onSave = { value -> savedValue = value })
+    Column {
+        DescriptionCard()
+        ExpandableCard("Sleep Rating") { value ->
+            healthStateHolder.updateSleepRating(value)
         }
-
-        MyButton(onClick = { showDialog = true })
-        if(showDialog) {
+        ExpandableCard("Mood Rating") { value ->
+            healthStateHolder.updateMoodRating(value)
+        }
+        if (healthStateHolder.showDialog) {
             AlertDialogExample(
-                onDismissRequest = { showDialog = false },
+                onDismissRequest = { healthStateHolder.showDialog = false },
                 onConfirmation = {
                     println("Navigating to TimerView")
-                    onNavigateToTimerView(); showDialog = false },
+                    onNavigateToTimerView()
+                    healthStateHolder.showDialog = false
+                },
                 dialogTitle = "Meditation Request",
-                dialogText = "Based on the information we suggest to start a meditation session: $savedValue"
+                dialogText = "Based on the information we suggest to start a meditation session."
             )
         }
     }
 }
-
-
 @Composable
-fun HealthViewScreen() {
-    var currentScreen by remember { mutableStateOf("HealthView") }
-    when (currentScreen) {
-        "HealthView" -> HealthView { currentScreen = "TimerView" }
-        "TimerView" -> TimerScreenContent(onBack = { currentScreen = "HealthView" })
+    fun HealthViewScreen() {
+        val dataSource = CalendarDataSource()
+
+        Column {
+            ScheduleView(dataSource = dataSource)
+
+        }
+        var currentScreen by remember { mutableStateOf("HealthView") }
+        when (currentScreen) {
+            "HealthView" -> HealthView { currentScreen = "TimerView" }
+            "TimerView" -> TimerScreenContent(onBack = { currentScreen = "HealthView" })
+        }
     }
-}

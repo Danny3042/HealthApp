@@ -1,22 +1,30 @@
 package pages
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import utils.HealthConnectChecker
+import utils.HealthConnectScreen
+import utils.HealthDataView
+import utils.HealthKitService
+import utils.isAndroid
 
 const val HomePageScreen = "HomePage"
-@Composable
-fun HomePage() {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text("Welcome to the HomePage")
-    }
-}
 
+@Composable
+fun HomePage(healthKitService: HealthKitService) {
+    var isAvailableResult by remember { mutableStateOf(Result.success(false)) }
+    var showSleepScreen by remember { mutableStateOf(false) }
+    var isAuthorizedResult by remember { mutableStateOf<Result<Boolean>?>(null) }
+    var isRevokeSupported by remember { mutableStateOf(false) }
+
+    val healthConnectAvailability = HealthConnectChecker.checkHealthConnectAvailability()
+    if (isAndroid() && isAuthorizedResult?.getOrNull() != true) {
+        HealthConnectScreen()
+    } else {
+        HealthDataView(healthKitService)
+    }
+
+}

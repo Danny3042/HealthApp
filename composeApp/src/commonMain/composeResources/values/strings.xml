@@ -1,0 +1,111 @@
+<resources>
+    <string name="app_name">CardinalKit</string>
+    <string name="web_client_id">108938987400-ea2r1lbtn7elrol9dfo9h88b87u7g2aa.apps.googleusercontent.com</string>
+
+    <!-- Screen Titles -->
+    <string name="tasks_screen_title">Tasks</string>
+    <string name="home_screen_title">Home</string>
+    <string name="profile_screen_title">Profile</string>
+    <string name="contacts_screen_title">Contacts</string>
+    <string name="login_screen_title">Sign In to CardinalKit</string>
+    <string name="review_screen_title">Review</string>
+
+    <!-- Buttons -->
+    <string name="sign_in_button">Sign In</string>
+    <string name="sign_out_button">Sign Out</string>
+    <string name="sign_in_with_email">Sign In With Email</string>
+    <string name="new_user_button">I am a New User</string>
+    <string name="existing_user_button">I am an Existing User</string>
+    <string name="sign_in_with_google_button">Sign In With Google</string>
+    <string name="sign_up_with_google">Sign Up With Google</string>
+    <string name="create_account_button">Create an Account</string>
+    <string name="get_started_button">Get Started</string>
+    <string name="register_button">Register</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="submit">Submit</string>
+    <string name="cancel">Cancel</string>
+    <string name="clear">Clear</string>
+    <string name="agree">Agree</string>
+    <string name="disagree">Disagree</string>
+    <string name="forgot_password_button">Forgot Password?</string>
+    <string name="upload_health_data_button">Upload Health Data</string>
+    <string name="report_issue_button">Report an Issue</string>
+    <string name="support_button">Support</string>
+    <string name="view_consent_button">View Consent Form</string>
+    <string name="resend_email">Resend Email</string>
+
+    <!-- Labels -->
+    <string name="email">Email</string>
+    <string name="email_address">Email Address</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="forgot_password">Forgot Password</string>
+    <string name="choose_your_sign_in_method">Choose your sign in method</string>
+    <string name="user_id">User ID</string>
+    <string name="biodesign">Stanford Byers Center for Biodesign</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="today">Today</string>
+    <string name="todo">To Do</string>
+    <string name="welcome">Welcome</string>
+    <string name="welcome_message">We are glad to see you!</string>
+    <string name="task_summary">Task Summary</string>
+    <string name="task_progress">Task Progress</string>
+    <string name="motivational_message">Keep up the good work!</string>
+    <string name="complete">Complete</string>
+    <string name="done">Done</string>
+    <string name="location">Location</string>
+    <string name="call">Call</string>
+    <string name="sms">SMS</string>
+    <string name="create_a_new_account">Create a New Account</string>
+
+    <!-- Onboarding -->
+    <string name="welcome_title">Welcome to CardinalKit</string>
+    <string name="welcome_description">This is a template that you can customize to build your own clinical or research study app.</string>
+
+    <string name="data_gathering_title">Data Gathering</string>
+    <string name="data_gathering_description">Explain the types of data your app will gather.</string>
+
+    <string name="privacy_title">Privacy</string>
+    <string name="privacy_description">Explain how your app will protect your user\'s privacy.</string>
+
+    <string name="data_use_title">Data Use</string>
+    <string name="data_use_description">Explain how you will use your user\'s data.</string>
+
+    <string name="withdrawing_title">Withdrawing</string>
+    <string name="withdrawing_description">Explain how users can withdraw from your study or program.</string>
+
+    <string name="signature_screen_title">Signature</string>
+    <string name="signature_instructions">Please enter your first and last name, then sign using your finger in the box below.</string>
+    <string name="signature">Signature</string>
+
+    <!-- Login/Register messages -->
+    <string name="reset_password_instructions">Enter your email address and a link will be sent to reset your password.</string>
+    <string name="email_invalid_message">The email you entered is invalid.</string>
+    <string name="reset_password_email_message">An email has been sent to you with instructions to reset your password.</string>
+    <string name="password_complexity_requirements">Your password should contain a minimum of 8 characters with at least 1 uppercase, 1 lowercase, 1 number, and 1 special character.</string>
+
+    <!-- Error messages -->
+    <string name="error_loading_survey_message">Error Loading Survey</string>
+    <string name="task_not_scheduled_today">This task is not scheduled today.</string>
+    <string name="task_already_completed">You have already completed this task.</string>
+
+    <!-- Form validation -->
+    <string name="email_empty">Please enter a valid email address.</string>
+    <string name="password_empty">Please enter a password.</string>
+    <string name="email_and_password_empty">Please enter an email address and password.</string>
+    <string name="required_field_empty">All required fields must be completed.</string>
+    <string name="passwords_unmatched">Passwords must match.</string>
+
+    <!-- Home Screen Cards -->
+    <string name="steps_card_header">Steps</string>
+    <string name="steps_card_total_today">Total Today</string>
+
+    <string name="weight_card_header">Weight</string>
+    <string name="weight_card_7_day_average">7-day-average</string>
+
+    <string name="learn_more_card_header">Customize Your App</string>
+    <string name="learn_more_card_text">This is a template app that you can customize to create your own digital health experience.</string>
+    <string name="learn_more_card_footer">Learn how at cardinalkit.org</string>
+</resources>
