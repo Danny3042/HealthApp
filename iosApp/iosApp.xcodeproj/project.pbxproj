@@ -18,6 +18,12 @@
 		087F31292C431A7A00F6B3B2 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 087F31282C431A7A00F6B3B2 /* GoogleSignIn */; };
 		087F312B2C431A7A00F6B3B2 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 087F312A2C431A7A00F6B3B2 /* GoogleSignInSwift */; };
 		087F312D2C43376A00F6B3B2 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 087F312C2C43376A00F6B3B2 /* FirebaseCrashlytics */; };
+		089B72AB2C0BC07A0045625E /* ResearchKitActiveTask.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08D07E1A2BFA712D00C7C391 /* ResearchKitActiveTask.framework */; };
+		089B72AC2C0BC07A0045625E /* ResearchKitActiveTask.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08D07E1A2BFA712D00C7C391 /* ResearchKitActiveTask.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		089B72AD2C0BC0810045625E /* ResearchKitUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08D07E182BFA712D00C7C391 /* ResearchKitUI.framework */; };
+		089B72AE2C0BC0810045625E /* ResearchKitUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08D07E182BFA712D00C7C391 /* ResearchKitUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		08D07E1B2BFA713900C7C391 /* ResearchKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08D07E142BFA712D00C7C391 /* ResearchKit.framework */; };
+		08D07E1C2BFA713900C7C391 /* ResearchKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08D07E142BFA712D00C7C391 /* ResearchKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152FB032600AC8F00CF470E /* iOSApp.swift */; };
 		7555FF83242A565900829871 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF82242A565900829871 /* ContentView.swift */; };
 /* End PBXBuildFile section */
@@ -53,6 +59,22 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		08D07E1D2BFA713900C7C391 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				089B72AE2C0BC0810045625E /* ResearchKitUI.framework in Embed Frameworks */,
+				08D07E1C2BFA713900C7C391 /* ResearchKit.framework in Embed Frameworks */,
+				089B72AC2C0BC07A0045625E /* ResearchKitActiveTask.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		058557BA273AAA24004C7B11 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -73,9 +95,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				089B72AD2C0BC0810045625E /* ResearchKitUI.framework in Frameworks */,
 				08744AE62BFA76D700BF0FF6 /* CareKit in Frameworks */,
+				08D07E1B2BFA713900C7C391 /* ResearchKit.framework in Frameworks */,
 				087F312B2C431A7A00F6B3B2 /* GoogleSignInSwift in Frameworks */,
 				086786B72BFAB3210004FEBB /* FirebaseAnalytics in Frameworks */,
+				089B72AB2C0BC07A0045625E /* ResearchKitActiveTask.framework in Frameworks */,
 				087F312D2C43376A00F6B3B2 /* FirebaseCrashlytics in Frameworks */,
 				086786B92BFAB3210004FEBB /* FirebaseAuth in Frameworks */,
 				087F31292C431A7A00F6B3B2 /* GoogleSignIn in Frameworks */,
@@ -174,6 +199,7 @@
 				7555FF77242A565900829871 /* Sources */,
 				B92378962B6B1156000C7307 /* Frameworks */,
 				7555FF79242A565900829871 /* Resources */,
+				08D07E1D2BFA713900C7C391 /* Embed Frameworks */,
 				087F312E2C4337CC00F6B3B2 /* ShellScript */,
 			);
 			buildRules = (
