@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.sqlDelight)
     alias(libs.plugins.googleServices)
     alias(libs.plugins.kotlinSerialization)
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin") version "2.0.1"
     alias(libs.plugins.google.firebase.crashlytics)
 
 }
@@ -19,7 +20,7 @@ kotlin {
         }
     }
 
-    
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -30,9 +31,9 @@ kotlin {
             isStatic = true
         }
     }
-    
+
     sourceSets {
-        
+
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
@@ -84,7 +85,8 @@ kotlin {
             implementation("io.github.mirzemehdi:kmpauth-google:2.0.0") //Google One Tap Sign-In
             implementation("io.github.mirzemehdi:kmpauth-firebase:2.0.0") //Integrated Authentications with Firebase
             implementation("io.github.mirzemehdi:kmpauth-uihelper:2.0.0") //UiHelper SignIn buttons (AppleSignIn, GoogleSignInButton)
-            implementation(libs.google.generativeai)
+            implementation(compose.material3)
+            implementation("androidx.datastore:datastore-preferences:1.1.1")
 
 
         }
@@ -135,5 +137,4 @@ dependencies {
     implementation(libs.firebase.common.ktx)
     implementation(libs.play.services.measurement.api)
     implementation(libs.firebase.crashlytics)
-    implementation(libs.google.generativeai)
 }

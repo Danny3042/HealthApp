@@ -1,6 +1,3 @@
-package pages
-
-
 import Authentication.LoginScreen
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -9,13 +6,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.SnackbarHost
-import androidx.compose.material.SnackbarHostState
-import androidx.compose.material.Text
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +28,7 @@ import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.FirebaseAuth
 import dev.gitlive.firebase.auth.auth
 import kotlinx.coroutines.launch
+import pages.AboutPageScreen
 
 @Composable
 fun ProfilePage(navController: NavController) {
@@ -44,7 +43,7 @@ fun ProfilePage(navController: NavController) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Welcome to the Profile Page")
+            Text("Welcome to the Profile Page", style = MaterialTheme.typography.titleLarge)
             Button(onClick = {
                 coroutineScope.launch {
                     auth.signOut()
@@ -62,7 +61,7 @@ fun ProfilePage(navController: NavController) {
             }
             Button(
                 onClick = { showDeleteDialog = true },
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
             ) {
                 Text("Delete Account", color = Color.White)
             }
@@ -85,7 +84,7 @@ fun ProfilePage(navController: NavController) {
                                     }
                                     showDeleteDialog = false
                                 },
-                                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)
+                                colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
                             ) {
                                 Text("Confirm", color = Color.White)
                             }
@@ -106,7 +105,6 @@ fun ProfilePage(navController: NavController) {
         )
     }
 }
-
 
 suspend fun deleteUser(auth: FirebaseAuth, navController: NavController, snackBarHostState: SnackbarHostState) {
     val user = auth.currentUser
