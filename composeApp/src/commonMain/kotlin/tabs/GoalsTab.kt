@@ -9,6 +9,8 @@ import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import pages.GoalsPage
 import pages.GoalsViewModel
+import utils.getGoalsStorageInstance
+import utils.getPlatformContext
 
 object GoalsTab: Tab {
     override val options: TabOptions
@@ -27,6 +29,8 @@ object GoalsTab: Tab {
 
     @Composable
     override fun Content() {
-       GoalsPage(viewModel = GoalsViewModel())
+        val platformContext = getPlatformContext()
+        val goalsStorage = getGoalsStorageInstance(platformContext)
+        GoalsPage(viewModel = GoalsViewModel(goalsStorage))
     }
 }
