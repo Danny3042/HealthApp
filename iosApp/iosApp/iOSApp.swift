@@ -11,13 +11,15 @@ struct iOSApp: App {
         FirebaseApp.configure()
         logInitialEvent()
     }
-	var body: some Scene {
-		WindowGroup {
-            ContentView().onOpenURL { url in
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+                .onOpenURL { url in
                 GIDSignIn.sharedInstance.handle(url)
+                    UIApplication.shared.endEditing()
             }
-		}
-	}
+        }
+    }
     
     func logInitialEvent() {
         // logging app open event
@@ -43,5 +45,10 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         
         // if not handled by this app return false
         return false
+    }
+}
+extension UIApplication {
+    func endEditing() {
+        sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }
