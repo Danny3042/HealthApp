@@ -84,15 +84,15 @@ fun GoalsPage(viewModel: GoalsViewModel) {
         Stepper(
             title = "Steps Goal:",
             value = stepsGoal,
-            onIncrement = { stepsGoal++ },
-            onDecrement = { if (stepsGoal > 0) stepsGoal-- }
+            onIncrement = { stepsGoal += 500 },
+            onDecrement = { if (stepsGoal >= 500) stepsGoal -= 500 }
         )
 
         Stepper(
             title = "Exercise Goal (minutes):",
             value = exerciseGoal,
-            onIncrement = { exerciseGoal++ },
-            onDecrement = { if (exerciseGoal > 0) exerciseGoal-- }
+            onIncrement = { exerciseGoal += 10 },
+            onDecrement = { if (exerciseGoal >= 10) exerciseGoal -= 10 }
         )
 
         Row(
