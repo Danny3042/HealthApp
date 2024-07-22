@@ -12,6 +12,9 @@ import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.appcheck.appCheck
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
 import com.google.firebase.initialize
+import com.mmk.kmpnotifier.notification.NotifierManager
+import com.mmk.kmpnotifier.notification.configuration.NotificationPlatformConfiguration
+import com.mmk.kmpnotifier.permission.permissionUtil
 import utils.appContext
 
 class MainActivity : ComponentActivity() {
@@ -24,6 +27,16 @@ class MainActivity : ComponentActivity() {
         Firebase.initialize(context = this)
         Firebase.appCheck.installAppCheckProviderFactory(
             PlayIntegrityAppCheckProviderFactory.getInstance()
+        )
+
+        val permissionUtil by permissionUtil()
+        permissionUtil.askNotificationPermission()
+
+        NotifierManager.initialize(
+            configuration = NotificationPlatformConfiguration.Android(
+                notificationIconResId = R.drawable.ic_launcher_foreground,
+                showPushNotification = true,
+            )
         )
 
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)

@@ -71,6 +71,7 @@ kotlin {
             implementation(compose.components.resources)
             // Firebase
             implementation(libs.firebase.auth)
+            api("io.github.mirzemehdi:kmpnotifier:1.0.0")
             implementation(libs.jetbrains.navigation.compose)
             // voyager TabNav
             implementation(libs.voyager.tabNavigator)

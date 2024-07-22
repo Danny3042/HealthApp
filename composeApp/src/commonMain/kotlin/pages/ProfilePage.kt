@@ -4,8 +4,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -36,65 +36,80 @@ fun ProfilePage(navController: NavController) {
     val coroutineScope = rememberCoroutineScope()
     var showDeleteDialog by remember { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
+    val user = auth.currentUser
 
     Box(modifier = Modifier.fillMaxSize()) {
-        Column(
+        LazyColumn(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Welcome to the Profile Page", style = MaterialTheme.typography.titleLarge)
-            Button(onClick = {
-                coroutineScope.launch {
-                    auth.signOut()
-                    navController.navigate(LoginScreen)
+            item {
+                if (user != null) {
+                    // Display user information
+                    Text("You are signed in as: ${user.email}", style = MaterialTheme.typography.titleMedium)
+                    // Add more user details here
                 }
-            }) {
-                Text("Sign Out")
             }
-            Button(onClick = {
-                coroutineScope.launch {
-                    navController.navigate(AboutPageScreen)
+            item {
+                Button(onClick = {
+                    coroutineScope.launch {
+                        auth.signOut()
+                        navController.navigate(LoginScreen)
+                    }
+                }) {
+                    Text("Sign Out")
                 }
-            }) {
-                Text("About")
             }
-            Button(
-                onClick = { showDeleteDialog = true },
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
-            ) {
-                Text("Delete Account", color = Color.White)
+            item {
+                Button(onClick = {
+                    coroutineScope.launch {
+                        navController.navigate(AboutPageScreen)
+                    }
+                }) {
+                    Text("About")
+                }
+            }
+            item {
+                Button(
+                    onClick = { showDeleteDialog = true },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+                ) {
+                    Text("Delete Account", color = Color.White)
+                }
             }
 
             if (showDeleteDialog) {
-                AnimatedVisibility(
-                    visible = showDeleteDialog,
-                    enter = fadeIn(),
-                    exit = fadeOut(),
-                ) {
-                    AlertDialog(
-                        onDismissRequest = { showDeleteDialog = false },
-                        title = { Text("Confirm Account Deletion") },
-                        text = { Text("Are you sure you want to delete your account? This action cannot be undone.") },
-                        confirmButton = {
-                            Button(
-                                onClick = {
-                                    coroutineScope.launch {
-                                        deleteUser(auth, navController, snackbarHostState)
-                                    }
-                                    showDeleteDialog = false
-                                },
-                                colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
-                            ) {
-                                Text("Confirm", color = Color.White)
+                item {
+                    AnimatedVisibility(
+                        visible = showDeleteDialog,
+                        enter = fadeIn(),
+                        exit = fadeOut(),
+                    ) {
+                        AlertDialog(
+                            onDismissRequest = { showDeleteDialog = false },
+                            title = { Text("Confirm Account Deletion") },
+                            text = { Text("Are you sure you want to delete your account? This action cannot be undone.") },
+                            confirmButton = {
+                                Button(
+                                    onClick = {
+                                        coroutineScope.launch {
+                                            deleteUser(auth, navController, snackbarHostState)
+                                        }
+                                        showDeleteDialog = false
+                                    },
+                                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+                                ) {
+                                    Text("Confirm", color = Color.White)
+                                }
+                            },
+                            dismissButton = {
+                                OutlinedButton(onClick = { showDeleteDialog = false }) {
+                                    Text("Dismiss")
+                                }
                             }
-                        },
-                        dismissButton = {
-                            OutlinedButton(onClick = { showDeleteDialog = false }) {
-                                Text("Dismiss")
-                            }
-                        }
-                    )
+                        )
+                    }
                 }
             }
         }

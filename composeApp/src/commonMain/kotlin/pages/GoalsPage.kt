@@ -1,11 +1,15 @@
 package pages
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -25,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -59,6 +64,13 @@ class GoalsViewModel(private val goalsStorage: IGoalsStorage) : ViewModel() {
         val newGoals = Goals(stepsGoal, exerciseGoal)
         saveGoals(newGoals)
     }
+
+    fun updateSteps(steps: Int) {
+        viewModelScope.launch {
+            val currentGoals = _goals.value
+            _goals.value = currentGoals.copy(stepsGoal = steps)
+        }
+    }
 }
 
 data class Goals(val stepsGoal: Int, val exerciseGoal: Int)
@@ -68,6 +80,8 @@ fun GoalsPage(viewModel: GoalsViewModel) {
     var stepsGoal by remember { mutableStateOf(0) }
     var exerciseGoal by remember { mutableStateOf(0) }
     val currentGoals by viewModel.goals.collectAsState()
+    val stepsProgress = stepsGoal.takeIf { it > 0 }?.let { currentGoals?.stepsGoal?.toFloat()?.div(it) } ?: 0f
+    val exerciseProgress = exerciseGoal.takeIf { it > 0 }?.let { currentGoals?.exerciseGoal?.toFloat()?.div(it) } ?: 0f
 
     Column(
         modifier = Modifier
@@ -80,6 +94,12 @@ fun GoalsPage(viewModel: GoalsViewModel) {
             text = "Set Your Daily Goals",
             style = MaterialTheme.typography.headlineMedium
         )
+
+        Text("Steps Goal Progress")
+        ProgressBar(progress = stepsProgress, goalValue = stepsGoal, modifier = Modifier.padding(vertical = 4.dp))
+
+        Text("Exercise Goal Progress")
+        ProgressBar(progress = exerciseProgress, goalValue = exerciseGoal, modifier = Modifier.padding(vertical = 4.dp))
 
         Stepper(
             title = "Steps Goal:",
@@ -119,13 +139,6 @@ fun GoalsPage(viewModel: GoalsViewModel) {
             }
         }
 
-        Text(
-            text = "Current Goals:",
-            style = MaterialTheme.typography.titleMedium
-        )
-
-        GoalsCard(label = "Steps:", value = "${currentGoals?.stepsGoal ?: 0}")
-        GoalsCard(label = "Exercise:", value = "${currentGoals?.exerciseGoal ?: 0} minutes")
     }
 }
 
@@ -178,5 +191,26 @@ fun Stepper(title: String, value: Int, onIncrement: () -> Unit, onDecrement: () 
                 }
             }
         }
+    }
+}
+
+@Composable
+fun ProgressBar(progress: Float, goalValue: Int, modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .height(24.dp)
+            .background(color = Color.LightGray, shape = RoundedCornerShape(12.dp))
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth(progress)
+                .background(color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(12.dp))
+        )
+        Text(
+            text = "$goalValue",
+            modifier = Modifier.align(Alignment.CenterEnd).padding(end = 8.dp),
+            color = Color.White
+        )
     }
 }
