@@ -23,21 +23,17 @@ firebaseCommonKtx = "21.0.0"
 gservices = "4.4.2"
 navigationCompose = "2.7.7"
 voyager = "1.0.0"
-buildkonfig = "0.15.1"
-generativeai = "0.5.0-1.0.0-wasm"
 firebaseAnalytics = "22.0.1"
 playServicesMeasurementApi = "22.0.0"
 coreI18n = "1.0.0-alpha01"
 kotlinxSerializationJson = "1.6.1"
 firebaseCrashlytics = "19.0.3"
 googleFirebaseCrashlytics = "3.0.2"
-generativeaiVersion = "0.9.0"
 
 
 
 [libraries]
 firebase-auth = { module = "dev.gitlive:firebase-auth", version.ref = "firebaseAuth" }
-generativeai = { module = "dev.shreyaspatil.generativeai:generativeai-google", version.ref = "generativeai" }
 jetbrains-navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationComposeVersion" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
@@ -70,7 +66,6 @@ play-services-measurement-api = { group = "com.google.android.gms", name = "play
 androidx-core-i18n = { group = "androidx.core", name = "core-i18n", version.ref = "coreI18n" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics", version.ref = "firebaseCrashlytics" }
-google-generativeai = { group = "com.google.ai.client.generativeai", name = "generativeai", version.ref = "generativeaiVersion" }
 
 
 
@@ -84,4 +79,3 @@ googleServices = { id = "com.google.gms.google-services", version.ref = "gservic
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 google-firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "googleFirebaseCrashlytics" }
-buildkonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildkonfig" }
