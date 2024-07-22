@@ -52,7 +52,7 @@ fun ExpandableCard(title: String, onSave: (Float) -> Unit){
             ),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant,
-        )
+    )
     ){
         Column {
             Row(
@@ -144,7 +144,7 @@ fun MyButton(onClick: () -> Unit) {
                 onClick = onClick,
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
 
-            ) {
+                ) {
                 Text("Meditation", color = MaterialTheme.colorScheme.onPrimary)
             }
         }
@@ -212,16 +212,16 @@ fun HealthView(onNavigateToTimerView: () -> Unit) {
     }
 }
 @Composable
-fun HealthViewScreen() {
-    val dataSource = CalendarDataSource()
+    fun HealthViewScreen() {
+        val dataSource = CalendarDataSource()
 
-    Column {
-        ScheduleView(dataSource = dataSource)
+        Column {
+            ScheduleView(dataSource = dataSource)
 
+        }
+        var currentScreen by remember { mutableStateOf("HealthView") }
+        when (currentScreen) {
+            "HealthView" -> HealthView { currentScreen = "TimerView" }
+            "TimerView" -> TimerScreenContent(onBack = { currentScreen = "HealthView" })
+        }
     }
-    var currentScreen by remember { mutableStateOf("HealthView") }
-    when (currentScreen) {
-        "HealthView" -> HealthView { currentScreen = "TimerView" }
-        "TimerView" -> TimerScreenContent(onBack = { currentScreen = "HealthView" })
-    }
-}
