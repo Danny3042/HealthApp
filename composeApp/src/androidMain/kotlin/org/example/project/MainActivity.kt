@@ -12,12 +12,14 @@ import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.appcheck.appCheck
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
 import com.google.firebase.initialize
+import utils.appContext
 
 class MainActivity : ComponentActivity() {
     private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        appContext = this
 
         Firebase.initialize(context = this)
         Firebase.appCheck.installAppCheckProviderFactory(

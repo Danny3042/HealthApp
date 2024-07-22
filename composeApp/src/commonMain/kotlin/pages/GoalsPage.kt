@@ -26,16 +26,38 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines. flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import utils.IGoalsStorage
 
-class GoalsViewModel {
+class GoalsViewModel(private val goalsStorage: IGoalsStorage) : ViewModel() {
     private val _goals = MutableStateFlow(Goals(0, 0))
-    val goals: StateFlow<Goals> = _goals.asStateFlow()
+    val goals: StateFlow<Goals?> = _goals.asStateFlow()
+
+    init {
+        loadGoals()
+    }
+
+    private fun loadGoals() {
+        viewModelScope.launch {
+            _goals.value = goalsStorage.loadGoals()
+        }
+    }
+
+    fun saveGoals(goals: Goals) {
+        viewModelScope.launch {
+            goalsStorage.saveGoals(goals.stepsGoal, goals.exerciseGoal)
+            loadGoals()
+        }
+    }
 
     fun setGoals(stepsGoal: Int, exerciseGoal: Int) {
-        _goals.value = Goals(stepsGoal, exerciseGoal)
+        val newGoals = Goals(stepsGoal, exerciseGoal)
+        saveGoals(newGoals)
     }
 }
 
@@ -51,7 +73,7 @@ fun GoalsPage(viewModel: GoalsViewModel) {
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-        .verticalScroll(rememberScrollState()),
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(
@@ -90,9 +112,7 @@ fun GoalsPage(viewModel: GoalsViewModel) {
             Spacer(modifier = Modifier.width(8.dp))
             Button(
                 onClick = {
-                    val steps = stepsGoal
-                    val exercise = exerciseGoal
-                    viewModel.setGoals(steps, exercise)
+                    viewModel.setGoals(stepsGoal, exerciseGoal)
                 }
             ) {
                 Text("Set Goals")
@@ -104,8 +124,8 @@ fun GoalsPage(viewModel: GoalsViewModel) {
             style = MaterialTheme.typography.titleMedium
         )
 
-        GoalsCard(label = "Steps:", value = "${currentGoals.stepsGoal}")
-        GoalsCard(label = "Exercise:", value = "${currentGoals.exerciseGoal} minutes")
+        GoalsCard(label = "Steps:", value = "${currentGoals?.stepsGoal ?: 0}")
+        GoalsCard(label = "Exercise:", value = "${currentGoals?.exerciseGoal ?: 0} minutes")
     }
 }
 
