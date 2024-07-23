@@ -15,12 +15,28 @@ class IOSGoalsStorage : IGoalsStorage {
         userDefaults.setInteger(exerciseGoal.toLong(), forKey = "exerciseGoal")
     }
 
+    override suspend fun saveStepsProgress(progress: Int) {
+        NSUserDefaults.standardUserDefaults.setInteger(progress.toLong(), forKey = "stepsProgress")
+    }
+
+    override suspend fun saveExerciseProgress(progress: Int) {
+        NSUserDefaults.standardUserDefaults.setInteger(progress.toLong(), forKey = "exerciseProgress")
+    }
+
     @OptIn(ExperimentalForeignApi::class)
     override suspend fun loadGoals(): Goals = memScoped {
         val userDefaults = NSUserDefaults.standardUserDefaults
         val stepsGoal = alloc<NSIntegerVar>().apply { value = userDefaults.integerForKey("stepsGoal") }
         val exerciseGoal = alloc<NSIntegerVar>().apply { value = userDefaults.integerForKey("exerciseGoal") }
         Goals(stepsGoal.value.toInt(), exerciseGoal.value.toInt())
+    }
+
+    override suspend fun loadStepsProgress(): Int {
+        return NSUserDefaults.standardUserDefaults.integerForKey("stepsProgress").toInt()
+    }
+
+    override suspend fun loadExerciseProgress(): Int {
+        return NSUserDefaults.standardUserDefaults.integerForKey("exerciseProgress").toInt()
     }
 }
 

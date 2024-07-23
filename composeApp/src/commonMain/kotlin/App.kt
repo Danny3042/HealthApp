@@ -1,5 +1,7 @@
+
 import Authentication.Authentication
 import Authentication.LoginScreen
+import Authentication.ResetPasswordScreen
 import Authentication.SignUpScreen
 import Colors.DarkColors
 import Colors.LightColors
@@ -9,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import pages.AboutPage
 import pages.AboutPageScreen
@@ -32,6 +33,7 @@ fun App() {
         NavHost(navController, startDestination = LoginScreen) {
             composable(LoginScreen) { Authentication().Login(navController) }
             composable(SignUpScreen) { Authentication().signUp(navController) }
+            composable(ResetPasswordScreen) { Authentication().ResetPassword(navController)}
             composable(HomePageScreen) { HomePage(healthKitService) }
             composable(HeroScreen) { HeroScreen(navController) }
             composable("profile") { ProfileTab(navController).Content() }

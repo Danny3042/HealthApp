@@ -49,12 +49,12 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
     }
     
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-        messaging.token { token, _ in
-            guard let token = token else {
-                return
-            }
-            print("Token: (\token)" )
+        guard let fcmToken = fcmToken else {
+            print("FCM token is nil")
+            return
         }
+        print("FCM registration token: \(fcmToken)")
+        // Send fcmToken to server if needed
     }
     func application(
         _ app: UIApplication,
@@ -91,10 +91,10 @@ extension AppDelegate {
         content.title = "Immediate Notification"
         content.body = "This is an immediate test notification."
         content.sound = UNNotificationSound.default
-
+        
         // Trigger the notification immediately
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-
+        
         let request = UNNotificationRequest(identifier: "immediateNotification", content: content, trigger: trigger)
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {

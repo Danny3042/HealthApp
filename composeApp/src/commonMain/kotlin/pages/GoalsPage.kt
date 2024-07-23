@@ -43,6 +43,13 @@ class GoalsViewModel(private val goalsStorage: IGoalsStorage) : ViewModel() {
     private val _goals = MutableStateFlow(Goals(0, 0))
     val goals: StateFlow<Goals?> = _goals.asStateFlow()
 
+    // Add progress state flows
+    private val _stepsProgress = MutableStateFlow(0)
+    val stepsProgress: StateFlow<Int> = _stepsProgress.asStateFlow()
+
+    private val _exerciseProgress = MutableStateFlow(0)
+    val exerciseProgress: StateFlow<Int> = _exerciseProgress.asStateFlow()
+
     init {
         loadGoals()
     }
@@ -50,25 +57,44 @@ class GoalsViewModel(private val goalsStorage: IGoalsStorage) : ViewModel() {
     private fun loadGoals() {
         viewModelScope.launch {
             _goals.value = goalsStorage.loadGoals()
+            // Load progress along with goals
+            _stepsProgress.value = goalsStorage.loadStepsProgress()
+            _exerciseProgress.value = goalsStorage.loadExerciseProgress()
         }
     }
 
     fun saveGoals(goals: Goals) {
         viewModelScope.launch {
             goalsStorage.saveGoals(goals.stepsGoal, goals.exerciseGoal)
+            // Save progress along with goals
+            goalsStorage.saveStepsProgress(_stepsProgress.value)
+            goalsStorage.saveExerciseProgress(_exerciseProgress.value)
             loadGoals()
         }
     }
 
-    fun setGoals(stepsGoal: Int, exerciseGoal: Int) {
-        val newGoals = Goals(stepsGoal, exerciseGoal)
-        saveGoals(newGoals)
+    // Methods to update progress
+    fun updateStepsProgress(progress: Int) {
+        viewModelScope.launch {
+            _stepsProgress.value = progress
+            // Optionally save progress immediately
+            goalsStorage.saveStepsProgress(progress)
+        }
     }
 
-    fun updateSteps(steps: Int) {
+    fun updateExerciseProgress(progress: Int) {
         viewModelScope.launch {
-            val currentGoals = _goals.value
-            _goals.value = currentGoals.copy(stepsGoal = steps)
+            _exerciseProgress.value = progress
+            // Optionally save progress immediately
+            goalsStorage.saveExerciseProgress(progress)
+        }
+    }
+
+    fun setGoals(stepsGoal: Int, exerciseGoal: Int) {
+        viewModelScope.launch {
+            _goals.value = Goals(stepsGoal, exerciseGoal)
+            saveGoals(_goals.value)
+
         }
     }
 }
@@ -95,11 +121,9 @@ fun GoalsPage(viewModel: GoalsViewModel) {
             style = MaterialTheme.typography.headlineMedium
         )
 
-        Text("Steps Goal Progress")
-        ProgressBar(progress = stepsProgress, goalValue = stepsGoal, modifier = Modifier.padding(vertical = 4.dp))
+        ProgressBarCard("Steps Progress", stepsProgress, currentGoals?.stepsGoal ?: 0)
 
-        Text("Exercise Goal Progress")
-        ProgressBar(progress = exerciseProgress, goalValue = exerciseGoal, modifier = Modifier.padding(vertical = 4.dp))
+        ProgressBarCard("Exercise Progress", exerciseProgress, currentGoals?.exerciseGoal ?: 0)
 
         Stepper(
             title = "Steps Goal:",
@@ -138,6 +162,10 @@ fun GoalsPage(viewModel: GoalsViewModel) {
                 Text("Set Goals")
             }
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+        GoalsCard("Steps Goal", stepsGoal.toString())
+        GoalsCard("Exercise Goal", exerciseGoal.toString())
 
     }
 }
@@ -212,5 +240,30 @@ fun ProgressBar(progress: Float, goalValue: Int, modifier: Modifier = Modifier) 
             modifier = Modifier.align(Alignment.CenterEnd).padding(end = 8.dp),
             color = Color.White
         )
+    }
+}
+
+@Composable
+fun ProgressBarCard(title: String, progress: Float, goalValue: Int) {
+    Card(
+        modifier = Modifier
+            .padding(8.dp)
+            .fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        shape = RoundedCornerShape(6.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            ProgressBar(progress = progress, goalValue = goalValue, modifier = Modifier.fillMaxWidth())
+            Text(
+                text = "Progress: ${progress * 100}% of $goalValue goal",
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+        }
     }
 }

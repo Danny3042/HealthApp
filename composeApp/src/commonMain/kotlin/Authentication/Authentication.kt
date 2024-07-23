@@ -50,11 +50,14 @@ import dev.gitlive.firebase.auth.FirebaseAuthInvalidUserException
 import dev.gitlive.firebase.auth.FirebaseUser
 import dev.gitlive.firebase.auth.auth
 import hideKeyboard
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
 import pages.HomePageScreen
 
 const val SignUpScreen = "SignUp"
 const val LoginScreen = "Login"
+const val ResetPasswordScreen = "ResetPassword"
 
 class Authentication {
 
@@ -135,7 +138,8 @@ class Authentication {
                         }),
                         visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         trailingIcon = {
-                            val image = if (isPasswordVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
+                            val image =
+                                if (isPasswordVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
                             IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
                                 Icon(image, contentDescription = "Toggle password visibility")
                             }
@@ -182,6 +186,12 @@ class Authentication {
                     }) {
                         Text("Sign Up")
                     }
+
+                    OutlinedButton(onClick = {
+                        navController.navigate(ResetPasswordScreen)
+                    }) {
+                        Text("Forgot Password")
+                    }
                     if (authready) {
                         Box(
                             modifier = Modifier
@@ -214,7 +224,9 @@ class Authentication {
         var isPasswordVisible by remember { mutableStateOf(false) }
 
         if (firebaseUser == null) {
-            Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+            Box(
+                modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
+            ) {
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
@@ -246,7 +258,8 @@ class Authentication {
                         }),
                         visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         trailingIcon = {
-                            val image = if (isPasswordVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
+                            val image =
+                                if (isPasswordVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
                             IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
                                 Icon(image, contentDescription = "Toggle password visibility")
                             }
@@ -288,5 +301,64 @@ class Authentication {
                 navController.navigate(HeroScreen)
             }
         }
+    }
+
+    @Composable
+    fun ResetPassword(navController: NavController) {
+        val scope = rememberCoroutineScope()
+        var email by remember { mutableStateOf("") }
+        var message by remember { mutableStateOf<String?>(null) }
+        val auth = Firebase.auth
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            TextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Email address") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(
+                onClick = {
+                    scope.launch {
+                        resetPassword(email).collect { result ->
+                            message = if (result.isSuccess) {
+                                "Reset email sent successfully."
+                            } else {
+                                "Failed to send reset email: ${result.exceptionOrNull()?.message}"
+                            }
+                        }
+                    }
+                }
+            ) {
+                Text("Send Reset Email")
+            }
+            message?.let {
+                Text(it, color = MaterialTheme.colorScheme.error)
+            }
+            OutlinedButton(onClick = {
+                navController.navigate(LoginScreen)
+            }) {
+                Text("Login")
+            }
+        }
+    }
+
+
+    suspend fun resetPassword(email: String): Flow<Result<Boolean>> = callbackFlow {
+        val auth = Firebase.auth
+        try {
+            auth.sendPasswordResetEmail(email)
+            trySend(Result.success(true))
+        } catch (e: Exception) {
+            trySend(Result.failure(e))
+        }
+        close() // Close the flow after emitting the result
     }
 }
