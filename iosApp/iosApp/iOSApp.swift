@@ -4,7 +4,7 @@ import FirebaseAnalytics
 import GoogleSignIn
 import FirebaseMessaging
 import UserNotifications
-
+import AppTrackingTransparency
 
 @main
 struct iOSApp: App {
@@ -15,6 +15,7 @@ struct iOSApp: App {
         FirebaseApp.configure()
         logInitialEvent()
     }
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
@@ -29,77 +30,84 @@ struct iOSApp: App {
         // logging app open event
         Analytics.logEvent(AnalyticsEventAppOpen, parameters: nil)
     }
-}
-
-class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
     
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-        Messaging.messaging().delegate = self
-        UNUserNotificationCenter.current().delegate = self
-        
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { success, _ in
-            guard success else {
-                return
+    
+    
+    class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
+        func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.requestTrackingPermission()
             }
-            print("Success in APNS Registry")
-        }
-        application.registerForRemoteNotifications()
-        
-        return true
-    }
-    
-    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-        guard let fcmToken = fcmToken else {
-            print("FCM token is nil")
-            return
-        }
-        print("FCM registration token: \(fcmToken)")
-        // Send fcmToken to server if needed
-    }
-    func application(
-        _ app: UIApplication,
-        open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]
-    ) -> Bool {
-        var handled: Bool
-        
-        // let Google Sign in handle the URL if it is related to Google Sign in
-        handled = GIDSignIn.sharedInstance.handle(url)
-        if handled {
+            Messaging.messaging().delegate = self
+            UNUserNotificationCenter.current().delegate = self
+            
+            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { success, _ in
+                guard success else {
+                    return
+                }
+                print("Success in APNS Registry")
+            }
+            application.registerForRemoteNotifications()
+            
+            
             return true
         }
         
-        // Handle other custom URL types
-        
-        // if not handled by this app return false
-        return false
-    }
-}
-extension UIApplication {
-    func endEditing() {
-        sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-    }
-}
-
-func userNotificationCenter(_ center: UNUserNotificationCenter,
-    willPresent notification: UNNotification,
-    withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-    completionHandler([.alert, .sound]) // Adjust based on your needs
-}
-extension AppDelegate {
-    func scheduleImmediateNotification() {
-        let content = UNMutableNotificationContent()
-        content.title = "Immediate Notification"
-        content.body = "This is an immediate test notification."
-        content.sound = UNNotificationSound.default
-        
-        // Trigger the notification immediately
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-        
-        let request = UNNotificationRequest(identifier: "immediateNotification", content: content, trigger: trigger)
-        UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
-                print("Error scheduling immediate notification: \(error.localizedDescription)")
+        func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+            guard let fcmToken = fcmToken else {
+                print("FCM token is nil")
+                return
             }
+            print("FCM registration token: \(fcmToken)")
+            // Send fcmToken to server if needed
+        }
+        
+        func application(
+            _ app: UIApplication,
+            open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]
+        ) -> Bool {
+            var handled: Bool
+            
+            // let Google Sign in handle the URL if it is related to Google Sign in
+            handled = GIDSignIn.sharedInstance.handle(url)
+            if handled {
+                return true
+            }
+            
+            // Handle other custom URL types
+            // if not handled by this app return false
+            return false
+        }
+        
+  
+        
+        private func requestTrackingPermission() {
+                ATTrackingManager.requestTrackingAuthorization { status in
+                    switch status {
+                    case .authorized:
+                        // Tracking authorized
+                        print("Tracking authorized")
+                    case .denied:
+                        // Tracking denied
+                        print("Tracking denied")
+                    case .restricted:
+                        // Tracking restricted
+                        print("Tracking restricted")
+                    case .notDetermined:
+                        // Tracking not determined
+                        print("Tracking not determined")
+                    @unknown default:
+                        // Handle unknown status
+                        print("Unknown tracking status")
+                    }
+                }
+            
         }
     }
 }
+    extension UIApplication {
+        func endEditing() {
+            sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        }
+    }
