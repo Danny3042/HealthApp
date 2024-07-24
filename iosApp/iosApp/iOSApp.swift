@@ -2,6 +2,10 @@ import SwiftUI
 import FirebaseCore
 import FirebaseAnalytics
 import GoogleSignIn
+import FirebaseMessaging
+import UserNotifications
+import AppTrackingTransparency
+
 @main
 struct iOSApp: App {
     
@@ -11,44 +15,99 @@ struct iOSApp: App {
         FirebaseApp.configure()
         logInitialEvent()
     }
-	var body: some Scene {
-		WindowGroup {
+    
+    var body: some Scene {
+        WindowGroup {
             ContentView()
                 .onOpenURL { url in
-                GIDSignIn.sharedInstance.handle(url)
+                    GIDSignIn.sharedInstance.handle(url)
                     UIApplication.shared.endEditing()
-            }
-		}
-	}
+                }
+        }
+    }
     
     func logInitialEvent() {
         // logging app open event
         Analytics.logEvent(AnalyticsEventAppOpen, parameters: nil)
     }
-}
-
-class AppDelegate: NSObject, UIApplicationDelegate {
     
-    func application(
-        _ app: UIApplication,
-        open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]
-    ) -> Bool {
-        var handled: Bool
-        
-    // let Google Sign in handle the URL if it is related to Google Sign in
-        handled = GIDSignIn.sharedInstance.handle(url)
-        if handled {
+    
+    
+    class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
+        func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.requestTrackingPermission()
+            }
+            Messaging.messaging().delegate = self
+            UNUserNotificationCenter.current().delegate = self
+            
+            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { success, _ in
+                guard success else {
+                    return
+                }
+                print("Success in APNS Registry")
+            }
+            application.registerForRemoteNotifications()
+            
+            
             return true
         }
         
-        // Handle other custom URL types
+        func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+            guard let fcmToken = fcmToken else {
+                print("FCM token is nil")
+                return
+            }
+            print("FCM registration token: \(fcmToken)")
+            // Send fcmToken to server if needed
+        }
         
-        // if not handled by this app return false
-        return false
+        func application(
+            _ app: UIApplication,
+            open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]
+        ) -> Bool {
+            var handled: Bool
+            
+            // let Google Sign in handle the URL if it is related to Google Sign in
+            handled = GIDSignIn.sharedInstance.handle(url)
+            if handled {
+                return true
+            }
+            
+            // Handle other custom URL types
+            // if not handled by this app return false
+            return false
+        }
+        
+  
+        
+        private func requestTrackingPermission() {
+                ATTrackingManager.requestTrackingAuthorization { status in
+                    switch status {
+                    case .authorized:
+                        // Tracking authorized
+                        print("Tracking authorized")
+                    case .denied:
+                        // Tracking denied
+                        print("Tracking denied")
+                    case .restricted:
+                        // Tracking restricted
+                        print("Tracking restricted")
+                    case .notDetermined:
+                        // Tracking not determined
+                        print("Tracking not determined")
+                    @unknown default:
+                        // Handle unknown status
+                        print("Unknown tracking status")
+                    }
+                }
+            
+        }
     }
 }
-extension UIApplication {
-    func endEditing() {
-        sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    extension UIApplication {
+        func endEditing() {
+            sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        }
     }
-}

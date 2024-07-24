@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		058557BB273AAA24004C7B11 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 058557BA273AAA24004C7B11 /* Assets.xcassets */; };
 		058557D9273AAEEB004C7B11 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */; };
+		0822B3002C4F104A009ACEEC /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 0822B2FF2C4F104A009ACEEC /* FirebaseMessaging */; };
 		086786B72BFAB3210004FEBB /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 086786B62BFAB3210004FEBB /* FirebaseAnalytics */; };
 		086786B92BFAB3210004FEBB /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 086786B82BFAB3210004FEBB /* FirebaseAuth */; };
 		08683C0B2C287E8D00180F44 /* HealthKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08683C0A2C287E8D00180F44 /* HealthKitManager.swift */; };
@@ -97,6 +98,7 @@
 			files = (
 				089B72AD2C0BC0810045625E /* ResearchKitUI.framework in Frameworks */,
 				08744AE62BFA76D700BF0FF6 /* CareKit in Frameworks */,
+				0822B3002C4F104A009ACEEC /* FirebaseMessaging in Frameworks */,
 				08D07E1B2BFA713900C7C391 /* ResearchKit.framework in Frameworks */,
 				087F312B2C431A7A00F6B3B2 /* GoogleSignInSwift in Frameworks */,
 				086786B72BFAB3210004FEBB /* FirebaseAnalytics in Frameworks */,
@@ -214,6 +216,7 @@
 				087F31282C431A7A00F6B3B2 /* GoogleSignIn */,
 				087F312A2C431A7A00F6B3B2 /* GoogleSignInSwift */,
 				087F312C2C43376A00F6B3B2 /* FirebaseCrashlytics */,
+				0822B2FF2C4F104A009ACEEC /* FirebaseMessaging */,
 			);
 			productName = iosApp;
 			productReference = 7555FF7B242A565900829871 /* HealthCompose.app */;
@@ -513,8 +516,10 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID}${TEAM_ID}";
 				PRODUCT_NAME = "${APP_NAME}";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -548,8 +553,10 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID}${TEAM_ID}";
 				PRODUCT_NAME = "${APP_NAME}";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -604,6 +611,10 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		0822B2FF2C4F104A009ACEEC /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FirebaseMessaging;
+		};
 		086786B62BFAB3210004FEBB /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 086786B52BFAB3210004FEBB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
