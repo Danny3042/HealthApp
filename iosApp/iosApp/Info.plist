@@ -28,7 +28,7 @@
 		</dict>
 	</array>
 	<key>NSUserTrackingUsageDescription</key>
-	<string>HealthCompose uses your data to deliver health insights</string>
+	<string>Your data will be used to deliver a better user experience and personalised content</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>GIDClientID</key>

@@ -34,6 +34,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -51,7 +52,8 @@ import dev.gitlive.firebase.auth.FirebaseAuthInvalidCredentialsException
 import dev.gitlive.firebase.auth.FirebaseAuthInvalidUserException
 import dev.gitlive.firebase.auth.FirebaseUser
 import dev.gitlive.firebase.auth.auth
-import hideKeyboard
+import keyboardUtil.createCustomTextField
+import keyboardUtil.hideKeyboard
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
@@ -84,6 +86,7 @@ class Authentication {
             if (result.isSuccess) {
                 val user = result.getOrNull()
                 println("User: $user")
+                navController.navigate(HeroScreen)
             } else {
                 val error = result.exceptionOrNull()
                 println("Error Result: ${result.exceptionOrNull()?.message}")
@@ -114,6 +117,7 @@ class Authentication {
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    val customTextField = createCustomTextField()
                     TextField(
                         value = userEmail,
                         onValueChange = { userEmail = it },
@@ -127,7 +131,10 @@ class Authentication {
                             cursorColor = MaterialTheme.colorScheme.onSurface,
                             focusedIndicatorColor = MaterialTheme.colorScheme.primary,
                             unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
+                        ),
+                        modifier = Modifier.onGloballyPositioned {
+                            customTextField.becomeFirstResponder()
+                        }
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     TextField(
@@ -243,6 +250,7 @@ class Authentication {
             Box(
                 modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
             ) {
+                val customTextField = createCustomTextField()
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
@@ -285,7 +293,10 @@ class Authentication {
                             cursorColor = MaterialTheme.colorScheme.onSurface,
                             focusedIndicatorColor = MaterialTheme.colorScheme.primary,
                             unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.disabled)
-                        )
+                        ),
+                        modifier = Modifier.onGloballyPositioned {
+                            customTextField.becomeFirstResponder()
+                        }
                     )
                     Spacer(modifier = Modifier.height(24.dp))
                     Button(onClick = {
