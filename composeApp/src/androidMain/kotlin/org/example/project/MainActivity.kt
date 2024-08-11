@@ -1,4 +1,4 @@
-package org.example.project
+package org.danielramzani.HealthCompose
 
 import App
 import android.os.Bundle

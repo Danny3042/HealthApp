@@ -1,3 +1,6 @@
+import com.codingfeline.buildkonfig.compiler.FieldSpec
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
@@ -6,8 +9,8 @@ plugins {
     alias(libs.plugins.sqlDelight)
     alias(libs.plugins.googleServices)
     alias(libs.plugins.kotlinSerialization)
-    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin") version "2.0.1"
     alias(libs.plugins.google.firebase.crashlytics)
+    alias(libs.plugins.buildkonfig)
 
 }
 
@@ -39,13 +42,14 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.okhttp)
             implementation(libs.sqldelight.androidDriver)
-            implementation ("com.google.firebase:firebase-analytics-ktx:22.0.0")
-            implementation ("androidx.health.connect:connect-client:1.1.0-alpha07")
-            implementation("androidx.appcompat:appcompat:1.7.0")
-            implementation("com.google.firebase:firebase-appcheck-playintegrity")
-            implementation("com.google.android.play:integrity:1.3.0")
-            implementation("com.google.accompanist:accompanist-drawablepainter:0.34.0")
-            implementation("com.google.firebase:firebase-crashlytics")
+            implementation (libs.firebase.analytics.ktx.v2200)
+            implementation (libs.androidx.connect.client)
+            implementation(libs.androidx.appcompat)
+            implementation(libs.firebase.appcheck.playintegrity)
+            implementation(libs.integrity)
+            implementation(libs.accompanist.drawablepainter)
+            implementation(libs.google.firebase.crashlytics)
+            implementation(libs.calf.filepicker)
 
 
 
@@ -71,23 +75,26 @@ kotlin {
             implementation(compose.components.resources)
             // Firebase
             implementation(libs.firebase.auth)
-            api("io.github.mirzemehdi:kmpnotifier:1.0.0")
+            api(libs.kmpnotifier)
             implementation(libs.jetbrains.navigation.compose)
             // voyager TabNav
             implementation(libs.voyager.tabNavigator)
             // extended icons
-            implementation("org.jetbrains.compose.material:material-icons-extended:1.6.2")
-            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
+            implementation(libs.material.icons.extended)
+            implementation(libs.kotlinx.datetime)
             // Health APIs
-            implementation("com.vitoksmile.health-kmp:core:0.0.3")
-            implementation("io.ktor:ktor-client-logging:2.3.10")
-            implementation("com.google.ai.client.generativeai:generativeai:0.8.0")
-            implementation("com.mikepenz:multiplatform-markdown-renderer:0.10.0")
-            implementation("io.github.mirzemehdi:kmpauth-google:2.0.0") //Google One Tap Sign-In
-            implementation("io.github.mirzemehdi:kmpauth-firebase:2.0.0") //Integrated Authentications with Firebase
-            implementation("io.github.mirzemehdi:kmpauth-uihelper:2.0.0") //UiHelper SignIn buttons (AppleSignIn, GoogleSignInButton)
+            implementation(libs.core)
+            implementation(libs.ktor.client.logging)
+            implementation(libs.generativeai)
+            implementation(libs.multiplatform.markdown.renderer)
+            implementation(libs.kmpauth.google) //Google One Tap Sign-In
+            implementation(libs.kmpauth.firebase) //Integrated Authentications with Firebase
+            implementation(libs.kmpauth.uihelper) //UiHelper SignIn buttons (AppleSignIn, GoogleSignInButton)
             implementation(compose.material3)
-            implementation("androidx.datastore:datastore-preferences:1.1.1")
+            implementation(libs.androidx.datastore.preferences)
+            // Gemini API
+            implementation(libs.generativeai.google)
+            implementation(libs.calf.filepicker)
 
 
         }
@@ -95,14 +102,35 @@ kotlin {
             implementation(libs.ktor.client.darwin)
             // SQLDelight
             implementation(libs.sqldelight.nativeDriver)
-            implementation("io.ktor:ktor-client-darwin:2.3.10")
+            implementation(libs.ktor.client.darwin.v2310)
+            implementation(libs.calf.filepicker)
         }
+    }
+}
+
+buildkonfig {
+    packageName = "org.danielramzani.HealthCompose"
+
+    val localProperties =
+        Properties().apply {
+            val propsFile = rootProject.file("local.properties")
+            if (propsFile.exists()) {
+                load(propsFile.inputStream())
+            }
+        }
+
+    defaultConfigs {
+        buildConfigField(
+            FieldSpec.Type.STRING,
+            "GEMINI_API_KEY",
+            localProperties["gemini_api_key"]?.toString() ?: "",
+        )
     }
 }
 
 
 android {
-    namespace = "org.example.project"
+    namespace = "org.danielramzani.HealthCompose"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
