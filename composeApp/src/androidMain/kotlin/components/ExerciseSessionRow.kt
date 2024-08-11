@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import org.example.project.R
+import org.danielramzani.HealthCompose.R
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import java.time.ZonedDateTime
 import java.util.UUID

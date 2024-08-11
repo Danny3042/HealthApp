@@ -42,6 +42,7 @@ import utils.toComposeImageBitmap
 fun MessageInput(
     enabled: Boolean,
     onSendMessage: (prompt: String, image: ByteArray?) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     var userMessage by rememberSaveable { mutableStateOf("") }
     var selectedImage by remember { mutableStateOf<ByteArray?>(null) }

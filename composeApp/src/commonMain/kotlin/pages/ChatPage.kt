@@ -1,11 +1,9 @@
-package pages
-
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
@@ -19,18 +17,18 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import components.ChatBubbleItem
-import components.ChatMessage
 import components.MessageInput
 import kotlinx.coroutines.launch
 import model.ChatViewModel
 import service.GenerativeAiService
+
+const val ChatPageScreen = "ChatScreen"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,9 +42,13 @@ fun ChatScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("ChaKt") },
+                title = { Text("Gemini Chat") },
                 navigationIcon = {
-                    Icon(Icons.Default.AutoAwesome, "ChaKt", modifier = Modifier.padding(4.dp))
+                    Icon(
+                        Icons.Default.AutoAwesome,
+                        "Gemini Chat",
+                        modifier = Modifier.padding(4.dp)
+                    )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
@@ -55,7 +57,27 @@ fun ChatScreen(
                 ),
             )
         },
-        bottomBar = {
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize()
+        ) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                state = listState,
+                reverseLayout = true,
+            ) {
+                items(
+                    items = chatUiState.messages.reversed(),
+                    key = { it.id },
+                ) { message ->
+                    ChatBubbleItem(message)
+                }
+                item {
+                    Spacer(modifier = Modifier.height(56.dp)) // Adjust height as needed
+                }
+            }
             MessageInput(
                 enabled = chatUiState.canSendMessage,
                 onSendMessage = { inputText, image ->
@@ -64,18 +86,8 @@ fun ChatScreen(
                         listState.animateScrollToItem(0)
                     }
                 },
-            )
-        },
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize(),
-        ) {
-            // Messages List
-            ChatList(
-                chatMessages = chatUiState.messages,
-                listState = listState,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
             )
         }
     }
@@ -83,28 +95,6 @@ fun ChatScreen(
     DisposableEffect(Unit) {
         onDispose {
             chatViewModel.onCleared()
-        }
-    }
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun ChatList(
-    chatMessages: List<ChatMessage>,
-    listState: LazyListState,
-) {
-    val messages by remember {
-        derivedStateOf { chatMessages.reversed() }
-    }
-    LazyColumn(
-        state = listState,
-        reverseLayout = true,
-    ) {
-        items(
-            items = messages,
-            key = { it.id },
-        ) { message ->
-            ChatBubbleItem(message)
         }
     }
 }
