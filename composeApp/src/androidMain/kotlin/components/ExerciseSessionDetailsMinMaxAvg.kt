@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import org.example.project.R
+import org.danielramzani.HealthCompose.R
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**

@@ -1,9 +1,10 @@
 [versions]
-agp = "8.5.1"
+accompanistDrawablepainter = "0.34.0"
+agp = "8.5.2"
 android-compileSdk = "34"
 android-minSdk = "24"
 android-targetSdk = "34"
-androidx-activityCompose = "1.9.0"
+androidx-activityCompose = "1.9.1"
 androidx-appcompat = "1.7.0"
 androidx-constraintlayout = "2.1.4"
 androidx-core-ktx = "1.13.1"
@@ -12,11 +13,24 @@ androidx-material = "1.12.0"
 androidx-test-junit = "1.2.1"
 compose = "1.6.8"
 compose-plugin = "1.6.11"
+connectClient = "1.1.0-alpha07"
+core = "0.0.3"
+datastorePreferences = "1.1.1"
+firebaseAnalyticsKtx = "22.0.0"
 firebaseAuth = "1.12.0"
+generativeai = "0.9.0"
+generativeaiGoogle = "0.5.0-1.0.0"
+integrity = "1.4.0"
 jetbrainsNavigationCompose = "2.7.7"
 junit = "4.13.2"
-kotlin = "2.0.0"
-ktor = "2.3.10"
+kmpauthGoogle = "2.0.0"
+kmpnotifier = "1.0.0"
+kotlin = "2.0.10"
+kotlinxDatetime = "0.6.0"
+ktor = "2.3.12"
+ktorClientDarwin = "2.3.10"
+materialIconsExtended = "1.6.2"
+multiplatformMarkdownRenderer = "0.10.0"
 navigationComposeVersion = "2.7.0-alpha07"
 sqlDelight = "2.0.2"
 firebaseCommonKtx = "21.0.0"
@@ -26,15 +40,31 @@ voyager = "1.0.0"
 firebaseAnalytics = "22.0.1"
 playServicesMeasurementApi = "22.0.0"
 coreI18n = "1.0.0-alpha01"
-kotlinxSerializationJson = "1.6.1"
+kotlinxSerializationJson = "1.6.2"
 firebaseCrashlytics = "19.0.3"
 googleFirebaseCrashlytics = "3.0.2"
+buildkonfig = "0.15.1"
+calf = "0.5.3"
 
 
 
 [libraries]
+accompanist-drawablepainter = { module = "com.google.accompanist:accompanist-drawablepainter", version.ref = "accompanistDrawablepainter" }
+androidx-connect-client = { module = "androidx.health.connect:connect-client", version.ref = "connectClient" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
+core = { module = "com.vitoksmile.health-kmp:core", version.ref = "core" }
+firebase-analytics-ktx-v2200 = { module = "com.google.firebase:firebase-analytics-ktx", version.ref = "firebaseAnalyticsKtx" }
+firebase-appcheck-playintegrity = { module = "com.google.firebase:firebase-appcheck-playintegrity" }
 firebase-auth = { module = "dev.gitlive:firebase-auth", version.ref = "firebaseAuth" }
+generativeai = { module = "com.google.ai.client.generativeai:generativeai", version.ref = "generativeai" }
+generativeai-google = { module = "dev.shreyaspatil.generativeai:generativeai-google", version.ref = "generativeaiGoogle" }
+google-firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
+integrity = { module = "com.google.android.play:integrity", version.ref = "integrity" }
 jetbrains-navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationComposeVersion" }
+kmpauth-firebase = { module = "io.github.mirzemehdi:kmpauth-firebase", version.ref = "kmpauthGoogle" }
+kmpauth-google = { module = "io.github.mirzemehdi:kmpauth-google", version.ref = "kmpauthGoogle" }
+kmpauth-uihelper = { module = "io.github.mirzemehdi:kmpauth-uihelper", version.ref = "kmpauthGoogle" }
+kmpnotifier = { module = "io.github.mirzemehdi:kmpnotifier", version.ref = "kmpnotifier" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -47,12 +77,17 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
 compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
+ktor-client-darwin-v2310 = { module = "io.ktor:ktor-client-darwin", version.ref = "ktorClientDarwin" }
+ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 firebase-common-ktx = { group = "com.google.firebase", name = "firebase-common-ktx", version.ref = "firebaseCommonKtx" }
+material-icons-extended = { module = "org.jetbrains.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
+multiplatform-markdown-renderer = { module = "com.mikepenz:multiplatform-markdown-renderer", version.ref = "multiplatformMarkdownRenderer" }
 navigation-compose-v277 = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "jetbrainsNavigationCompose" }
 sqldelight-androidDriver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqlDelight" }
 sqldelight-jvmDriver = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqlDelight" }
@@ -66,6 +101,7 @@ play-services-measurement-api = { group = "com.google.android.gms", name = "play
 androidx-core-i18n = { group = "androidx.core", name = "core-i18n", version.ref = "coreI18n" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics", version.ref = "firebaseCrashlytics" }
+calf-filepicker = { module = "com.mohamedrejeb.calf:calf-file-picker", version.ref = "calf" }
 
 
 
@@ -79,3 +115,4 @@ googleServices = { id = "com.google.gms.google-services", version.ref = "gservic
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 google-firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "googleFirebaseCrashlytics" }
+buildkonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildkonfig" }

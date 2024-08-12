@@ -39,22 +39,23 @@ struct iOSApp: App {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 self.requestTrackingPermission()
             }
-            Messaging.messaging().delegate = self
-            UNUserNotificationCenter.current().delegate = self
+            //Messaging.messaging().delegate = self
+            // UNUserNotificationCenter.current().delegate = self
             
-            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { success, _ in
+            /*UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { success, _ in
                 guard success else {
                     return
                 }
                 print("Success in APNS Registry")
             }
             application.registerForRemoteNotifications()
+             */
             
             
             return true
         }
         
-        func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+        /*func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
             guard let fcmToken = fcmToken else {
                 print("FCM token is nil")
                 return
@@ -62,6 +63,7 @@ struct iOSApp: App {
             print("FCM registration token: \(fcmToken)")
             // Send fcmToken to server if needed
         }
+         */
         
         func application(
             _ app: UIApplication,
@@ -91,6 +93,7 @@ struct iOSApp: App {
                     case .denied:
                         // Tracking denied
                         print("Tracking denied")
+                        Analytics.setAnalyticsCollectionEnabled(false)
                     case .restricted:
                         // Tracking restricted
                         print("Tracking restricted")

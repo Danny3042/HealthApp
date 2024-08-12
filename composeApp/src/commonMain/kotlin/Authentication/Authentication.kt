@@ -34,22 +34,26 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.mmk.kmpauth.firebase.apple.AppleButtonUiContainer
 import com.mmk.kmpauth.firebase.google.GoogleButtonUiContainerFirebase
 import com.mmk.kmpauth.google.GoogleAuthCredentials
 import com.mmk.kmpauth.google.GoogleAuthProvider
+import com.mmk.kmpauth.uihelper.apple.AppleSignInButton
 import com.mmk.kmpauth.uihelper.google.GoogleSignInButton
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.FirebaseAuthInvalidCredentialsException
 import dev.gitlive.firebase.auth.FirebaseAuthInvalidUserException
 import dev.gitlive.firebase.auth.FirebaseUser
 import dev.gitlive.firebase.auth.auth
-import hideKeyboard
+import keyboardUtil.createCustomTextField
+import keyboardUtil.hideKeyboard
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
@@ -82,6 +86,7 @@ class Authentication {
             if (result.isSuccess) {
                 val user = result.getOrNull()
                 println("User: $user")
+                navController.navigate(HeroScreen)
             } else {
                 val error = result.exceptionOrNull()
                 println("Error Result: ${result.exceptionOrNull()?.message}")
@@ -112,6 +117,7 @@ class Authentication {
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    val customTextField = createCustomTextField()
                     TextField(
                         value = userEmail,
                         onValueChange = { userEmail = it },
@@ -125,7 +131,10 @@ class Authentication {
                             cursorColor = MaterialTheme.colorScheme.onSurface,
                             focusedIndicatorColor = MaterialTheme.colorScheme.primary,
                             unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
+                        ),
+                        modifier = Modifier.onGloballyPositioned {
+                            customTextField.becomeFirstResponder()
+                        }
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     TextField(
@@ -204,6 +213,20 @@ class Authentication {
                             }
                         }
                     }
+                    if (authready) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            contentAlignment = Alignment.BottomCenter
+                        ) {
+
+                            AppleButtonUiContainer(onResult = onFirebaseResult) {
+                                AppleSignInButton(modifier = Modifier.fillMaxWidth()) { this.onClick() }
+                            }
+                        }
+
+                    }
                 }
             }
             if (firebaseUser != null) {
@@ -227,6 +250,7 @@ class Authentication {
             Box(
                 modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
             ) {
+                val customTextField = createCustomTextField()
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
@@ -269,7 +293,10 @@ class Authentication {
                             cursorColor = MaterialTheme.colorScheme.onSurface,
                             focusedIndicatorColor = MaterialTheme.colorScheme.primary,
                             unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.disabled)
-                        )
+                        ),
+                        modifier = Modifier.onGloballyPositioned {
+                            customTextField.becomeFirstResponder()
+                        }
                     )
                     Spacer(modifier = Modifier.height(24.dp))
                     Button(onClick = {
@@ -310,42 +337,46 @@ class Authentication {
         var message by remember { mutableStateOf<String?>(null) }
         val auth = Firebase.auth
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+        Box(
+            modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
         ) {
-            TextField(
-                value = email,
-                onValueChange = { email = it },
-                label = { Text("Email address") },
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Button(
-                onClick = {
-                    scope.launch {
-                        resetPassword(email).collect { result ->
-                            message = if (result.isSuccess) {
-                                "Reset email sent successfully."
-                            } else {
-                                "Failed to send reset email: ${result.exceptionOrNull()?.message}"
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                TextField(
+                    value = email,
+                    onValueChange = { email = it },
+                    label = { Text("Email address") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(
+                    onClick = {
+                        scope.launch {
+                            resetPassword(email).collect { result ->
+                                message = if (result.isSuccess) {
+                                    "Reset email sent successfully."
+                                } else {
+                                    "Failed to send reset email: ${result.exceptionOrNull()?.message}"
+                                }
                             }
                         }
                     }
+                ) {
+                    Text("Send Reset Email")
                 }
-            ) {
-                Text("Send Reset Email")
-            }
-            message?.let {
-                Text(it, color = MaterialTheme.colorScheme.error)
-            }
-            OutlinedButton(onClick = {
-                navController.navigate(LoginScreen)
-            }) {
-                Text("Login")
+                message?.let {
+                    Text(it, color = MaterialTheme.colorScheme.error)
+                }
+                OutlinedButton(onClick = {
+                    navController.navigate(LoginScreen)
+                }) {
+                    Text("Login")
+                }
             }
         }
     }
