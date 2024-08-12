@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Send
@@ -30,6 +31,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 
@@ -71,13 +74,18 @@ fun MessageInput(
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
+                val keyboardController = LocalSoftwareKeyboardController.current
                 OutlinedTextField(
                     value = userMessage,
                     label = { Text("Talk to AI...") },
                     onValueChange = { userMessage = it },
                     keyboardOptions = KeyboardOptions(
                         capitalization = KeyboardCapitalization.Sentences,
+                        imeAction = ImeAction.Done,
                     ),
+                    keyboardActions = KeyboardActions(onDone = {
+                        keyboardController?.hide()
+                    }),
                     leadingIcon = if (selectedImageBitmap == null) {
                         {
                             IconButton(onClick = { showImagePicker = true }) {
