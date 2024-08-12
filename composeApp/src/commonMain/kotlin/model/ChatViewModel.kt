@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import service.GenerativeAiService
-import utils.toComposeImageBitmap
 
 class ChatViewModel(aiService: GenerativeAiService) {
     private val coroutineScope = MainScope()
@@ -55,7 +54,7 @@ class ChatViewModel(aiService: GenerativeAiService) {
         )
 
         coroutineScope.launch(Dispatchers.Default) {
-            _uiState.addMessage(UserChatMessage(prompt, imageBytes?.toComposeImageBitmap()))
+            _uiState.addMessage(UserChatMessage(prompt))
             _uiState.addMessage(modelMessage)
         }
     }

@@ -1,7 +1,6 @@
 package components
 
 import androidx.compose.runtime.Immutable
-import androidx.compose.ui.graphics.ImageBitmap
 import kotlinx.coroutines.flow.Flow
 import utils.getUUIDString
 
@@ -32,7 +31,6 @@ sealed interface ChatMessage {
 @Immutable
 data class UserChatMessage(
     val text: String,
-    val image: ImageBitmap?,
     override val id: String = "user-${getUUIDString()}",
 ) : ChatMessage
 

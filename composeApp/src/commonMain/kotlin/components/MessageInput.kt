@@ -20,7 +20,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,10 +32,6 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import utils.ImagePicker
-import utils.toComposeImageBitmap
 
 @Composable
 fun MessageInput(
@@ -112,19 +107,6 @@ fun MessageInput(
                     modifier = Modifier.fillMaxWidth(),
                 )
             }
-        }
-    }
-
-    if (showImagePicker) {
-        ImagePicker {
-            selectedImage = it
-            showImagePicker = false
-        }
-    }
-
-    LaunchedEffect(selectedImage) {
-        withContext(Dispatchers.Default) {
-            selectedImageBitmap = selectedImage?.toComposeImageBitmap()
         }
     }
 }
