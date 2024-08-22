@@ -34,7 +34,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -52,7 +52,6 @@ import dev.gitlive.firebase.auth.FirebaseAuthInvalidCredentialsException
 import dev.gitlive.firebase.auth.FirebaseAuthInvalidUserException
 import dev.gitlive.firebase.auth.FirebaseUser
 import dev.gitlive.firebase.auth.auth
-import keyboardUtil.createCustomTextField
 import keyboardUtil.hideKeyboard
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -117,14 +116,14 @@ class Authentication {
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    val customTextField = createCustomTextField()
+                    val keyboardController = LocalSoftwareKeyboardController.current
                     TextField(
                         value = userEmail,
                         onValueChange = { userEmail = it },
                         label = { Text("Email address") },
                         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
                         keyboardActions = KeyboardActions(onDone = {
-                            hideKeyboard()
+                            keyboardController?.hide()
                         }),
                         colors = TextFieldDefaults.textFieldColors(
                             containerColor = MaterialTheme.colorScheme.surface,
@@ -132,9 +131,6 @@ class Authentication {
                             focusedIndicatorColor = MaterialTheme.colorScheme.primary,
                             unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant
                         ),
-                        modifier = Modifier.onGloballyPositioned {
-                            customTextField.becomeFirstResponder()
-                        }
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     TextField(
@@ -143,7 +139,7 @@ class Authentication {
                         placeholder = { Text("Password") },
                         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
                         keyboardActions = KeyboardActions(onDone = {
-                            hideKeyboard()
+                            keyboardController?.hide()
                         }),
                         visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         trailingIcon = {
@@ -250,7 +246,7 @@ class Authentication {
             Box(
                 modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
             ) {
-                val customTextField = createCustomTextField()
+                val keyboardController = LocalSoftwareKeyboardController.current
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
@@ -262,7 +258,7 @@ class Authentication {
                         placeholder = { Text("Email address") },
                         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
                         keyboardActions = KeyboardActions(onDone = {
-                            hideKeyboard()
+                            keyboardController?.hide()
                         }),
                         colors = TextFieldDefaults.textFieldColors(
                             containerColor = MaterialTheme.colorScheme.surface,
@@ -278,7 +274,7 @@ class Authentication {
                         placeholder = { Text("Password") },
                         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
                         keyboardActions = KeyboardActions(onDone = {
-                            hideKeyboard()
+                            keyboardController?.hide()
                         }),
                         visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         trailingIcon = {
@@ -294,9 +290,6 @@ class Authentication {
                             focusedIndicatorColor = MaterialTheme.colorScheme.primary,
                             unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.disabled)
                         ),
-                        modifier = Modifier.onGloballyPositioned {
-                            customTextField.becomeFirstResponder()
-                        }
                     )
                     Spacer(modifier = Modifier.height(24.dp))
                     Button(onClick = {
@@ -347,11 +340,16 @@ class Authentication {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
+                val keyboardController = LocalSoftwareKeyboardController.current
                 TextField(
                     value = email,
                     onValueChange = { email = it },
-                    label = { Text("Email address") },
-                    modifier = Modifier.fillMaxWidth()
+                    placeholder = { Text("Email address") },
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(onDone = {
+                        keyboardController?.hide()
+                    }),
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(
