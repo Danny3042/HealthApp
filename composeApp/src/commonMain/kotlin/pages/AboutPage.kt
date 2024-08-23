@@ -22,14 +22,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
-data class Feature (val title: String, val description: String)
+data class Feature(val title: String, val description: String)
 
 const val AboutPageScreen = "About"
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AboutPage(navController: NavController) {
-
-
+fun AboutPage(navController: NavController, versionNumber: String) {
     Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         val features = listOf(
             Feature(
@@ -50,6 +49,13 @@ fun AboutPage(navController: NavController) {
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
+                item {
+                    Text(
+                        text = "Version: $versionNumber",
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.padding(10.dp)
+                    )
+                }
                 items(features) { feature ->
                     Card(modifier = Modifier.padding(10.dp)) {
                         Column {

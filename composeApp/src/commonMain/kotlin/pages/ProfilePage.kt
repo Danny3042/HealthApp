@@ -1,14 +1,23 @@
+package pages
+
+
 import Authentication.LoginScreen
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.TabRowDefaults.Divider
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Badge
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SnackbarHost
@@ -23,12 +32,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import components.SettingsListItem
 import dev.gitlive.firebase.Firebase
-import dev.gitlive.firebase.auth.FirebaseAuth
 import dev.gitlive.firebase.auth.auth
 import kotlinx.coroutines.launch
-import pages.AboutPageScreen
+import utils.deleteUser
 
 @Composable
 fun ProfilePage(navController: NavController) {
@@ -41,75 +51,78 @@ fun ProfilePage(navController: NavController) {
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalAlignment = Alignment.Start,
+            contentPadding = PaddingValues(16.dp)
         ) {
             item {
-                if (user != null) {
-                    // Display user information
-                    Text("You are signed in as: ${user.email}", style = MaterialTheme.typography.titleMedium)
-                    // Add more user details here
-                }
+                Text("Settings", style = MaterialTheme.typography.headlineMedium)
             }
             item {
-                Button(onClick = {
-                    coroutineScope.launch {
-                        auth.signOut()
-                        navController.navigate(LoginScreen)
+                SettingsListItem(
+                    title = "Account",
+                    onClick = { /* Navigate to Account settings */ },
+                    leadingIcon = {
+                        Icon(Icons.Outlined.Badge, contentDescription = "Account Icon")
                     }
-                }) {
-                    Text("Sign Out")
-                }
-            }
-            item {
-                Button(onClick = {
-                    coroutineScope.launch {
-                        navController.navigate(AboutPageScreen)
-                    }
-                }) {
-                    Text("About")
-                }
-            }
-            item {
-                Button(
-                    onClick = { showDeleteDialog = true },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
                 ) {
-                    Text("Delete Account", color = Color.White)
+                    Column {
+                        Button(onClick = {
+                            coroutineScope.launch {
+                                auth.signOut()
+                                navController.navigate(LoginScreen)
+                            }
+                        }) {
+                            Text("Sign Out")
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Button(
+                            onClick = { showDeleteDialog = true },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+                        ) {
+                            Text("Delete Account", color = Color.White)
+                        }
+                    }
                 }
+                Divider()
+            }
+            item {
+                SettingsListItem(
+                    title = "About",
+                    onClick = { navController.navigate(AboutPageScreen) },
+                    leadingIcon = {
+                        Icon(Icons.Outlined.Info, contentDescription = "About Icon")
+                    }
+                )
+                Divider()
             }
 
             if (showDeleteDialog) {
                 item {
-                    AnimatedVisibility(
-                        visible = showDeleteDialog,
-                        enter = fadeIn(),
-                        exit = fadeOut(),
-                    ) {
-                        AlertDialog(
-                            onDismissRequest = { showDeleteDialog = false },
-                            title = { Text("Confirm Account Deletion") },
-                            text = { Text("Are you sure you want to delete your account? This action cannot be undone.") },
-                            confirmButton = {
-                                Button(
-                                    onClick = {
-                                        coroutineScope.launch {
-                                            deleteUser(auth, navController, snackbarHostState)
-                                        }
-                                        showDeleteDialog = false
-                                    },
-                                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
-                                ) {
-                                    Text("Confirm", color = Color.White)
-                                }
-                            },
-                            dismissButton = {
-                                OutlinedButton(onClick = { showDeleteDialog = false }) {
-                                    Text("Dismiss")
-                                }
+                    AlertDialog(
+                        onDismissRequest = { showDeleteDialog = false },
+                        title = { Text("Confirm Account Deletion") },
+                        text = { Text("Are you sure you want to delete your account? This action cannot be undone.") },
+                        confirmButton = {
+                            Button(
+                                onClick = {
+                                    coroutineScope.launch {
+                                        deleteUser(auth, navController, snackbarHostState)
+                                    }
+                                    showDeleteDialog = false
+                                },
+                                colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+                            ) {
+                                Text("Confirm", color = Color.White)
                             }
-                        )
-                    }
+                        },
+                        dismissButton = {
+                            OutlinedButton(onClick = { showDeleteDialog = false }) {
+                                Text("Dismiss")
+                            }
+                        }
+                    )
+                    Divider()
                 }
             }
         }
@@ -121,17 +134,3 @@ fun ProfilePage(navController: NavController) {
     }
 }
 
-suspend fun deleteUser(auth: FirebaseAuth, navController: NavController, snackBarHostState: SnackbarHostState) {
-    val user = auth.currentUser
-    if (user != null) {
-        try {
-            user.delete()
-            println("User account deleted.")
-            snackBarHostState.showSnackbar("User account deleted.")
-            navController.navigate(LoginScreen)
-        } catch (e: Exception) {
-            println("User account deletion failed: ${e.message}")
-            snackBarHostState.showSnackbar("User account deletion failed")
-        }
-    }
-}

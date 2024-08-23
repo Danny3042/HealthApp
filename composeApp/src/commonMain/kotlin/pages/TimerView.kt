@@ -1,6 +1,7 @@
 package pages
 
 import TimerViewModel
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -17,6 +19,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -29,17 +33,54 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+@Composable
+fun CircularTimer(
+    timerValue: Long,
+    totalTime: Long,
+    modifier: Modifier = Modifier
+) {
+    val progress = timerValue.toFloat() / totalTime.toFloat()
+    val onSurfaceColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
+    val primaryColor = MaterialTheme.colorScheme.primary
+
+    Canvas(modifier = modifier.size(200.dp)) {
+        // Draw the background circle
+        drawCircle(
+            color = onSurfaceColor,
+            radius = size.minDimension / 2,
+            center = center,
+            style = Stroke(width = 8.dp.toPx())
+        )
+        // Draw the progress arc
+        drawArc(
+            color = primaryColor,
+            startAngle = -90f,
+            sweepAngle = 360 * progress,
+            useCenter = false,
+            topLeft = Offset(0f, 0f),
+            size = Size(size.width, size.height),
+            style = Stroke(width = 8.dp.toPx())
+        )
+    }
+    Text(
+        text = timerValue.formatTime(),
+        style = MaterialTheme.typography.headlineMedium,
+        color = MaterialTheme.colorScheme.onSurface
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimerScreenContent(onBack: () -> Unit ) {
-    val timerViewModel = remember {TimerViewModel() }
+    val timerViewModel = remember { TimerViewModel() }
     val timerValue by timerViewModel.timer.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
 
@@ -73,6 +114,7 @@ fun TimerScreenContent(onBack: () -> Unit ) {
 @Composable
 fun TimerScreen(
     timerValue: Long,
+    totalTime: Long = 60, // Default total time (1 minute)
     onStartClick: () -> Unit,
     onPauseClick: () -> Unit,
     onStopClick: () -> Unit,
@@ -83,21 +125,21 @@ fun TimerScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = timerValue.formatTime(), fontSize = 24.sp)
+        CircularTimer(timerValue = timerValue, totalTime = totalTime)
         Spacer(modifier = Modifier.height(16.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
-            Button(onClick = onStartClick) {
+            OutlinedButton(onClick = onStartClick) {
                 Text(text = "Start")
             }
             Spacer(modifier = Modifier.width(16.dp))
-            Button(onClick = onPauseClick) {
+            OutlinedButton(onClick = onPauseClick) {
                 Text(text = "Pause")
             }
             Spacer(modifier = Modifier.width(16.dp))
-            Button(onClick = onStopClick) {
+            OutlinedButton(onClick = onStopClick) {
                 Text(text = "Stop")
             }
         }
@@ -143,7 +185,7 @@ fun SetTimerDialog(
                 }
             },
             dismissButton = {
-                Button(onClick = onDismiss) {
+                OutlinedButton(onClick = onDismiss) {
                     Text("Cancel")
                 }
             }
@@ -155,5 +197,5 @@ fun SetTimerDialog(
 @Composable
 fun TimeViewPreview() {
     val navController = rememberNavController()
-    TimerScreenContent(onBack = {navController.popBackStack()})
+    TimerScreenContent(onBack = { navController.popBackStack() })
 }

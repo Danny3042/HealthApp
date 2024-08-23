@@ -10,7 +10,12 @@ actual class StepCounter actual constructor(context: PlatformContext) {
     private val operationQueue = NSOperationQueue()
 
     actual var stepCount: Int = 0
-    actual fun startListening() {
+    private var stepGoal: Int = 0
+    private var onGoalAchieved: (() -> Unit)? = null
+
+    actual fun startListening(stepsGoal: Int, onGoalAchieved: () -> Unit) {
+        this.stepGoal = stepGoal
+        this.onGoalAchieved = onGoalAchieved
         pedometer.startPedometerUpdatesFromDate(NSDate(),) { pedometerData, error ->
             stepCount = pedometerData?.numberOfSteps?.intValue ?: 0
         }

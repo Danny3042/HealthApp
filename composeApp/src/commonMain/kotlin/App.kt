@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import config.VERSION_NUMBER
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import pages.AboutPage
 import pages.AboutPageScreen
@@ -39,7 +40,7 @@ fun App() {
             composable(ChatPageScreen) { ChatScreen() }
             composable(HeroScreen) { HeroScreen(navController) }
             composable("profile") { ProfileTab(navController).Content() }
-            composable(AboutPageScreen) { AboutPage(navController) }
+            composable(AboutPageScreen) { AboutPage(navController, versionNumber = VERSION_NUMBER) }
         }
     }
 }

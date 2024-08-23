@@ -1,16 +1,17 @@
 package pages
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,14 +31,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines. flow.StateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import utils.IGoalsStorage
+import utils.PlatformContext
+import utils.StepCounter
 
 class GoalsViewModel(private val goalsStorage: IGoalsStorage) : ViewModel() {
     private val _goals = MutableStateFlow(Goals(0, 0))
@@ -49,6 +54,11 @@ class GoalsViewModel(private val goalsStorage: IGoalsStorage) : ViewModel() {
 
     private val _exerciseProgress = MutableStateFlow(0)
     val exerciseProgress: StateFlow<Int> = _exerciseProgress.asStateFlow()
+
+    private val _goalAchieved = MutableStateFlow(false)
+    val goalAchieved: StateFlow<Boolean> = _goalAchieved.asStateFlow()
+
+    private lateinit var stepCounter: StepCounter
 
     init {
         loadGoals()
@@ -97,6 +107,17 @@ class GoalsViewModel(private val goalsStorage: IGoalsStorage) : ViewModel() {
 
         }
     }
+
+    fun startStepCounter(context: PlatformContext) {
+        stepCounter = StepCounter(context)
+        stepCounter.startListening(_goals.value.stepsGoal ?:0) {
+            _goalAchieved.value = true
+        }
+    }
+
+    fun stopStepCounter() {
+        stepCounter.stopListening()
+    }
 }
 
 data class Goals(val stepsGoal: Int, val exerciseGoal: Int)
@@ -108,6 +129,7 @@ fun GoalsPage(viewModel: GoalsViewModel) {
     val currentGoals by viewModel.goals.collectAsState()
     val stepsProgress = stepsGoal.takeIf { it > 0 }?.let { currentGoals?.stepsGoal?.toFloat()?.div(it) } ?: 0f
     val exerciseProgress = exerciseGoal.takeIf { it > 0 }?.let { currentGoals?.exerciseGoal?.toFloat()?.div(it) } ?: 0f
+    val goalAchieved by viewModel.goalAchieved.collectAsState()
 
     Column(
         modifier = Modifier
@@ -116,11 +138,22 @@ fun GoalsPage(viewModel: GoalsViewModel) {
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        Text(
+            text = "Set Your Daily Goals",
+            style = MaterialTheme.typography.headlineMedium
+        )
 
-        ProgressBarCard("Steps Progress", stepsProgress, currentGoals?.stepsGoal ?: 0)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
 
-        ProgressBarCard("Exercise Progress", exerciseProgress, currentGoals?.exerciseGoal ?: 0)
+            ProgressBarCard("Steps Progress", stepsProgress, currentGoals?.stepsGoal ?: 0)
 
+            ProgressBarCard("Exercise Progress", exerciseProgress, currentGoals?.exerciseGoal ?: 0)
+        }
         Stepper(
             title = "Steps Goal:",
             value = stepsGoal,
@@ -160,31 +193,16 @@ fun GoalsPage(viewModel: GoalsViewModel) {
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-//        GoalsCard("Steps Goal", stepsGoal.toString())
-//        GoalsCard("Exercise Goal", exerciseGoal.toString())
 
-    }
-}
-
-@Composable
-fun GoalsCard(label: String, value: String) {
-    Card(
-        modifier = Modifier
-            .padding(8.dp)
-            .fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        shape = RoundedCornerShape(6.dp)
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        if (goalAchieved) {
             Text(
-                text = label,
-                style = MaterialTheme.typography.titleMedium
-            )
-            Text(
-                text = value,
-                style = MaterialTheme.typography.bodyLarge
+                text = "Congratulations! You have achieved your  step goal!",
+                style = MaterialTheme.typography.headlineMedium,
+                color = Color.Green,
+                modifier = Modifier.padding(top = 8.dp)
             )
         }
+
     }
 }
 
@@ -219,22 +237,34 @@ fun Stepper(title: String, value: Int, onIncrement: () -> Unit, onDecrement: () 
 }
 
 @Composable
-fun ProgressBar(progress: Float, goalValue: Int, modifier: Modifier = Modifier) {
+fun CircularProgressBar(progress: Float, goalValue: Int, modifier: Modifier = Modifier) {
     Box(
-        modifier = modifier
-            .height(24.dp)
-            .background(color = Color.LightGray, shape = RoundedCornerShape(12.dp))
+        contentAlignment = Alignment.Center,
+        modifier = modifier.size(100.dp)
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxHeight()
-                .fillMaxWidth(progress)
-                .background(color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(12.dp))
-        )
+        val onSurface = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
+        val onPrimary = MaterialTheme.colorScheme.primary
+        Canvas(modifier = Modifier.size(100.dp)) {
+            val strokeWidth = 8.dp.toPx()
+            drawArc(
+                color = onSurface,
+                startAngle = 0f,
+                sweepAngle = 360f,
+                useCenter = false,
+                style = Stroke(strokeWidth, cap = StrokeCap.Round)
+            )
+            drawArc(
+                color = onPrimary,
+                startAngle = -90f,
+                sweepAngle = 360 * progress,
+                useCenter = false,
+                style = Stroke(strokeWidth, cap = StrokeCap.Round)
+            )
+        }
         Text(
             text = "$goalValue",
-            modifier = Modifier.align(Alignment.CenterEnd).padding(end = 8.dp),
-            color = Color.White
+            color = Color.Black,
+            style = MaterialTheme.typography.bodyLarge
         )
     }
 }
@@ -254,7 +284,7 @@ fun ProgressBarCard(title: String, progress: Float, goalValue: Int) {
                 style = MaterialTheme.typography.titleMedium
             )
             Spacer(modifier = Modifier.height(8.dp))
-            ProgressBar(progress = progress, goalValue = goalValue, modifier = Modifier.fillMaxWidth())
+            CircularProgressBar(progress = progress, goalValue = goalValue, modifier = Modifier.fillMaxWidth())
             Text(
                 text = "Progress: ${progress * 100}% of $goalValue goal",
                 style = MaterialTheme.typography.bodyLarge,
