@@ -116,10 +116,6 @@ fun GoalsPage(viewModel: GoalsViewModel) {
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text(
-            text = "Set Your Daily Goals",
-            style = MaterialTheme.typography.headlineMedium
-        )
 
         ProgressBarCard("Steps Progress", stepsProgress, currentGoals?.stepsGoal ?: 0)
 
@@ -164,8 +160,8 @@ fun GoalsPage(viewModel: GoalsViewModel) {
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-        GoalsCard("Steps Goal", stepsGoal.toString())
-        GoalsCard("Exercise Goal", exerciseGoal.toString())
+//        GoalsCard("Steps Goal", stepsGoal.toString())
+//        GoalsCard("Exercise Goal", exerciseGoal.toString())
 
     }
 }
