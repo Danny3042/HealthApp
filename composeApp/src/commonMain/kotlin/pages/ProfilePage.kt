@@ -1,5 +1,5 @@
+// Update ProfilePage.kt
 package pages
-
 
 import Authentication.LoginScreen
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +14,7 @@ import androidx.compose.material.TabRowDefaults.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Badge
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -22,6 +23,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -47,6 +50,7 @@ fun ProfilePage(navController: NavController) {
     var showDeleteDialog by remember { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
     val user = auth.currentUser
+    val (notificationsEnabled, setNotificationsEnabled) = remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
@@ -83,6 +87,26 @@ fun ProfilePage(navController: NavController) {
                             Text("Delete Account", color = Color.White)
                         }
                     }
+                }
+                Divider()
+            }
+            item {
+                SettingsListItem(
+                    title = "Notifications",
+                    onClick = { /* No navigation needed */ },
+                    leadingIcon = {
+                        Icon(Icons.Outlined.Notifications, contentDescription = "Notifications Icon")
+                    }
+                ) {
+                    Switch(
+                        checked = notificationsEnabled,
+                        onCheckedChange = {
+                            setNotificationsEnabled(it) },
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = MaterialTheme.colorScheme.primary,
+                            uncheckedThumbColor = MaterialTheme.colorScheme.onSurface
+                        )
+                    )
                 }
                 Divider()
             }
@@ -133,4 +157,3 @@ fun ProfilePage(navController: NavController) {
         )
     }
 }
-
