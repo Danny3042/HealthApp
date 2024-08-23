@@ -95,6 +95,7 @@ kotlin {
             // Gemini API
             implementation(libs.generativeai.google)
             implementation(libs.calf.filepicker)
+            api(libs.kmpnotifier.v121) // in iOS export this library
 
 
         }

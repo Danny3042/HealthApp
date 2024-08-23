@@ -8,9 +8,12 @@ import Colors.LightColors
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.mmk.kmpnotifier.notification.NotifierManager
+import com.mmk.kmpnotifier.notification.configuration.NotificationPlatformConfiguration
 import config.VERSION_NUMBER
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import pages.AboutPage
@@ -31,6 +34,12 @@ fun App() {
         val navController = rememberNavController()
         val healthKitManager = iOSHealthKitManager()
         val healthKitService = HealthKitServiceImpl(healthKitManager)
+
+        LaunchedEffect(Unit) {
+        NotifierManager.initialize(NotificationPlatformConfiguration.Ios(
+            showPushNotification = true
+        ))
+    }
 
         NavHost(navController, startDestination = LoginScreen) {
             composable(LoginScreen) { Authentication().Login(navController) }

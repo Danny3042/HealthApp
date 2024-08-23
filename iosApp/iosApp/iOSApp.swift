@@ -5,7 +5,6 @@ import GoogleSignIn
 import FirebaseMessaging
 import UserNotifications
 import AppTrackingTransparency
-
 @main
 struct iOSApp: App {
     
