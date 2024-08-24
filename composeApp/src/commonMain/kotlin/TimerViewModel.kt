@@ -1,9 +1,12 @@
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mmk.kmpnotifier.notification.NotifierManager
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class TimerViewModel: ViewModel() {
@@ -16,8 +19,11 @@ class TimerViewModel: ViewModel() {
         timerJob?.cancel()
         timerJob = viewModelScope.launch {
             while (_timer.value > 0) {
-                delay(1000)
-                _timer.value--
+                delay(1000L)
+                _timer.update { it - 1 }
+                if(_timer.value == 0L) {
+                    sendTimerEndNotification()
+                }
             }
         }
     }
@@ -39,4 +45,11 @@ class TimerViewModel: ViewModel() {
         timerJob?.cancel()
         _timer.value = 0
     }
+}
+
+// Add this function to send a notification
+fun sendTimerEndNotification() {
+    val notifier = NotifierManager.getLocalNotifier()
+    val notificationId = notifier.notify("Timer Finished", "Your timer has finished")
+
 }

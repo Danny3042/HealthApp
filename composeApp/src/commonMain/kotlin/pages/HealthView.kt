@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -32,8 +33,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.dp
-import components.CalendarDataSource
-import components.ScheduleView
 import model.HealthStateHolder
 import kotlin.math.roundToInt
 
@@ -189,39 +188,40 @@ fun AlertDialogExample(
 fun HealthView(onNavigateToTimerView: () -> Unit) {
     val healthStateHolder = remember { HealthStateHolder() }
 
-    Column {
-        DescriptionCard()
-        ExpandableCard("Sleep Rating") { value ->
-            healthStateHolder.updateSleepRating(value)
+    LazyColumn {
+        item { DescriptionCard() }
+        item {
+            ExpandableCard("Sleep Rating") { value ->
+                healthStateHolder.updateSleepRating(value)
+            }
         }
-        ExpandableCard("Mood Rating") { value ->
-            healthStateHolder.updateMoodRating(value)
+        item {
+            ExpandableCard("Mood Rating") { value ->
+                healthStateHolder.updateMoodRating(value)
+            }
         }
         if (healthStateHolder.showDialog) {
-            AlertDialogExample(
-                onDismissRequest = { healthStateHolder.showDialog = false },
-                onConfirmation = {
-                    println("Navigating to TimerView")
-                    onNavigateToTimerView()
-                    healthStateHolder.showDialog = false
-                },
-                dialogTitle = "Meditation Request",
-                dialogText = "Based on the information we suggest to start a meditation session."
-            )
+            item {
+                AlertDialogExample(
+                    onDismissRequest = { healthStateHolder.showDialog = false },
+                    onConfirmation = {
+                        println("Navigating to TimerView")
+                        onNavigateToTimerView()
+                        healthStateHolder.showDialog = false
+                    },
+                    dialogTitle = "Meditation Request",
+                    dialogText = "Based on the information we suggest to start a meditation session."
+                )
+            }
         }
     }
 }
 @Composable
-    fun HealthViewScreen() {
-        val dataSource = CalendarDataSource()
-
-        Column {
-            ScheduleView(dataSource = dataSource)
-
-        }
-        var currentScreen by remember { mutableStateOf("HealthView") }
-        when (currentScreen) {
-            "HealthView" -> HealthView { currentScreen = "TimerView" }
-            "TimerView" -> TimerScreenContent(onBack = { currentScreen = "HealthView" })
-        }
+fun HealthViewScreen() {
+    var currentScreen by remember { mutableStateOf("HealthView") }
+    when (currentScreen) {
+        "HealthView" -> HealthView { currentScreen = "TimerView" }
+        "TimerView" -> TimerScreenContent(onBack = { currentScreen = "HealthView" })
     }
+}
+

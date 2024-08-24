@@ -4,7 +4,7 @@ package utils
 expect abstract class PlatformContext
 
 expect class StepCounter(context: PlatformContext) {
-    fun startListening()
+    fun startListening(stepsGoal: Int, onGoalAchieved: () -> Unit)
     fun stopListening()
     var stepCount: Int
 }

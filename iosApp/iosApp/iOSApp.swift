@@ -5,7 +5,6 @@ import GoogleSignIn
 import FirebaseMessaging
 import UserNotifications
 import AppTrackingTransparency
-
 @main
 struct iOSApp: App {
     
@@ -39,31 +38,9 @@ struct iOSApp: App {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 self.requestTrackingPermission()
             }
-            //Messaging.messaging().delegate = self
-            // UNUserNotificationCenter.current().delegate = self
-            
-            /*UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { success, _ in
-                guard success else {
-                    return
-                }
-                print("Success in APNS Registry")
-            }
-            application.registerForRemoteNotifications()
-             */
-            
-            
             return true
         }
         
-        /*func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-            guard let fcmToken = fcmToken else {
-                print("FCM token is nil")
-                return
-            }
-            print("FCM registration token: \(fcmToken)")
-            // Send fcmToken to server if needed
-        }
-         */
         
         func application(
             _ app: UIApplication,
