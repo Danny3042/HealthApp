@@ -20,6 +20,8 @@ import pages.AboutPage
 import pages.AboutPageScreen
 import pages.HomePage
 import pages.HomePageScreen
+import pages.NotificationPage
+import pages.NotificationPageScreen
 import tabs.ProfileTab
 import utils.HealthKitServiceImpl
 import utils.iOSHealthKitManager
@@ -50,6 +52,7 @@ fun App() {
             composable(HeroScreen) { HeroScreen(navController) }
             composable("profile") { ProfileTab(navController).Content() }
             composable(AboutPageScreen) { AboutPage(navController, versionNumber = VERSION_NUMBER) }
+            composable(NotificationPageScreen) { NotificationPage(navController) }
         }
     }
 }

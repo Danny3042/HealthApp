@@ -23,8 +23,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -93,21 +91,11 @@ fun ProfilePage(navController: NavController) {
             item {
                 SettingsListItem(
                     title = "Notifications",
-                    onClick = { /* No navigation needed */ },
+                    onClick = { navController.navigate(NotificationPageScreen) },
                     leadingIcon = {
                         Icon(Icons.Outlined.Notifications, contentDescription = "Notifications Icon")
                     }
-                ) {
-                    Switch(
-                        checked = notificationsEnabled,
-                        onCheckedChange = {
-                            setNotificationsEnabled(it) },
-                        colors = SwitchDefaults.colors(
-                            checkedThumbColor = MaterialTheme.colorScheme.primary,
-                            uncheckedThumbColor = MaterialTheme.colorScheme.onSurface
-                        )
-                    )
-                }
+                )
                 Divider()
             }
             item {

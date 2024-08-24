@@ -50,11 +50,13 @@ fun AboutPage(navController: NavController, versionNumber: String) {
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 item {
-                    Text(
-                        text = "Version: $versionNumber",
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.padding(10.dp)
-                    )
+                    Card(modifier = Modifier.padding(10.dp)) {
+                        Text(
+                            text = "Version: $versionNumber",
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.padding(10.dp)
+                        )
+                    }
                 }
                 items(features) { feature ->
                     Card(modifier = Modifier.padding(10.dp)) {
