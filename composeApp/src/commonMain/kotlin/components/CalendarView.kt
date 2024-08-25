@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronLeft
@@ -193,23 +195,20 @@ fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) 
     var showDialog by remember { mutableStateOf(false) }
 
     Box(modifier = modifier.fillMaxSize()) {
-        Column(modifier = Modifier.align(Alignment.TopCenter).padding(top = 54.dp)) {
+        Column(
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(top = 54.dp)
+                .verticalScroll(rememberScrollState()) // Make the Column scrollable
+        ) {
             InfoCard()
             Header(
                 data = calendarUiModel,
                 onPrevClickListener = { startDate ->
-                    val finalStartDate = startDate.minus(1, DateTimeUnit.DAY)
-                    calendarUiModel = dataSource.getData(
-                        startDate = finalStartDate,
-                        lastSelectedDate = calendarUiModel.selectedDate.date
-                    )
+                    calendarUiModel = dataSource.getData(startDate.minus(7, DateTimeUnit.DAY), calendarUiModel.selectedDate.date)
                 },
                 onNextClickListener = { endDate ->
-                    val finalStartDate = endDate.plus(2, DateTimeUnit.DAY)
-                    calendarUiModel = dataSource.getData(
-                        startDate = finalStartDate,
-                        lastSelectedDate = calendarUiModel.selectedDate.date
-                    )
+                    calendarUiModel = dataSource.getData(endDate.plus(7, DateTimeUnit.DAY), calendarUiModel.selectedDate.date)
                 },
                 onTodayClickListener = {
                     calendarUiModel = dataSource.getData(lastSelectedDate = dataSource.today)
@@ -218,12 +217,7 @@ fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) 
             Content(
                 calendarUiModel = calendarUiModel,
                 onDateClickListener = { date ->
-                    calendarUiModel = calendarUiModel.copy(
-                        selectedDate = date,
-                        visibleDates = calendarUiModel.visibleDates.map {
-                            it.copy(isSelected = it.date == date.date)
-                        }
-                    )
+                    calendarUiModel = calendarUiModel.copy(selectedDate = date)
                 },
                 onUpdateCalendarUiModel = { updatedModel ->
                     calendarUiModel = updatedModel
@@ -233,12 +227,12 @@ fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) 
         Box(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(bottom = 80.dp, end = 16.dp) // Adjust padding to place above nav bar
+                .padding(bottom = 100.dp, end = 50.dp) // Adjust padding to place above nav bar
         ) {
             FloatingActionButton(
                 onClick = { showDialog = true }
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Add")
+                Icon(imageVector = Icons.Default.Add, contentDescription = "Add Event")
             }
         }
     }
@@ -255,6 +249,8 @@ fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) 
         )
     }
 }
+
+
 
 
 

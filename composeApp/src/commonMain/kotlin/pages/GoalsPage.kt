@@ -263,7 +263,7 @@ fun CircularProgressBar(progress: Float, goalValue: Int, modifier: Modifier = Mo
         }
         Text(
             text = "$goalValue",
-            color = Color.Black,
+            color = MaterialTheme.colorScheme.onSurface,
             style = MaterialTheme.typography.bodyLarge
         )
     }
@@ -281,13 +281,15 @@ fun ProgressBarCard(title: String, progress: Float, goalValue: Int) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(8.dp))
             CircularProgressBar(progress = progress, goalValue = goalValue, modifier = Modifier.fillMaxWidth())
             Text(
                 text = "Progress: ${progress * 100}% of $goalValue goal",
                 style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(top = 8.dp)
             )
         }
