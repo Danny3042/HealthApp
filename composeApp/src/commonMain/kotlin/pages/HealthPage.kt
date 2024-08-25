@@ -5,11 +5,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import components.CalendarDataSource
@@ -20,12 +20,6 @@ fun HealthPage(onNavigateToTimerView: () -> Unit) {
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         WeekView(onNavigateToTimerView = onNavigateToTimerView)
         Spacer(modifier = Modifier.height(16.dp))
-        Button(
-            onClick = onNavigateToTimerView,
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-        ) {
-            Text("Start Meditation Timer", color = MaterialTheme.colorScheme.onPrimary)
-        }
     }
 }
 
@@ -37,8 +31,14 @@ fun WeekView(onNavigateToTimerView: () -> Unit) {
 }
 
 @Composable
-fun HealthPageView(onNavigateToTimerView: () -> Unit) {
-    HealthPage(onNavigateToTimerView = onNavigateToTimerView)
+fun HealthViewScreen() {
+    var currentScreen by remember { mutableStateOf("HealthView") }
+    when (currentScreen) {
+        "HealthView" -> HealthView { currentScreen = "TimerView" }
+        "TimerView" -> TimerScreenContent(onBack = { currentScreen = "HealthView" })
+    }
 }
+
+
 
 

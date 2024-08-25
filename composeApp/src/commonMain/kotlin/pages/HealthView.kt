@@ -216,12 +216,5 @@ fun HealthView(onNavigateToTimerView: () -> Unit) {
         }
     }
 }
-@Composable
-fun HealthViewScreen() {
-    var currentScreen by remember { mutableStateOf("HealthView") }
-    when (currentScreen) {
-        "HealthView" -> HealthView { currentScreen = "TimerView" }
-        "TimerView" -> TimerScreenContent(onBack = { currentScreen = "HealthView" })
-    }
-}
+
 

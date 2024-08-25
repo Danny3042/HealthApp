@@ -258,6 +258,34 @@ fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) 
 
 
 
+// Update the RatingCard composable to call a function that deletes the rating from the data source when swiped
+@Composable
+fun RatingCard(rating: Rating, onDelete: () -> Unit) {
+    var offsetX by remember { mutableStateOf(0f) }
+
+    Card(
+        modifier = Modifier
+            .padding(vertical = 4.dp, horizontal = 4.dp)
+            .fillMaxWidth()
+            .offset { IntOffset(offsetX.roundToInt(), 0) }
+            .pointerInput(Unit) {
+                detectHorizontalDragGestures { change, dragAmount ->
+                    offsetX += dragAmount
+                    if (offsetX > 300) { // Adjust threshold as needed
+                        onDelete()
+                    }
+                }
+            },
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(text = "Sleep Rating: ${rating.sleepRating}", style = MaterialTheme.typography.titleMedium)
+            Text(text = "Mood Rating: ${rating.moodRating}", style = MaterialTheme.typography.bodySmall)
+        }
+    }
+}
+
+// Update the Content composable to remove the rating from the data source permanently
 @Composable
 fun Content(
     calendarUiModel: CalendarUiModel,
@@ -286,32 +314,6 @@ fun Content(
                     onUpdateCalendarUiModel(calendarUiModel.copy(ratings = newRatings))
                 }
             )
-        }
-    }
-}
-
-@Composable
-fun RatingCard(rating: Rating, onDelete: () -> Unit) {
-    var offsetX by remember { mutableStateOf(0f) }
-
-    Card(
-        modifier = Modifier
-            .padding(vertical = 4.dp, horizontal = 4.dp)
-            .fillMaxWidth()
-            .offset { IntOffset(offsetX.roundToInt(), 0) }
-            .pointerInput(Unit) {
-                detectHorizontalDragGestures { change, dragAmount ->
-                    offsetX += dragAmount
-                    if (offsetX > 300) { // Adjust threshold as needed
-                        onDelete()
-                    }
-                }
-            },
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = "Sleep Rating: ${rating.sleepRating}", style = MaterialTheme.typography.titleMedium)
-            Text(text = "Mood Rating: ${rating.moodRating}", style = MaterialTheme.typography.bodySmall)
         }
     }
 }
