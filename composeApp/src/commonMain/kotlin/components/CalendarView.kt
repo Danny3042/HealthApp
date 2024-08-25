@@ -1,18 +1,20 @@
 package components
 
-
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Today
@@ -20,9 +22,11 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -32,6 +36,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
@@ -40,11 +46,13 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.todayIn
+import kotlin.math.roundToInt
 
 data class CalendarUiModel(
     val selectedDate: Date,
     val visibleDates: List<Date>,
-    val events: List<Event> = listOf()
+    val events: List<Event> = listOf(),
+    val ratings: Map<LocalDate, Rating> = emptyMap()
 ) {
     val startDate: Date = visibleDates.first()
     val endDate: Date = visibleDates.last()
@@ -61,6 +69,11 @@ data class CalendarUiModel(
 data class Event(
     val date: LocalDate,
     val title: String
+)
+
+data class Rating(
+    val sleepRating: Float,
+    val moodRating: Float
 )
 
 class CalendarDataSource {
@@ -122,7 +135,6 @@ fun Header(
             Icon(
                 imageVector = Icons.Filled.Today,
                 contentDescription = "Today"
-
             )
         }
         IconButton(onClick = { onPrevClickListener(data.startDate.date) }) {
@@ -139,13 +151,15 @@ fun Header(
         }
     }
 }
+
 @Composable
 fun EventInputDialog(
     onConfirm: (String) -> Unit,
-    onDismissRequest: () -> Unit) {
+    onDismissRequest: () -> Unit
+) {
     var input by remember { mutableStateOf("") }
     AlertDialog(
-        onDismissRequest = {onDismissRequest() },
+        onDismissRequest = { onDismissRequest() },
         title = { Text("New Event") },
         text = {
             TextField(
@@ -165,8 +179,7 @@ fun EventInputDialog(
         },
         dismissButton = {
             Button(
-                onClick = {onDismissRequest() }
-
+                onClick = { onDismissRequest() }
             ) {
                 Text("Cancel")
             }
@@ -177,10 +190,11 @@ fun EventInputDialog(
 @Composable
 fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) {
     var calendarUiModel by remember { mutableStateOf(dataSource.getData(lastSelectedDate = dataSource.today)) }
+    var showDialog by remember { mutableStateOf(false) }
 
     Box(modifier = modifier.fillMaxSize()) {
-        // Add padding to the Column to position it a bit below from the top
         Column(modifier = Modifier.align(Alignment.TopCenter).padding(top = 54.dp)) {
+            InfoCard()
             Header(
                 data = calendarUiModel,
                 onPrevClickListener = { startDate ->
@@ -202,7 +216,7 @@ fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) 
                 }
             )
             Content(
-                data = calendarUiModel,
+                calendarUiModel = calendarUiModel,
                 onDateClickListener = { date ->
                     calendarUiModel = calendarUiModel.copy(
                         selectedDate = date,
@@ -210,6 +224,64 @@ fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) 
                             it.copy(isSelected = it.date == date.date)
                         }
                     )
+                },
+                onUpdateCalendarUiModel = { updatedModel ->
+                    calendarUiModel = updatedModel
+                }
+            )
+        }
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(bottom = 80.dp, end = 16.dp) // Adjust padding to place above nav bar
+        ) {
+            FloatingActionButton(
+                onClick = { showDialog = true }
+            ) {
+                Icon(Icons.Default.Add, contentDescription = "Add")
+            }
+        }
+    }
+
+    if (showDialog) {
+        RatingInputDialog(
+            onConfirm = { sleepRating, moodRating ->
+                val newRatings = calendarUiModel.ratings.toMutableMap()
+                newRatings[calendarUiModel.selectedDate.date] = Rating(sleepRating, moodRating)
+                calendarUiModel = calendarUiModel.copy(ratings = newRatings)
+                showDialog = false
+            },
+            onDismissRequest = { showDialog = false }
+        )
+    }
+}
+
+@Composable
+fun Content(
+    calendarUiModel: CalendarUiModel,
+    onDateClickListener: (CalendarUiModel.Date) -> Unit,
+    onUpdateCalendarUiModel: (CalendarUiModel) -> Unit
+) {
+    Column {
+        LazyRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(48.dp)
+        ) {
+            items(items = calendarUiModel.visibleDates) { date ->
+                ContentItem(
+                    date = date,
+                    onClickListener = onDateClickListener
+                )
+            }
+        }
+        calendarUiModel.ratings[calendarUiModel.selectedDate.date]?.let { rating ->
+            RatingCard(
+                rating = rating,
+                onDelete = {
+                    val newRatings = calendarUiModel.ratings.toMutableMap()
+                    newRatings.remove(calendarUiModel.selectedDate.date)
+                    onUpdateCalendarUiModel(calendarUiModel.copy(ratings = newRatings))
                 }
             )
         }
@@ -217,29 +289,82 @@ fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) 
 }
 
 @Composable
-fun Content(
-    data: CalendarUiModel,
-    onDateClickListener: (CalendarUiModel.Date) -> Unit,
-) {
-    LazyRow(
+fun RatingCard(rating: Rating, onDelete: () -> Unit) {
+    var offsetX by remember { mutableStateOf(0f) }
+
+    Card(
         modifier = Modifier
+            .padding(vertical = 4.dp, horizontal = 4.dp)
             .fillMaxWidth()
-            .padding(48.dp)
+            .offset { IntOffset(offsetX.roundToInt(), 0) }
+            .pointerInput(Unit) {
+                detectHorizontalDragGestures { change, dragAmount ->
+                    offsetX += dragAmount
+                    if (offsetX > 300) { // Adjust threshold as needed
+                        onDelete()
+                    }
+                }
+            },
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
-        items(items = data.visibleDates) { date ->
-            ContentItem(
-                date = date,
-                events = data.events.filter { it.date == date.date },
-                onClickListener = onDateClickListener
-            )
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(text = "Sleep Rating: ${rating.sleepRating}", style = MaterialTheme.typography.titleMedium)
+            Text(text = "Mood Rating: ${rating.moodRating}", style = MaterialTheme.typography.bodySmall)
         }
     }
 }
 
 @Composable
+fun RatingInputDialog(
+    onConfirm: (Float, Float) -> Unit,
+    onDismissRequest: () -> Unit
+) {
+    var sleepRating by remember { mutableStateOf(5f) }
+    var moodRating by remember { mutableStateOf(5f) }
+
+    AlertDialog(
+        onDismissRequest = { onDismissRequest() },
+        title = { Text("New Rating") },
+        text = {
+            Column {
+                Text("Sleep Rating")
+                Slider(
+                    value = sleepRating,
+                    onValueChange = { sleepRating = it },
+                    valueRange = 0f..10f,
+                    steps = 9
+                )
+                Text("Mood Rating")
+                Slider(
+                    value = moodRating,
+                    onValueChange = { moodRating = it },
+                    valueRange = 0f..10f,
+                    steps = 9
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    onConfirm(sleepRating, moodRating)
+                }
+            ) {
+                Text("Confirm")
+            }
+        },
+        dismissButton = {
+            Button(
+                onClick = { onDismissRequest() }
+            ) {
+                Text("Cancel")
+            }
+        }
+    )
+}
+
+@Composable
 fun ContentItem(
     date: CalendarUiModel.Date,
-    events: List<Event>,
     onClickListener: (CalendarUiModel.Date) -> Unit,
 ) {
     Card(
@@ -256,24 +381,10 @@ fun ContentItem(
     ) {
         Column(
             modifier = Modifier
-                .width(40.dp)
-                .height(48.dp)
+                .width(50.dp)
+                .height(50.dp)
                 .padding(4.dp)
         ) {
-            for (event in events) {
-                Card(
-                    modifier = Modifier.padding(4.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.secondary
-                    )
-                ) {
-                    Text(
-                        text = event.title,
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(8.dp)
-                    )
-                }
-            }
             Text(
                 text = date.day,
                 modifier = Modifier.align(Alignment.CenterHorizontally),
@@ -288,5 +399,27 @@ fun ContentItem(
     }
 }
 
-
-
+@Composable
+fun InfoCard() {
+    Card(
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = "Navigation Instructions",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onPrimary
+            )
+            Text(
+                text = "1. Swipe left or right on a rating card to delete it.\n" +
+                        "2. Click on a date to view or add ratings.\n" +
+                        "3. Click on the floating action button to add a new rating.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onPrimary
+            )
+        }
+    }
+}
