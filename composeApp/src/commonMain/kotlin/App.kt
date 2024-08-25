@@ -22,6 +22,8 @@ import pages.HomePage
 import pages.HomePageScreen
 import pages.NotificationPage
 import pages.NotificationPageScreen
+import pages.Timer
+import pages.TimerScreenContent
 import tabs.ProfileTab
 import utils.HealthKitServiceImpl
 import utils.iOSHealthKitManager
@@ -53,6 +55,7 @@ fun App() {
             composable("profile") { ProfileTab(navController).Content() }
             composable(AboutPageScreen) { AboutPage(navController, versionNumber = VERSION_NUMBER) }
             composable(NotificationPageScreen) { NotificationPage(navController) }
+            composable(Timer) { TimerScreenContent(onBack = { navController.popBackStack() }) }
         }
     }
 }
