@@ -23,6 +23,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -104,14 +105,16 @@ class GoalsViewModel(private val goalsStorage: IGoalsStorage) : ViewModel() {
         viewModelScope.launch {
             _goals.value = Goals(stepsGoal, exerciseGoal)
             saveGoals(_goals.value)
-
         }
     }
 
     fun startStepCounter(context: PlatformContext) {
         stepCounter = StepCounter(context)
-        stepCounter.startListening(_goals.value.stepsGoal ?:0) {
-            _goalAchieved.value = true
+        stepCounter.startListening(_goals.value.stepsGoal) { steps: Int ->
+            _stepsProgress.value = steps
+            if (steps >= _goals.value.stepsGoal) {
+                _goalAchieved.value = true
+            }
         }
     }
 
@@ -123,13 +126,17 @@ class GoalsViewModel(private val goalsStorage: IGoalsStorage) : ViewModel() {
 data class Goals(val stepsGoal: Int, val exerciseGoal: Int)
 
 @Composable
-fun GoalsPage(viewModel: GoalsViewModel) {
+fun GoalsPage(viewModel: GoalsViewModel, context: PlatformContext) {
     var stepsGoal by remember { mutableStateOf(0) }
     var exerciseGoal by remember { mutableStateOf(0) }
     val currentGoals by viewModel.goals.collectAsState()
-    val stepsProgress = stepsGoal.takeIf { it > 0 }?.let { currentGoals?.stepsGoal?.toFloat()?.div(it) } ?: 0f
-    val exerciseProgress = exerciseGoal.takeIf { it > 0 }?.let { currentGoals?.exerciseGoal?.toFloat()?.div(it) } ?: 0f
+    val stepsProgress by viewModel.stepsProgress.collectAsState()
+    val exerciseProgress by viewModel.exerciseProgress.collectAsState()
     val goalAchieved by viewModel.goalAchieved.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.startStepCounter(context)
+    }
 
     Column(
         modifier = Modifier
@@ -149,11 +156,10 @@ fun GoalsPage(viewModel: GoalsViewModel) {
                 .horizontalScroll(rememberScrollState()),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-
-            ProgressBarCard("Steps Progress", stepsProgress, currentGoals?.stepsGoal ?: 0)
-
-            ProgressBarCard("Exercise Progress", exerciseProgress, currentGoals?.exerciseGoal ?: 0)
+            ProgressBarCard("Steps Progress", stepsProgress.toFloat() / (currentGoals?.stepsGoal ?: 1), currentGoals?.stepsGoal ?: 0)
+            ProgressBarCard("Exercise Progress", exerciseProgress.toFloat() / (currentGoals?.exerciseGoal ?: 1), currentGoals?.exerciseGoal ?: 0)
         }
+
         Stepper(
             title = "Steps Goal:",
             value = stepsGoal,
@@ -196,13 +202,12 @@ fun GoalsPage(viewModel: GoalsViewModel) {
 
         if (goalAchieved) {
             Text(
-                text = "Congratulations! You have achieved your  step goal!",
+                text = "Congratulations! You have achieved your step goal!",
                 style = MaterialTheme.typography.headlineMedium,
                 color = Color.Green,
                 modifier = Modifier.padding(top = 8.dp)
             )
         }
-
     }
 }
 

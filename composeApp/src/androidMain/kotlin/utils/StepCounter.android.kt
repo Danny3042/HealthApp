@@ -1,13 +1,11 @@
 package utils
 
-// In your Android-specific code
 import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.util.Log
-
 
 actual typealias PlatformContext = Context
 actual class StepCounter actual constructor(private val context: PlatformContext) : SensorEventListener {
@@ -16,9 +14,9 @@ actual class StepCounter actual constructor(private val context: PlatformContext
 
     actual var stepCount = 0
     private var stepGoal: Int = 0
-    private var onGoalAchieved: (() -> Unit)? = null
+    private var onGoalAchieved: ((Int) -> Unit)? = null
 
-    actual fun startListening(stepsGoal: Int, onGoalAchieved: () -> Unit) {
+    actual fun startListening(stepsGoal: Int, onGoalAchieved: (Int) -> Unit) {
         this.stepGoal = stepGoal
         this.onGoalAchieved = onGoalAchieved
         sensorManager.registerListener(this, stepCounterSensor, SensorManager.SENSOR_DELAY_NORMAL)
@@ -32,7 +30,7 @@ actual class StepCounter actual constructor(private val context: PlatformContext
         if (event.sensor.type == Sensor.TYPE_STEP_COUNTER) {
             stepCount = event.values[0].toInt()
             if (stepCount >= stepGoal) {
-                onGoalAchieved?.invoke()
+                onGoalAchieved?.invoke(stepCount)
             }
         }
     }

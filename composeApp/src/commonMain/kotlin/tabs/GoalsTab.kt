@@ -31,6 +31,6 @@ object GoalsTab: Tab {
     override fun Content() {
         val platformContext = getPlatformContext()
         val goalsStorage = getGoalsStorageInstance(platformContext)
-        GoalsPage(viewModel = GoalsViewModel(goalsStorage))
+        GoalsPage(viewModel = GoalsViewModel(goalsStorage), context = platformContext)
     }
 }
