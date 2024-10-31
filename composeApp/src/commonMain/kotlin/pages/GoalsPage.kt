@@ -101,10 +101,11 @@ class GoalsViewModel(private val goalsStorage: IGoalsStorage) : ViewModel() {
         }
     }
 
-    fun setGoals(stepsGoal: Int, exerciseGoal: Int) {
+    fun setGoals(stepsGoal: Int, exerciseGoal: Int, context: PlatformContext) {
         viewModelScope.launch {
             _goals.value = Goals(stepsGoal, exerciseGoal)
             saveGoals(_goals.value)
+            startStepCounter(context)
         }
     }
 
@@ -180,7 +181,7 @@ fun GoalsPage(viewModel: GoalsViewModel, context: PlatformContext) {
         ) {
             Button(
                 onClick = {
-                    viewModel.setGoals(0, 0)
+                    viewModel.setGoals(0, 0, context)
                     stepsGoal = 0
                     exerciseGoal = 0
                 },
@@ -191,7 +192,7 @@ fun GoalsPage(viewModel: GoalsViewModel, context: PlatformContext) {
             Spacer(modifier = Modifier.width(8.dp))
             Button(
                 onClick = {
-                    viewModel.setGoals(stepsGoal, exerciseGoal)
+                    viewModel.setGoals(stepsGoal, exerciseGoal, context)
                 }
             ) {
                 Text("Set Goals")
