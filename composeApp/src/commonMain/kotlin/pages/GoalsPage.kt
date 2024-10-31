@@ -208,6 +208,7 @@ fun GoalsPage(viewModel: GoalsViewModel, context: PlatformContext) {
                 color = Color.Green,
                 modifier = Modifier.padding(top = 8.dp)
             )
+            viewModel.stopStepCounter()
         }
     }
 }
