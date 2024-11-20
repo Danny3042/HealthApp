@@ -1,6 +1,7 @@
 package pages
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,6 +20,16 @@ fun HomePage(healthKitService: HealthKitService) {
     var showSleepScreen by remember { mutableStateOf(false) }
     var isAuthorizedResult by remember { mutableStateOf<Result<Boolean>?>(null) }
     var isRevokeSupported by remember { mutableStateOf(false) }
+    var hasPermissions by remember { mutableStateOf(false) }
+
+LaunchedEffect(Unit) {
+    if (!isAndroid()) {
+        hasPermissions = healthKitService.checkPermissions()
+        if (!hasPermissions) {
+            hasPermissions = healthKitService.requestAuthorization()
+        }
+    }
+}
 
     val healthConnectAvailability = HealthConnectChecker.checkHealthConnectAvailability()
     if (isAndroid() && isAuthorizedResult?.getOrNull() != true) {
@@ -26,5 +37,4 @@ fun HomePage(healthKitService: HealthKitService) {
     } else {
         HealthDataView(healthKitService)
     }
-
 }

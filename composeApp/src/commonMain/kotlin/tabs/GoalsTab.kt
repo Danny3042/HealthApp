@@ -9,10 +9,20 @@ import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import pages.GoalsPage
 import pages.GoalsViewModel
+import utils.HealthKitService
+import utils.HealthKitServiceImpl
 import utils.getGoalsStorageInstance
 import utils.getPlatformContext
+import utils.iOSHealthKitManager
 
 object GoalsTab: Tab {
+
+    private lateinit var healthKitService: HealthKitService
+
+    init {
+        val healthKitManager = iOSHealthKitManager()
+        healthKitService = HealthKitServiceImpl(healthKitManager)
+    }
     override val options: TabOptions
         @Composable
         get() {
@@ -31,6 +41,6 @@ object GoalsTab: Tab {
     override fun Content() {
         val platformContext = getPlatformContext()
         val goalsStorage = getGoalsStorageInstance(platformContext)
-        GoalsPage(viewModel = GoalsViewModel(goalsStorage), context = platformContext)
+        GoalsPage(viewModel = GoalsViewModel(goalsStorage), context = platformContext, healthKitService = healthKitService )
     }
 }

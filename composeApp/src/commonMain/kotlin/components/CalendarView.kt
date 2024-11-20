@@ -2,6 +2,7 @@ package components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,6 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Today
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -193,6 +195,8 @@ fun EventInputDialog(
 fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) {
     var calendarUiModel by remember { mutableStateOf(dataSource.getData(lastSelectedDate = dataSource.today)) }
     var showDialog by remember { mutableStateOf(false) }
+    var showInfoCard by remember { mutableStateOf(true) }
+    var selectedDate by remember { mutableStateOf(calendarUiModel.selectedDate.date) }
 
     Box(modifier = modifier.fillMaxSize()) {
         Column(
@@ -201,7 +205,9 @@ fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) 
                 .padding(top = 54.dp)
                 .verticalScroll(rememberScrollState()) // Make the Column scrollable
         ) {
-            InfoCard()
+            if (showInfoCard) {
+                InfoCard(onDismiss = { showInfoCard = false })
+            }
             Header(
                 data = calendarUiModel,
                 onPrevClickListener = { startDate ->
@@ -216,7 +222,9 @@ fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) 
             )
             Content(
                 calendarUiModel = calendarUiModel,
+                selectedDate = selectedDate,
                 onDateClickListener = { date ->
+                    selectedDate = date.date
                     calendarUiModel = calendarUiModel.copy(selectedDate = date)
                 },
                 onUpdateCalendarUiModel = { updatedModel ->
@@ -285,6 +293,7 @@ fun RatingCard(rating: Rating, onDelete: () -> Unit) {
 @Composable
 fun Content(
     calendarUiModel: CalendarUiModel,
+    selectedDate: LocalDate,
     onDateClickListener: (CalendarUiModel.Date) -> Unit,
     onUpdateCalendarUiModel: (CalendarUiModel) -> Unit
 ) {
@@ -297,6 +306,7 @@ fun Content(
             items(items = calendarUiModel.visibleDates) { date ->
                 ContentItem(
                     date = date,
+                    isSelected = date.date == selectedDate,
                     onClickListener = onDateClickListener
                 )
             }
@@ -365,6 +375,7 @@ fun RatingInputDialog(
 @Composable
 fun ContentItem(
     date: CalendarUiModel.Date,
+    isSelected: Boolean,
     onClickListener: (CalendarUiModel.Date) -> Unit,
 ) {
     Card(
@@ -372,7 +383,7 @@ fun ContentItem(
             .padding(vertical = 4.dp, horizontal = 4.dp)
             .clickable { onClickListener(date) },
         colors = CardDefaults.cardColors(
-            containerColor = if (date.isSelected) {
+            containerColor = if (isSelected) {
                 MaterialTheme.colorScheme.primary
             } else {
                 MaterialTheme.colorScheme.secondary
@@ -400,7 +411,7 @@ fun ContentItem(
 }
 
 @Composable
-fun InfoCard() {
+fun InfoCard(onDismiss: () -> Unit) {
     Card(
         modifier = Modifier
             .padding(16.dp)
@@ -408,11 +419,24 @@ fun InfoCard() {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = "Navigation Instructions",
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onPrimary
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Navigation Instructions",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+                IconButton(onClick = onDismiss) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Dismiss",
+                        tint = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
+            }
             Text(
                 text = "1. Swipe left or right on a rating card to delete it.\n" +
                         "2. Click on a date to view or add ratings.\n" +

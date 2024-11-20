@@ -132,7 +132,7 @@ buildkonfig {
 
 android {
     namespace = "org.danielramzani.HealthCompose"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
+    compileSdk = 35
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].res.srcDirs("src/androidMain/res")

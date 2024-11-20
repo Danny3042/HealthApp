@@ -8,6 +8,7 @@ import platform.Foundation.NSCalendar
 import platform.Foundation.NSCalendarUnitDay
 import platform.Foundation.NSDate
 import platform.Foundation.timeIntervalSince1970
+import platform.HealthKit.HKAuthorizationStatusSharingAuthorized
 import platform.HealthKit.HKCategorySample
 import platform.HealthKit.HKCategoryTypeIdentifier
 import platform.HealthKit.HKCategoryTypeIdentifierSleepAnalysis
@@ -31,29 +32,44 @@ import platform.HealthKit.minuteUnit
 import platform.HealthKit.predicateForSamplesWithStartDate
 
 actual interface HealthKitService {
-    actual fun requestAuthorization()
+    actual fun requestAuthorization(): Boolean
+    actual fun checkPermissions(): Boolean
     actual fun readData(): Flow<HealthData>
 }
 
 class IOSHealthKitServiceImpl : HealthKitService {
     private val healthStore = HKHealthStore()
 
-    override fun requestAuthorization() {
-        val typesToRead = setOf(
-            HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierStepCount),
-            HKObjectType.categoryTypeForIdentifier(HKCategoryTypeIdentifierSleepAnalysis),
-            HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierAppleExerciseTime),
-            HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierDistanceWalkingRunning)
-        ).filterNotNull().toSet()
+override fun requestAuthorization(): Boolean {
+    var isAuthorized = false
+    val typesToRead: Set<HKObjectType> = setOf(
+        HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierStepCount),
+        HKObjectType.categoryTypeForIdentifier(HKCategoryTypeIdentifierSleepAnalysis),
+        HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierAppleExerciseTime),
+        HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierDistanceWalkingRunning)
+    ).filterNotNull().toSet()
 
-        healthStore.requestAuthorizationToShareTypes(null, typesToRead) { success, error ->
-            if (success) {
-                println("HealthKit authorization granted")
-            } else {
-                println("HealthKit authorization failed: ${error?.localizedDescription}")
-            }
+    healthStore.requestAuthorizationToShareTypes(null, typesToRead) { success, error ->
+        isAuthorized = success
+        if (!success) {
+            println("HealthKit authorization failed: ${error?.localizedDescription}")
         }
     }
+    return isAuthorized
+}
+
+override fun checkPermissions(): Boolean {
+    val typesToRead: Set<HKObjectType> = setOf(
+        HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierStepCount),
+        HKObjectType.categoryTypeForIdentifier(HKCategoryTypeIdentifierSleepAnalysis),
+        HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierAppleExerciseTime),
+        HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierDistanceWalkingRunning)
+    ).filterNotNull().toSet()
+
+    return typesToRead.all { type ->
+    healthStore.authorizationStatusForType(type) == HKAuthorizationStatusSharingAuthorized
+}
+}
 
     override fun readData(): Flow<HealthData> = flow {
         val endDate = NSDate()
