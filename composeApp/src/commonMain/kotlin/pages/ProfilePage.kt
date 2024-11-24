@@ -86,7 +86,7 @@ fun ProfilePage(navController: NavController) {
                         }
                     }
                 }
-                Divider()
+                Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
             }
             item {
                 SettingsListItem(
@@ -96,7 +96,7 @@ fun ProfilePage(navController: NavController) {
                         Icon(Icons.Outlined.Notifications, contentDescription = "Notifications Icon")
                     }
                 )
-                Divider()
+                Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
             }
             item {
                 SettingsListItem(
@@ -106,7 +106,7 @@ fun ProfilePage(navController: NavController) {
                         Icon(Icons.Outlined.Info, contentDescription = "About Icon")
                     }
                 )
-                Divider()
+                Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
             }
 
             if (showDeleteDialog) {
@@ -134,7 +134,7 @@ fun ProfilePage(navController: NavController) {
                             }
                         }
                     )
-                    Divider()
+                    Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
                 }
             }
         }
