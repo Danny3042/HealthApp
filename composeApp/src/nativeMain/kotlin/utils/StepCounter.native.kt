@@ -11,18 +11,20 @@ actual class StepCounter actual constructor(context: PlatformContext) {
 
     actual var stepCount: Int = 0
     private var stepGoal: Int = 0
-    private var onGoalAchieved: (() -> Unit)? = null
+    private var onGoalAchieved: ((Int) -> Unit)? = null
 
-    actual fun startListening(stepsGoal: Int, onGoalAchieved: () -> Unit) {
-        this.stepGoal = stepGoal
+    actual fun startListening(stepsGoal: Int, onGoalAchieved: (Int) -> Unit) {
+        this.stepGoal = stepsGoal
         this.onGoalAchieved = onGoalAchieved
-        pedometer.startPedometerUpdatesFromDate(NSDate(),) { pedometerData, error ->
+        pedometer.startPedometerUpdatesFromDate(NSDate()) { pedometerData, error ->
             stepCount = pedometerData?.numberOfSteps?.intValue ?: 0
+            if (stepCount >= stepGoal) {
+                this.onGoalAchieved?.invoke(stepCount)
+            }
         }
     }
 
     actual fun stopListening() {
         pedometer.stopPedometerUpdates()
     }
-
 }

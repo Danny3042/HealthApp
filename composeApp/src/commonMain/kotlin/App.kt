@@ -40,10 +40,10 @@ fun App() {
         val healthKitService = HealthKitServiceImpl(healthKitManager)
 
         LaunchedEffect(Unit) {
-            NotifierManager.initialize(NotificationPlatformConfiguration.Ios(
-                showPushNotification = true
-            ))
-        }
+        NotifierManager.initialize(NotificationPlatformConfiguration.Ios(
+            showPushNotification = true
+        ))
+    }
 
         NavHost(navController, startDestination = LoginScreen) {
             composable(LoginScreen) { Authentication().Login(navController) }

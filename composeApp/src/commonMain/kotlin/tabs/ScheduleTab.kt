@@ -5,9 +5,11 @@ import androidx.compose.material.icons.filled.MonitorHeart
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.navigation.compose.rememberNavController
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
-import pages.CombinedView
+import pages.HealthPage
+import pages.Timer
 
 object ScheduleTab : Tab {
 
@@ -27,6 +29,7 @@ object ScheduleTab : Tab {
 
     @Composable
     override fun Content() {
-        CombinedView()
+        val navController = rememberNavController()
+        HealthPage(onNavigateToTimerView = { navController.navigate(Timer) })
     }
 }

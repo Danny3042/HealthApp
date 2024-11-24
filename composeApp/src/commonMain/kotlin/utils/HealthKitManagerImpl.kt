@@ -5,7 +5,8 @@ import kotlinx.datetime.Instant
 
 
 expect interface HealthKitService {
-    fun requestAuthorization()
+    fun requestAuthorization(): Boolean
+    fun checkPermissions(): Boolean
     fun readData(): Flow<HealthData>
 }
 
