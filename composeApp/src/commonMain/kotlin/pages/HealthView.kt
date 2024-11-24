@@ -51,7 +51,7 @@ fun ExpandableCard(title: String, onSave: (Float) -> Unit){
             ),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant,
-    )
+        )
     ){
         Column {
             Row(
@@ -143,7 +143,7 @@ fun MyButton(onClick: () -> Unit) {
                 onClick = onClick,
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
 
-                ) {
+            ) {
                 Text("Meditation", color = MaterialTheme.colorScheme.onPrimary)
             }
         }
