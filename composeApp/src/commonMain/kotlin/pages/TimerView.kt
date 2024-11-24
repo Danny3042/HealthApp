@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+const val Timer = "timer"
 @Composable
 fun CircularTimer(
     timerValue: Long,
