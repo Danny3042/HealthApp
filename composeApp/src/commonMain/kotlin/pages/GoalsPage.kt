@@ -23,6 +23,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,19 +31,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mmk.kmpnotifier.notification.NotifierManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import utils.HealthKitService
 import utils.IGoalsStorage
 import utils.PlatformContext
 import utils.StepCounter
+import utils.isAndroid
 
 class GoalsViewModel(private val goalsStorage: IGoalsStorage) : ViewModel() {
     private val _goals = MutableStateFlow(Goals(0, 0))
@@ -100,36 +103,57 @@ class GoalsViewModel(private val goalsStorage: IGoalsStorage) : ViewModel() {
         }
     }
 
-    fun setGoals(stepsGoal: Int, exerciseGoal: Int) {
+    fun setGoals(stepsGoal: Int, exerciseGoal: Int, context: PlatformContext) {
         viewModelScope.launch {
             _goals.value = Goals(stepsGoal, exerciseGoal)
             saveGoals(_goals.value)
-
+            startStepCounter(context)
         }
     }
 
     fun startStepCounter(context: PlatformContext) {
         stepCounter = StepCounter(context)
-        stepCounter.startListening(_goals.value.stepsGoal ?:0) {
-            _goalAchieved.value = true
+        stepCounter.startListening(_goals.value.stepsGoal) { steps: Int ->
+            _stepsProgress.value = steps
+            if (steps >= _goals.value.stepsGoal) {
+                _goalAchieved.value = true
+                stopStepCounter()
+                showGoalAchievedNotification()
+            }
         }
     }
 
-    fun stopStepCounter() {
+    private fun stopStepCounter() {
         stepCounter.stopListening()
+    }
+
+    private fun showGoalAchievedNotification() {
+        // Show notification
+        val notifier = NotifierManager.getLocalNotifier()
+        val notificationId = notifier.notify("Goal Achieved", "Congratulations! You have achieved your step goal!")
     }
 }
 
 data class Goals(val stepsGoal: Int, val exerciseGoal: Int)
 
 @Composable
-fun GoalsPage(viewModel: GoalsViewModel) {
+fun GoalsPage(viewModel: GoalsViewModel, context: PlatformContext, healthKitService: HealthKitService) {
     var stepsGoal by remember { mutableStateOf(0) }
     var exerciseGoal by remember { mutableStateOf(0) }
     val currentGoals by viewModel.goals.collectAsState()
-    val stepsProgress = stepsGoal.takeIf { it > 0 }?.let { currentGoals?.stepsGoal?.toFloat()?.div(it) } ?: 0f
-    val exerciseProgress = exerciseGoal.takeIf { it > 0 }?.let { currentGoals?.exerciseGoal?.toFloat()?.div(it) } ?: 0f
-    val goalAchieved by viewModel.goalAchieved.collectAsState()
+    val stepsProgress by viewModel.stepsProgress.collectAsState()
+    val exerciseProgress by viewModel.exerciseProgress.collectAsState()
+    var hasPermissions by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        if(!isAndroid()) {
+            hasPermissions = healthKitService.checkPermissions()
+            if (!hasPermissions) {
+                hasPermissions = healthKitService.requestAuthorization()
+            }
+        }
+        viewModel.startStepCounter(context)
+    }
 
     Column(
         modifier = Modifier
@@ -149,11 +173,11 @@ fun GoalsPage(viewModel: GoalsViewModel) {
                 .horizontalScroll(rememberScrollState()),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-
-            ProgressBarCard("Steps Progress", stepsProgress, currentGoals?.stepsGoal ?: 0)
-
-            ProgressBarCard("Exercise Progress", exerciseProgress, currentGoals?.exerciseGoal ?: 0)
+            ProgressBarCard("Steps Progress", stepsProgress.toFloat() / (currentGoals?.stepsGoal ?: 1), currentGoals?.stepsGoal ?: 0)
+            ProgressBarCard("Exercise Progress", exerciseProgress.toFloat() / (currentGoals?.exerciseGoal ?: 1), currentGoals?.exerciseGoal ?: 0)
         }
+
+
         Stepper(
             title = "Steps Goal:",
             value = stepsGoal,
@@ -174,7 +198,7 @@ fun GoalsPage(viewModel: GoalsViewModel) {
         ) {
             Button(
                 onClick = {
-                    viewModel.setGoals(0, 0)
+                    viewModel.setGoals(0, 0, context)
                     stepsGoal = 0
                     exerciseGoal = 0
                 },
@@ -185,7 +209,7 @@ fun GoalsPage(viewModel: GoalsViewModel) {
             Spacer(modifier = Modifier.width(8.dp))
             Button(
                 onClick = {
-                    viewModel.setGoals(stepsGoal, exerciseGoal)
+                    viewModel.setGoals(stepsGoal, exerciseGoal, context)
                 }
             ) {
                 Text("Set Goals")
@@ -193,15 +217,6 @@ fun GoalsPage(viewModel: GoalsViewModel) {
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-
-        if (goalAchieved) {
-            Text(
-                text = "Congratulations! You have achieved your  step goal!",
-                style = MaterialTheme.typography.headlineMedium,
-                color = Color.Green,
-                modifier = Modifier.padding(top = 8.dp)
-            )
-        }
 
     }
 }
@@ -243,7 +258,12 @@ fun CircularProgressBar(progress: Float, goalValue: Int, modifier: Modifier = Mo
         modifier = modifier.size(100.dp)
     ) {
         val onSurface = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
-        val onPrimary = MaterialTheme.colorScheme.primary
+        val progressColor = when {
+            progress >= 1f -> MaterialTheme.colorScheme.primary
+            progress >= 0.75f -> MaterialTheme.colorScheme.secondary
+            progress >= 0.5f -> MaterialTheme.colorScheme.tertiary
+            else -> MaterialTheme.colorScheme.error
+        }
         Canvas(modifier = Modifier.size(100.dp)) {
             val strokeWidth = 8.dp.toPx()
             drawArc(
@@ -254,7 +274,7 @@ fun CircularProgressBar(progress: Float, goalValue: Int, modifier: Modifier = Mo
                 style = Stroke(strokeWidth, cap = StrokeCap.Round)
             )
             drawArc(
-                color = onPrimary,
+                color = progressColor,
                 startAngle = -90f,
                 sweepAngle = 360 * progress,
                 useCenter = false,
@@ -263,7 +283,7 @@ fun CircularProgressBar(progress: Float, goalValue: Int, modifier: Modifier = Mo
         }
         Text(
             text = "$goalValue",
-            color = Color.Black,
+            color = MaterialTheme.colorScheme.onSurface,
             style = MaterialTheme.typography.bodyLarge
         )
     }
@@ -281,13 +301,15 @@ fun ProgressBarCard(title: String, progress: Float, goalValue: Int) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(8.dp))
             CircularProgressBar(progress = progress, goalValue = goalValue, modifier = Modifier.fillMaxWidth())
             Text(
-                text = "Progress: ${progress * 100}% of $goalValue goal",
+                text = "Current Steps: ${progress.toInt()} / $goalValue\n Steps Left: ${(goalValue - progress.toInt()).coerceAtLeast(0)}",
                 style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(top = 8.dp)
             )
         }
