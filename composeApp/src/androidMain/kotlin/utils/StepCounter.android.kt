@@ -17,7 +17,7 @@ actual class StepCounter actual constructor(private val context: PlatformContext
     private var onGoalAchieved: ((Int) -> Unit)? = null
 
     actual fun startListening(stepsGoal: Int, onGoalAchieved: (Int) -> Unit) {
-        this.stepGoal = stepGoal
+        this.stepGoal = stepsGoal
         this.onGoalAchieved = onGoalAchieved
         sensorManager.registerListener(this, stepCounterSensor, SensorManager.SENSOR_DELAY_NORMAL)
     }

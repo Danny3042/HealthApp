@@ -40,6 +40,9 @@ import androidx.compose.ui.unit.sp
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.PermissionController
 import kotlinx.coroutines.launch
+import pages.GoalsViewModel
+import utils.getGoalsStorageInstance
+import utils.getPlatformContext
 
 @Composable
 fun HealthConnectScreen() {
@@ -64,6 +67,11 @@ fun HealthConnectScreen() {
         mutableStateOf(false)
     }
 
+    // Initialize GoalsViewModel
+    val platformContext = getPlatformContext()
+    val goalsStorage = getGoalsStorageInstance(platformContext)
+    val goalsViewModel = GoalsViewModel(goalsStorage)
+
     //permission launcher for the health connect
     val requestPermissions =
         rememberLauncherForActivityResult(PermissionController.createRequestPermissionResultContract()) { granted ->
@@ -76,6 +84,10 @@ fun HealthConnectScreen() {
                         HealthConnectUtils.readDistanceForInterval(interval).last().metricValue
                     sleepDuration =
                         HealthConnectUtils.readSleepSessionsForInterval(interval).last().metricValue
+
+                    // Update progress in GoalsViewModel
+                    goalsViewModel.updateStepsProgress(steps.toInt())
+                    goalsViewModel.updateExerciseProgress(mins.toInt())
                 }
             } else {
                 //permissions are rejected , redirect the users to health connect page to give permissions if the permissions page is not appearing
@@ -108,6 +120,10 @@ fun HealthConnectScreen() {
                     distance = HealthConnectUtils.readDistanceForInterval(interval)[0].metricValue
                     sleepDuration =
                         HealthConnectUtils.readSleepSessionsForInterval(interval).last().metricValue
+
+                    // Update progress in GoalsViewModel
+                    goalsViewModel.updateStepsProgress(steps.toInt())
+                    goalsViewModel.updateExerciseProgress(mins.toInt())
                 } else {
                     //asking for permissions from Health Connect since permissions are not given already
                     requestPermissions.launch(HealthConnectUtils.PERMISSIONS)
