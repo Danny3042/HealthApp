@@ -54,6 +54,7 @@ import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.todayIn
 import kotlinx.serialization.Serializable
+import pages.SuggestionsCard
 import utils.getGeminiSuggestions
 import kotlin.math.roundToInt
 
@@ -244,6 +245,19 @@ fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) 
                     calendarUiModel = updatedModel
                 }
             )
+            Button(
+                onClick = {
+                    scope.launch {
+                        isLoading = true
+                        suggestions = getGeminiSuggestions(listOf("Sleep Rating", "Mood Rating"))
+                        isLoading = false
+                    }
+                },
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text("Get Weekly Suggestions")
+            }
+            SuggestionsCard(suggestions)
         }
         Box(
             modifier = Modifier
@@ -252,12 +266,7 @@ fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) 
         ) {
             FloatingActionButton(
                 onClick = {
-                    isLoading = true
-                    scope.launch {
-                        suggestions = getGeminiSuggestions(listOf("Sleep Rating", "Mood Rating"))
-                        isLoading = false
-                        showDialog = true
-                    }
+                    showDialog = true
                 }
             ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add Event")

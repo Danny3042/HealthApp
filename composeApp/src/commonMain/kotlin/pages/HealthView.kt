@@ -39,6 +39,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import model.HealthStateHolder
 import utils.fetchSuggestionsFromGemini
+import utils.getGeminiSuggestions
 import utils.sendMoodRatingToGeminiChat
 import kotlin.math.roundToInt
 
@@ -232,9 +233,11 @@ fun AlertDialogExample(
 @Composable
 fun HealthView(onNavigateToTimerView: () -> Unit) {
     val healthStateHolder = remember { HealthStateHolder() }
+    val scope = rememberCoroutineScope()
+    var suggestions by remember { mutableStateOf(listOf<String>()) }
 
     LazyColumn {
-        item { DescriptionCard() }
+       item { DescriptionCard() }
         item {
             ExpandableCard("Sleep Rating") { value ->
                 healthStateHolder.updateSleepRating(value)
@@ -243,6 +246,15 @@ fun HealthView(onNavigateToTimerView: () -> Unit) {
         item {
             ExpandableCard("Mood Rating") { value ->
                 healthStateHolder.updateMoodRating(value)
+            }
+        }
+        item {
+            Button(onClick = {
+                scope.launch {
+                    suggestions = getGeminiSuggestions(listOf("Sleep Rating", "Mood Rating"))
+                }
+            }) {
+                Text("Get Suggestions")
             }
         }
         if (healthStateHolder.showDialog) {

@@ -3,6 +3,8 @@ package pages
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -23,14 +25,14 @@ fun SchedulePage(onNavigateToTimerView: () -> Unit) {
    var suggestions by remember { mutableStateOf(listOf<String>()) }
 
    LaunchedEffect(Unit) {
-      // Fetch suggestions from Gemini API
+      // Fetch initial suggestions from Gemini API
       scope.launch {
          suggestions = getGeminiSuggestions(listOf("Sleep Rating", "Mood Rating"))
       }
    }
 
    LazyColumn(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-      item { DescriptionCard() }
+      //item { DescriptionCard() }
       item { SuggestionsCard(suggestions) }
       item {
          ExpandableCard("Sleep Rating") { value ->
@@ -40,6 +42,15 @@ fun SchedulePage(onNavigateToTimerView: () -> Unit) {
       item {
          ExpandableCard("Mood Rating") { value ->
             healthStateHolder.updateMoodRating(value)
+         }
+      }
+      item {
+         Button(onClick = {
+            scope.launch {
+               suggestions = getGeminiSuggestions(listOf("Sleep Rating", "Mood Rating"))
+            }
+         }) {
+            Text("Get Weekly Suggestions")
          }
       }
       if (healthStateHolder.showDialog) {
