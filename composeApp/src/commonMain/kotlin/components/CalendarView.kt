@@ -26,6 +26,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,12 +38,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
@@ -50,6 +53,8 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.todayIn
+import kotlinx.serialization.Serializable
+import utils.getGeminiSuggestions
 import kotlin.math.roundToInt
 
 data class CalendarUiModel(
@@ -78,6 +83,11 @@ data class Event(
 data class Rating(
     val sleepRating: Float,
     val moodRating: Float
+)
+
+@Serializable
+data class MoodRating(
+    val rating: Float
 )
 
 class CalendarDataSource {
@@ -197,6 +207,9 @@ fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) 
     var showDialog by remember { mutableStateOf(false) }
     var showInfoCard by remember { mutableStateOf(true) }
     var selectedDate by remember { mutableStateOf(calendarUiModel.selectedDate.date) }
+    var suggestions by remember { mutableStateOf(listOf<String>()) }
+    var isLoading by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
 
     Box(modifier = modifier.fillMaxSize()) {
         Column(
@@ -238,10 +251,23 @@ fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) 
                 .padding(bottom = 100.dp, end = 50.dp) // Adjust padding to place above nav bar
         ) {
             FloatingActionButton(
-                onClick = { showDialog = true }
+                onClick = {
+                    isLoading = true
+                    scope.launch {
+                        suggestions = getGeminiSuggestions(listOf("Sleep Rating", "Mood Rating"))
+                        isLoading = false
+                        showDialog = true
+                    }
+                }
             ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add Event")
             }
+        }
+
+        if (isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center)
+            )
         }
     }
 
@@ -257,10 +283,6 @@ fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) 
         )
     }
 }
-
-
-
-
 
 // Update the RatingCard composable to call a function that deletes the rating from the data source when swiped
 @Composable

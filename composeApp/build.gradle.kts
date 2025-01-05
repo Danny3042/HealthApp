@@ -142,7 +142,7 @@ android {
         applicationId = "org.danielramzani.HealthCompose"
         minSdk = 31
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 8
+        versionCode = 9
         versionName = "1.0"
     }
     packaging {

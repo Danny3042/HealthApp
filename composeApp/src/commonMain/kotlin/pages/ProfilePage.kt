@@ -126,6 +126,10 @@ fun ProfilePage(navController: NavController) {
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
                             ) {
                                 Text("Confirm", color = Color.White)
+                                coroutineScope.launch {
+                                    deleteUser(auth, navController, snackbarHostState)
+                                    navController.navigate(LoginScreen)
+                                }
                             }
                         },
                         dismissButton = {

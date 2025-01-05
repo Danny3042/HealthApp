@@ -8,8 +8,8 @@ import org.danielramzani.HealthCompose.BuildKonfig
 /**
  * Service for Generative AI operations that can interact with text as well as images.
  */
-class GenerativeAiService private constructor(
-    private val visionModel: GenerativeModel,
+class GenerativeAiService(
+     val visionModel: GenerativeModel,
 ) {
 
     /**
