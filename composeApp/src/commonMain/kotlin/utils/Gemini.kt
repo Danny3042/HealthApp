@@ -19,6 +19,7 @@ suspend fun getGeminiSuggestions(results: List<String>): List<String> {
         )
 
         // Mocked API call to Gemini
-        listOf("Suggestion 1", "Suggestion 2", "Suggestion 3")
+        val response = instance.getSuggestions(results)
+        response.toString().split(",")
     }
 }

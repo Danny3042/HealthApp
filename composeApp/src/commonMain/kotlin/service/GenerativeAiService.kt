@@ -21,6 +21,12 @@ class GenerativeAiService(
         return visionModel.startChat(history)
     }
 
+    suspend fun getSuggestions(results: List<String>): String? {
+        val response = visionModel.generateContent(
+            prompt = "Based on the following results: ${results.joinToString(", ")}. Provide suggestions for the week."
+        )
+        return response.text
+    }
     companion object {
         @Suppress("ktlint:standard:property-naming")
         var GEMINI_API_KEY = BuildKonfig.GEMINI_API_KEY
