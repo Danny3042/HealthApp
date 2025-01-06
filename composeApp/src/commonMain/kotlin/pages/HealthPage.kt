@@ -30,14 +30,7 @@ fun WeekView(onNavigateToTimerView: () -> Unit) {
     ScheduleView(dataSource = dataSource)
 }
 
-@Composable
-fun HealthViewScreen() {
-    var currentScreen by remember { mutableStateOf("HealthView") }
-    when (currentScreen) {
-        "HealthView" -> HealthView { currentScreen = "TimerView" }
-        "TimerView" -> TimerScreenContent(onBack = { currentScreen = "HealthView" })
-    }
-}
+
 
 
 

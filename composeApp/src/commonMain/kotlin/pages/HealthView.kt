@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -17,6 +16,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -37,9 +37,7 @@ import androidx.compose.ui.unit.dp
 import components.MoodRating
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
-import model.HealthStateHolder
 import utils.fetchSuggestionsFromGemini
-import utils.getGeminiSuggestions
 import utils.sendMoodRatingToGeminiChat
 import kotlin.math.roundToInt
 
@@ -102,7 +100,7 @@ fun ExpandableCard(title: String, onSave: (Float) -> Unit) {
             } else {
                 Text(text = sliderValue)
             }
-            SuggestionsCard(suggestions = listOf("Suggestion 1", "Suggestion 2", "Suggestion 3"))
+
         }
        
     }
@@ -131,7 +129,7 @@ fun DescriptionCard() {
 }
 
 @Composable
-fun SuggestionsCard(suggestions: List<String>) {
+fun SuggestionsCard(suggestions: List<String>, isLoading: Boolean) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -141,8 +139,12 @@ fun SuggestionsCard(suggestions: List<String>) {
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(text = "Suggestions", style = MaterialTheme.typography.titleMedium)
-            suggestions.forEach { suggestion ->
-                Text(text = suggestion)
+            if (isLoading) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+            } else {
+                suggestions.forEach { suggestion ->
+                    Text(text = suggestion)
+                }
             }
         }
     }
@@ -228,48 +230,4 @@ fun AlertDialogExample(
             }
         }
     )
-}
-
-@Composable
-fun HealthView(onNavigateToTimerView: () -> Unit) {
-    val healthStateHolder = remember { HealthStateHolder() }
-    val scope = rememberCoroutineScope()
-    var suggestions by remember { mutableStateOf(listOf<String>()) }
-
-    LazyColumn {
-       item { DescriptionCard() }
-        item {
-            ExpandableCard("Sleep Rating") { value ->
-                healthStateHolder.updateSleepRating(value)
-            }
-        }
-        item {
-            ExpandableCard("Mood Rating") { value ->
-                healthStateHolder.updateMoodRating(value)
-            }
-        }
-        item {
-            Button(onClick = {
-                scope.launch {
-                    suggestions = getGeminiSuggestions(listOf("Sleep Rating", "Mood Rating"))
-                }
-            }) {
-                Text("Get Suggestions")
-            }
-        }
-        if (healthStateHolder.showDialog) {
-            item {
-                AlertDialogExample(
-                    onDismissRequest = { healthStateHolder.showDialog = false },
-                    onConfirmation = {
-                        println("Navigating to TimerView")
-                        onNavigateToTimerView()
-                        healthStateHolder.showDialog = false
-                    },
-                    dialogTitle = "Meditation Request",
-                    dialogText = "Based on the information we suggest to start a meditation session."
-                )
-            }
-        }
-    }
 }

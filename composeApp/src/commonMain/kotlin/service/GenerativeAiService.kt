@@ -10,6 +10,7 @@ import org.danielramzani.HealthCompose.BuildKonfig
  */
 class GenerativeAiService(
      val visionModel: GenerativeModel,
+     val maxTokens: Int
 ) {
 
     /**
@@ -37,6 +38,7 @@ class GenerativeAiService(
                     modelName = "gemini-1.5-flash",
                     apiKey = GEMINI_API_KEY,
                 ),
+                maxTokens = 200,
             )
         }
     }
