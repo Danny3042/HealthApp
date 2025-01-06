@@ -20,9 +20,10 @@ To run the iOS application please open Xcode and run it there if there are probl
 </tabs>
 
 ## Setup instructions
+Android Studio Ladybug and Xcode 16.2 is needed to run the Android and iOS applications.
 For creating an account the user can use Sign in with Google, or Sign in with Apple for iOS devices or the user can create a new account in the Sign up page and log in with 
 their newly made credentials.
 
 ## Miscellaneous 
-Android Studio Ladybug and Xcode 16.2 is needed to run the Android and iOS applications 
+
 Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
