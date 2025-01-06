@@ -24,6 +24,5 @@ For creating an account the user can use Sign in with Google, or Sign in with Ap
 their newly made credentials.
 
 ## Miscellaneous 
-When first signing up, the app might redirect to a blank screen please exit out of the application and restart it to go to the home screen
 
 Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
