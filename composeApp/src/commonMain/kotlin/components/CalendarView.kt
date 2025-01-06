@@ -3,10 +3,8 @@ package components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -14,10 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Close
@@ -26,7 +21,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -47,9 +41,9 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.todayIn
+import kotlinx.serialization.Serializable
 import kotlin.math.roundToInt
 
 data class CalendarUiModel(
@@ -78,6 +72,11 @@ data class Event(
 data class Rating(
     val sleepRating: Float,
     val moodRating: Float
+)
+
+@Serializable
+data class MoodRating(
+    val rating: Float
 )
 
 class CalendarDataSource {
@@ -129,7 +128,7 @@ fun Header(
             text = if (data.selectedDate.isToday) {
                 "Today"
             } else {
-                data.selectedDate.date.toString() // You might want to format this date as needed
+                data.selectedDate.date.toString()
             },
             modifier = Modifier
                 .weight(1f)
@@ -191,78 +190,9 @@ fun EventInputDialog(
     )
 }
 
-@Composable
-fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) {
-    var calendarUiModel by remember { mutableStateOf(dataSource.getData(lastSelectedDate = dataSource.today)) }
-    var showDialog by remember { mutableStateOf(false) }
-    var showInfoCard by remember { mutableStateOf(true) }
-    var selectedDate by remember { mutableStateOf(calendarUiModel.selectedDate.date) }
-
-    Box(modifier = modifier.fillMaxSize()) {
-        Column(
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .padding(top = 54.dp)
-                .verticalScroll(rememberScrollState()) // Make the Column scrollable
-        ) {
-            if (showInfoCard) {
-                InfoCard(onDismiss = { showInfoCard = false })
-            }
-            Header(
-                data = calendarUiModel,
-                onPrevClickListener = { startDate ->
-                    calendarUiModel = dataSource.getData(startDate.minus(7, DateTimeUnit.DAY), calendarUiModel.selectedDate.date)
-                },
-                onNextClickListener = { endDate ->
-                    calendarUiModel = dataSource.getData(endDate.plus(7, DateTimeUnit.DAY), calendarUiModel.selectedDate.date)
-                },
-                onTodayClickListener = {
-                    calendarUiModel = dataSource.getData(lastSelectedDate = dataSource.today)
-                }
-            )
-            Content(
-                calendarUiModel = calendarUiModel,
-                selectedDate = selectedDate,
-                onDateClickListener = { date ->
-                    selectedDate = date.date
-                    calendarUiModel = calendarUiModel.copy(selectedDate = date)
-                },
-                onUpdateCalendarUiModel = { updatedModel ->
-                    calendarUiModel = updatedModel
-                }
-            )
-        }
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(bottom = 100.dp, end = 50.dp) // Adjust padding to place above nav bar
-        ) {
-            FloatingActionButton(
-                onClick = { showDialog = true }
-            ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Add Event")
-            }
-        }
-    }
-
-    if (showDialog) {
-        RatingInputDialog(
-            onConfirm = { sleepRating, moodRating ->
-                val newRatings = calendarUiModel.ratings.toMutableMap()
-                newRatings[calendarUiModel.selectedDate.date] = Rating(sleepRating, moodRating)
-                calendarUiModel = calendarUiModel.copy(ratings = newRatings)
-                showDialog = false
-            },
-            onDismissRequest = { showDialog = false }
-        )
-    }
-}
 
 
-
-
-
-// Update the RatingCard composable to call a function that deletes the rating from the data source when swiped
+// this card updates the rating for mood and sleep
 @Composable
 fun RatingCard(rating: Rating, onDelete: () -> Unit) {
     var offsetX by remember { mutableStateOf(0f) }
@@ -289,7 +219,7 @@ fun RatingCard(rating: Rating, onDelete: () -> Unit) {
     }
 }
 
-// Update the Content composable to remove the rating from the data source permanently
+// Updates the content to remove the rating from the data source permanently
 @Composable
 fun Content(
     calendarUiModel: CalendarUiModel,

@@ -24,6 +24,7 @@ import pages.NotificationPage
 import pages.NotificationPageScreen
 import pages.Timer
 import pages.TimerScreenContent
+import tabs.HomeTab
 import tabs.ProfileTab
 import utils.HealthKitServiceImpl
 import utils.iOSHealthKitManager
@@ -49,7 +50,7 @@ fun App() {
             composable(LoginScreen) { Authentication().Login(navController) }
             composable(SignUpScreen) { Authentication().signUp(navController) }
             composable(ResetPasswordScreen) { Authentication().ResetPassword(navController)}
-            composable(HomePageScreen) { HomePage(healthKitService) }
+            composable(HomePageScreen) { HomeTab.Content() }
             composable(ChatPageScreen) { ChatScreen() }
             composable(HeroScreen) { HeroScreen(navController) }
             composable("profile") { ProfileTab(navController).Content() }

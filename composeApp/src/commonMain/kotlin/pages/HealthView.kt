@@ -28,18 +28,32 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.dp
+import components.MoodRating
+import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
 import model.HealthStateHolder
+import utils.fetchSuggestionsFromGemini
+import utils.getGeminiSuggestions
+import utils.sendMoodRatingToGeminiChat
 import kotlin.math.roundToInt
 
+@Serializable
+data class Rating(
+    val sleepRating: Float,
+    val moodRating: Float
+)
+
 @Composable
-fun ExpandableCard(title: String, onSave: (Float) -> Unit){
+fun ExpandableCard(title: String, onSave: (Float) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
     var sliderValue by remember { mutableStateOf("") }
+    val scope = rememberCoroutineScope()
 
     Card(
         shape = RoundedCornerShape(8.dp),
@@ -52,7 +66,7 @@ fun ExpandableCard(title: String, onSave: (Float) -> Unit){
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant,
         )
-    ){
+    ) {
         Column {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -72,11 +86,25 @@ fun ExpandableCard(title: String, onSave: (Float) -> Unit){
                 }
             }
             if (expanded) {
-                SliderExample(sliderValue, onSave = { value -> sliderValue = value.toString(); onSave(value) })
+                SliderExample(sliderValue, onSave = { value ->
+                    sliderValue = value.toString()
+                    onSave(value)
+                    // Send ratings to Gemini and fetch suggestions
+                    val rating = MoodRating(sliderValue.toFloat())
+                    scope.launch {
+                        val success = sendMoodRatingToGeminiChat(rating)
+                        if (success) {
+                            val suggestions = fetchSuggestionsFromGemini()
+                            println("Suggestions: $suggestions")
+                        }
+                    }
+                })
             } else {
                 Text(text = sliderValue)
             }
+            SuggestionsCard(suggestions = listOf("Suggestion 1", "Suggestion 2", "Suggestion 3"))
         }
+       
     }
 }
 
@@ -97,6 +125,24 @@ fun DescriptionCard() {
             if (showDescription) {
                 Text(text = "This app uses expandable cards to rate your sleep and mood. " +
                         "Slide to select a value and hit save to update your ratings.")
+            }
+        }
+    }
+}
+
+@Composable
+fun SuggestionsCard(suggestions: List<String>) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        shape = RoundedCornerShape(8.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(text = "Suggestions", style = MaterialTheme.typography.titleMedium)
+            suggestions.forEach { suggestion ->
+                Text(text = suggestion)
             }
         }
     }
@@ -187,9 +233,11 @@ fun AlertDialogExample(
 @Composable
 fun HealthView(onNavigateToTimerView: () -> Unit) {
     val healthStateHolder = remember { HealthStateHolder() }
+    val scope = rememberCoroutineScope()
+    var suggestions by remember { mutableStateOf(listOf<String>()) }
 
     LazyColumn {
-        item { DescriptionCard() }
+       item { DescriptionCard() }
         item {
             ExpandableCard("Sleep Rating") { value ->
                 healthStateHolder.updateSleepRating(value)
@@ -198,6 +246,15 @@ fun HealthView(onNavigateToTimerView: () -> Unit) {
         item {
             ExpandableCard("Mood Rating") { value ->
                 healthStateHolder.updateMoodRating(value)
+            }
+        }
+        item {
+            Button(onClick = {
+                scope.launch {
+                    suggestions = getGeminiSuggestions(listOf("Sleep Rating", "Mood Rating"))
+                }
+            }) {
+                Text("Get Suggestions")
             }
         }
         if (healthStateHolder.showDialog) {
@@ -216,5 +273,3 @@ fun HealthView(onNavigateToTimerView: () -> Unit) {
         }
     }
 }
-
-

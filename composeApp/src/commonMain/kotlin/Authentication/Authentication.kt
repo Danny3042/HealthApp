@@ -301,12 +301,15 @@ class Authentication {
                                     password = userPassword
                                 )
                                 firebaseUser = result.user
+                                println("User account created: $firebaseUser")
+                                navController.navigate(HeroScreen)
                             } catch (e: Exception) {
                                 val result = auth.signInWithEmailAndPassword(
                                     email = userEmail,
                                     password = userPassword
                                 )
                                 firebaseUser = result.user
+
                             }
                         }
                     }) {
