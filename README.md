@@ -20,7 +20,7 @@ To run the iOS application please open Xcode and run it there if there are probl
 </tabs>
 
 ## Setup instructions
-For creating an account the user can use sign in with Google, or Sign in with Apple for iOS devices or the user can create a new account in the Sign up page and log in with 
+For creating an account the user can use Sign in with Google, or Sign in with Apple for iOS devices or the user can create a new account in the Sign up page and log in with 
 their newly made credentials.
 
 ## Miscellaneous 
