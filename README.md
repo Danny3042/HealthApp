@@ -24,5 +24,5 @@ For creating an account the user can use Sign in with Google, or Sign in with Ap
 their newly made credentials.
 
 ## Miscellaneous 
-
+Android Studio Ladybug and Xcode 16.2 is needed to run the Android and iOS applications 
 Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
