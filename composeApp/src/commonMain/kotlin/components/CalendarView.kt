@@ -128,7 +128,7 @@ fun Header(
             text = if (data.selectedDate.isToday) {
                 "Today"
             } else {
-                data.selectedDate.date.toString() // You might want to format this date as needed
+                data.selectedDate.date.toString()
             },
             modifier = Modifier
                 .weight(1f)
@@ -192,7 +192,7 @@ fun EventInputDialog(
 
 
 
-// Update the RatingCard composable to call a function that deletes the rating from the data source when swiped
+// this card updates the rating for mood and sleep
 @Composable
 fun RatingCard(rating: Rating, onDelete: () -> Unit) {
     var offsetX by remember { mutableStateOf(0f) }
@@ -219,7 +219,7 @@ fun RatingCard(rating: Rating, onDelete: () -> Unit) {
     }
 }
 
-// Update the Content composable to remove the rating from the data source permanently
+// Updates the content to remove the rating from the data source permanently
 @Composable
 fun Content(
     calendarUiModel: CalendarUiModel,
