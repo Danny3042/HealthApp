@@ -14,7 +14,6 @@
 		086786B92BFAB3210004FEBB /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 086786B82BFAB3210004FEBB /* FirebaseAuth */; };
 		08683C0B2C287E8D00180F44 /* HealthKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08683C0A2C287E8D00180F44 /* HealthKitManager.swift */; };
 		08683C0D2C28801300180F44 /* HealthConnectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08683C0C2C28801300180F44 /* HealthConnectView.swift */; };
-		08744AE62BFA76D700BF0FF6 /* CareKit in Frameworks */ = {isa = PBXBuildFile; productRef = 08744AE52BFA76D700BF0FF6 /* CareKit */; };
 		087F31292C431A7A00F6B3B2 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 087F31282C431A7A00F6B3B2 /* GoogleSignIn */; };
 		087F312B2C431A7A00F6B3B2 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 087F312A2C431A7A00F6B3B2 /* GoogleSignInSwift */; };
 		087F312D2C43376A00F6B3B2 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 087F312C2C43376A00F6B3B2 /* FirebaseCrashlytics */; };
@@ -87,7 +86,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				08744AE62BFA76D700BF0FF6 /* CareKit in Frameworks */,
 				0822B3002C4F104A009ACEEC /* FirebaseMessaging in Frameworks */,
 				087F312B2C431A7A00F6B3B2 /* GoogleSignInSwift in Frameworks */,
 				086786B72BFAB3210004FEBB /* FirebaseAnalytics in Frameworks */,
@@ -190,7 +188,7 @@
 				B92378962B6B1156000C7307 /* Frameworks */,
 				7555FF79242A565900829871 /* Resources */,
 				08D07E1D2BFA713900C7C391 /* Embed Frameworks */,
-				087F312E2C4337CC00F6B3B2 /* ShellScript */,
+				082828A72D2C8929006C1EE3 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -198,7 +196,6 @@
 			);
 			name = iosApp;
 			packageProductDependencies = (
-				08744AE52BFA76D700BF0FF6 /* CareKit */,
 				086786B62BFAB3210004FEBB /* FirebaseAnalytics */,
 				086786B82BFAB3210004FEBB /* FirebaseAuth */,
 				087F31282C431A7A00F6B3B2 /* GoogleSignIn */,
@@ -235,7 +232,6 @@
 			);
 			mainGroup = 7555FF72242A565900829871;
 			packageReferences = (
-				08D07E052BFA704D00C7C391 /* XCRemoteSwiftPackageReference "CareKit" */,
 				086786B52BFAB3210004FEBB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				087F31272C431A7A00F6B3B2 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 			);
@@ -299,7 +295,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		087F312E2C4337CC00F6B3B2 /* ShellScript */ = {
+		082828A72D2C8929006C1EE3 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -590,14 +586,6 @@
 				minimumVersion = 7.1.0;
 			};
 		};
-		08D07E052BFA704D00C7C391 /* XCRemoteSwiftPackageReference "CareKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/carekit-apple/CareKit.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.0.2;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -614,11 +602,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 086786B52BFAB3210004FEBB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAuth;
-		};
-		08744AE52BFA76D700BF0FF6 /* CareKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 08D07E052BFA704D00C7C391 /* XCRemoteSwiftPackageReference "CareKit" */;
-			productName = CareKit;
 		};
 		087F31282C431A7A00F6B3B2 /* GoogleSignIn */ = {
 			isa = XCSwiftPackageProductDependency;
