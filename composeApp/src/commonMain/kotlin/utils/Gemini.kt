@@ -16,7 +16,7 @@ suspend fun getGeminiSuggestions(results: List<String>, sleepRating: Int, moodRa
                 modelName = "gemini-1.5-flash",
                 apiKey = GEMINI_API_KEY,
             ),
-            maxTokens = 100
+            maxTokens = 20
         )
 
         // Mocked API call to Gemini

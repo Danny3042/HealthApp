@@ -1,5 +1,4 @@
 package pages
-
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -22,12 +21,12 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import components.AdviceTypeDialog
 import components.CalendarDataSource
 import components.Content
 import components.Header
 import components.InfoCard
-import components.Rating
-import components.RatingInputDialog
+import components.RatingsDialog
 import kotlinx.coroutines.launch
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.minus
@@ -37,14 +36,18 @@ import utils.getGeminiSuggestions
 @Composable
 fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) {
     var calendarUiModel by remember { mutableStateOf(dataSource.getData(lastSelectedDate = dataSource.today)) }
-    var showDialog by remember { mutableStateOf(false) }
+    var showAdviceDialog by remember { mutableStateOf(false) }
     var showInfoCard by remember { mutableStateOf(true) }
     var selectedDate by remember { mutableStateOf(calendarUiModel.selectedDate.date) }
     var suggestions by remember { mutableStateOf(listOf<String>()) }
     var isLoading by remember { mutableStateOf(false) }
     var isFabVisible by remember { mutableStateOf(true) }
+    var adviceType by remember { mutableStateOf("General") }
     val scope = rememberCoroutineScope()
     val listState = rememberLazyListState()
+    var showRatingsDialog by remember { mutableStateOf(false) }
+    var tempSleepRating by remember { mutableStateOf(0) }
+    var tempMoodRating by remember { mutableStateOf(0) }
 
     LaunchedEffect(listState) {
         snapshotFlow { listState.firstVisibleItemIndex }
@@ -67,10 +70,16 @@ fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) 
                 Header(
                     data = calendarUiModel,
                     onPrevClickListener = { startDate ->
-                        calendarUiModel = dataSource.getData(startDate.minus(7, DateTimeUnit.DAY), calendarUiModel.selectedDate.date)
+                        calendarUiModel = dataSource.getData(
+                            startDate.minus(7, DateTimeUnit.DAY),
+                            calendarUiModel.selectedDate.date
+                        )
                     },
                     onNextClickListener = { endDate ->
-                        calendarUiModel = dataSource.getData(endDate.plus(7, DateTimeUnit.DAY), calendarUiModel.selectedDate.date)
+                        calendarUiModel = dataSource.getData(
+                            endDate.plus(7, DateTimeUnit.DAY),
+                            calendarUiModel.selectedDate.date
+                        )
                     },
                     onTodayClickListener = {
                         calendarUiModel = dataSource.getData(lastSelectedDate = dataSource.today)
@@ -88,19 +97,10 @@ fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) 
                     }
                 )
                 Button(
-                    onClick = {
-                        scope.launch {
-                            isLoading = true
-                            val ratings = calendarUiModel.ratings[selectedDate]
-                            val sleepRating = (ratings?.sleepRating ?: 0).toInt()
-                            val moodRating = (ratings?.moodRating ?: 0).toInt()
-                            suggestions = getGeminiSuggestions(listOf("Sleep Rating", "Mood Rating"), sleepRating, moodRating)
-                            isLoading = false
-                        }
-                    },
+                    onClick = { showAdviceDialog = true },
                     modifier = Modifier.padding(16.dp)
                 ) {
-                    Text("Get Tips")
+                    Text("Health Checkup")
                 }
                 SuggestionsCard(suggestions, isLoading)
             }
@@ -109,28 +109,54 @@ fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) 
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(bottom = 100.dp, end = 50.dp) // Adjust padding to place above nav bar
+                    .padding(bottom = 100.dp, end = 50.dp)
             ) {
                 FloatingActionButton(
                     onClick = {
-                        showDialog = true
+                        showRatingsDialog = true
                     }
                 ) {
                     Icon(imageVector = Icons.Default.Add, contentDescription = "Add Event")
+                }
+
+                if (showRatingsDialog) {
+                    RatingsDialog(
+                        sleepRating = tempSleepRating,
+                        moodRating = tempMoodRating,
+                        onSleepRatingChange = { tempSleepRating = it },
+                        onMoodRatingChange = { tempMoodRating = it },
+                        onSubmit = {
+                            val updatedRatings = calendarUiModel.ratings.toMutableMap()
+                            updatedRatings[selectedDate] = components.Rating(
+                                sleepRating = tempSleepRating,
+                                moodRating = tempMoodRating
+                            )
+                            calendarUiModel = calendarUiModel.copy(ratings = updatedRatings)
+                            dataSource.saveRatings(selectedDate, tempSleepRating, tempMoodRating)
+                            showRatingsDialog = false
+                        },
+                        onDismiss = { showRatingsDialog = false }
+                    )
                 }
             }
         }
     }
 
-    if (showDialog) {
-        RatingInputDialog(
-            onConfirm = { sleepRating, moodRating ->
-                val newRatings = calendarUiModel.ratings.toMutableMap()
-                newRatings[calendarUiModel.selectedDate.date] = Rating(sleepRating, moodRating)
-                calendarUiModel = calendarUiModel.copy(ratings = newRatings)
-                showDialog = false
+    if (showAdviceDialog) {
+        AdviceTypeDialog(
+            onSelect = { type ->
+                adviceType = type
+                showAdviceDialog = false
+                scope.launch {
+                    isLoading = true
+                    val ratings = calendarUiModel.ratings[selectedDate]
+                    val sleepRating = (ratings?.sleepRating ?: 0).toInt()
+                    val moodRating = (ratings?.moodRating ?: 0).toInt()
+                    suggestions = getGeminiSuggestions(listOf(type), sleepRating, moodRating)
+                    isLoading = false
+                }
             },
-            onDismissRequest = { showDialog = false }
+            onDismiss = { showAdviceDialog = false }
         )
     }
 }
