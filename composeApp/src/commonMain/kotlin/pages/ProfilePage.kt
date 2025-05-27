@@ -1,7 +1,7 @@
 package pages
 
 import Authentication.LoginScreen
-import sub_pages.DarkModeSettingsPageScreen
+import DarkModeSettingsPageScreen
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column

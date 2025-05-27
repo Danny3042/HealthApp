@@ -26,8 +26,6 @@ import sub_pages.NotificationPage
 import sub_pages.NotificationPageScreen
 import pages.Timer
 import pages.TimerScreenContent
-import sub_pages.DarkModeSettingsPage
-import sub_pages.DarkModeSettingsPageScreen
 import tabs.HomeTab
 import tabs.ProfileTab
 import utils.HealthKitServiceImpl
