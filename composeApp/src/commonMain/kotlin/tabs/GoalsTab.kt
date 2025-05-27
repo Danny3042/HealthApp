@@ -8,11 +8,8 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import pages.GoalsPage
-import pages.GoalsViewModel
 import utils.HealthKitService
 import utils.HealthKitServiceImpl
-import utils.getGoalsStorageInstance
-import utils.getPlatformContext
 import utils.iOSHealthKitManager
 
 object GoalsTab: Tab {
@@ -39,8 +36,6 @@ object GoalsTab: Tab {
 
     @Composable
     override fun Content() {
-        val platformContext = getPlatformContext()
-        val goalsStorage = getGoalsStorageInstance(platformContext)
-        GoalsPage(viewModel = GoalsViewModel(goalsStorage), context = platformContext, healthKitService = healthKitService )
+        GoalsPage()
     }
 }

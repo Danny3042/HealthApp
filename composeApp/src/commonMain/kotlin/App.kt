@@ -5,10 +5,13 @@ import Authentication.ResetPasswordScreen
 import Authentication.SignUpScreen
 import Colors.DarkColors
 import Colors.LightColors
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -16,14 +19,15 @@ import com.mmk.kmpnotifier.notification.NotifierManager
 import com.mmk.kmpnotifier.notification.configuration.NotificationPlatformConfiguration
 import config.VERSION_NUMBER
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import pages.AboutPage
-import pages.AboutPageScreen
-import pages.HomePage
+import sub_pages.AboutPage
+import sub_pages.AboutPageScreen
 import pages.HomePageScreen
-import pages.NotificationPage
-import pages.NotificationPageScreen
+import sub_pages.NotificationPage
+import sub_pages.NotificationPageScreen
 import pages.Timer
 import pages.TimerScreenContent
+import sub_pages.DarkModeSettingsPage
+import sub_pages.DarkModeSettingsPageScreen
 import tabs.HomeTab
 import tabs.ProfileTab
 import utils.HealthKitServiceImpl
@@ -33,7 +37,15 @@ import utils.iOSHealthKitManager
 @Composable
 @Preview
 fun App() {
-    val colors = if (isSystemInDarkTheme()) DarkColors else LightColors
+
+    var isDarkMode by remember { mutableStateOf(false) }
+    var useSystemDefault by remember { mutableStateOf(true) }
+
+    val colors = if (useSystemDefault) {
+        if (isDarkMode) DarkColors else LightColors
+    } else {
+        if (isDarkMode) DarkColors else LightColors
+    }
 
     MaterialTheme(colorScheme = colors) {
         val navController = rememberNavController()
@@ -56,6 +68,14 @@ fun App() {
             composable("profile") { ProfileTab(navController).Content() }
             composable(AboutPageScreen) { AboutPage(navController, versionNumber = VERSION_NUMBER) }
             composable(NotificationPageScreen) { NotificationPage(navController) }
+            composable(DarkModeSettingsPageScreen) {
+                DarkModeSettingsPage(
+                isDarkMode = isDarkMode,
+                onDarkModeToggle = { isDarkMode = it },
+                useSystemDefault = useSystemDefault,
+                onUseSystemDefaultToggle = { useSystemDefault = it },
+                    navController = navController
+            )  }
             composable(Timer) { TimerScreenContent(onBack = { navController.popBackStack() }) }
         }
     }

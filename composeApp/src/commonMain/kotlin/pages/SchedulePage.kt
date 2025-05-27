@@ -100,7 +100,7 @@ fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) 
                     onClick = { showAdviceDialog = true },
                     modifier = Modifier.padding(16.dp)
                 ) {
-                    Text("Health Checkup")
+                    Text("Get Tips")
                 }
                 SuggestionsCard(suggestions, isLoading)
             }
