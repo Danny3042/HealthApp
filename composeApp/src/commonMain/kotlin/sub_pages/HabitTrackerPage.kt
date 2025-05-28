@@ -65,7 +65,7 @@ fun HabitTrackerPage() {
             habits = habits + ""
             checkedStates = checkedStates + false
             editingIndex = habits.size // new item index
-            editingText = ""
+            editingText = "Edit your habit here"
         }) {
             Text("Add")
         }

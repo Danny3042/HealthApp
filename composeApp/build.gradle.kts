@@ -92,7 +92,6 @@ kotlin {
             implementation(libs.kmpauth.uihelper) //UiHelper SignIn buttons (AppleSignIn, GoogleSignInButton)
             implementation(compose.material3)
             implementation(libs.androidx.datastore.preferences)
-            implementation(libs.multiplatform.settings.no.arg)
             // Gemini API
             implementation(libs.generativeai.google)
             implementation(libs.calf.filepicker)

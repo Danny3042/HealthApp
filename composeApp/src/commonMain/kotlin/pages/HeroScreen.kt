@@ -18,7 +18,7 @@ import tabs.ChatTab
 import tabs.GoalsTab
 import tabs.HomeTab
 import tabs.ProfileTab
-import tabs.ScheduleTab
+import tabs.InsightsTab
 
 const val HeroScreen = "HeroScreen"
 
@@ -30,7 +30,7 @@ fun HeroScreen(navController: NavController) {
         tabDisposable = {
             TabDisposable(
                 navigator = it,
-                tabs = listOf(HomeTab, GoalsTab, ScheduleTab, ProfileTab(navController) )
+                tabs = listOf(HomeTab, GoalsTab, InsightsTab, ProfileTab(navController) )
             )
         }
     ) { tabNavigator ->
@@ -46,7 +46,7 @@ fun HeroScreen(navController: NavController) {
                     TabNavigationItem(HomeTab)
                     TabNavigationItem(GoalsTab)
                     TabNavigationItem(ChatTab)
-                    TabNavigationItem(ScheduleTab)
+                    TabNavigationItem(InsightsTab)
                     TabNavigationItem(ProfileTab(navController))
                 }
             }

@@ -33,19 +33,21 @@ import utils.HealthKitServiceImpl
 import utils.SettingsManager
 import utils.iOSHealthKitManager
 
-
 @Composable
 @Preview
 fun App() {
+    var isDarkMode by remember { mutableStateOf(false) }
+    var useSystemDefault by remember { mutableStateOf(true) }
 
-    var isDarkMode by remember { mutableStateOf(SettingsManager.loadDarkMode())}
-    var useSystemDefault by remember { mutableStateOf(SettingsManager.loadUseSystemDefault()) }
+    LaunchedEffect(Unit) {
+        isDarkMode = SettingsManager.loadDarkMode()
+        useSystemDefault = SettingsManager.loadUseSystemDefault()
+    }
 
     LaunchedEffect(isDarkMode) { SettingsManager.saveDarkMode(isDarkMode) }
     LaunchedEffect(useSystemDefault) { SettingsManager.saveUseSystemDefault(useSystemDefault) }
 
-    val darkMode =  if (useSystemDefault) isSystemInDarkTheme() else isDarkMode
-
+    val darkMode = if (useSystemDefault) isSystemInDarkTheme() else isDarkMode
     val colors = if (darkMode) DarkColors else LightColors
 
     MaterialTheme(colorScheme = colors) {
@@ -54,10 +56,10 @@ fun App() {
         val healthKitService = HealthKitServiceImpl(healthKitManager)
 
         LaunchedEffect(Unit) {
-        NotifierManager.initialize(NotificationPlatformConfiguration.Ios(
-            showPushNotification = true
-        ))
-    }
+            NotifierManager.initialize(NotificationPlatformConfiguration.Ios(
+                showPushNotification = true
+            ))
+        }
 
         NavHost(navController, startDestination = LoginScreen) {
             composable(LoginScreen) { Authentication().Login(navController) }
@@ -71,12 +73,13 @@ fun App() {
             composable(NotificationPageScreen) { NotificationPage(navController) }
             composable(DarkModeSettingsPageScreen) {
                 DarkModeSettingsPage(
-                isDarkMode = isDarkMode,
-                onDarkModeToggle = { isDarkMode = it },
-                useSystemDefault = useSystemDefault,
-                onUseSystemDefaultToggle = { useSystemDefault = it },
+                    isDarkMode = isDarkMode,
+                    onDarkModeToggle = { isDarkMode = it },
+                    useSystemDefault = useSystemDefault,
+                    onUseSystemDefaultToggle = { useSystemDefault = it },
                     navController = navController
-            )  }
+                )
+            }
             composable(Timer) { TimerScreenContent(onBack = { navController.popBackStack() }) }
         }
     }

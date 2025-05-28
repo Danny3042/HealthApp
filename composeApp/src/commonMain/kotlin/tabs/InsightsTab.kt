@@ -11,7 +11,7 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import pages.HealthPage
 import pages.Timer
 
-object ScheduleTab : Tab {
+object InsightsTab : Tab {
 
     override val options: TabOptions
         @Composable
