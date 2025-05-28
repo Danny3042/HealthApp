@@ -5,6 +5,7 @@ import Authentication.ResetPasswordScreen
 import Authentication.SignUpScreen
 import Colors.DarkColors
 import Colors.LightColors
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,16 +20,17 @@ import com.mmk.kmpnotifier.notification.NotifierManager
 import com.mmk.kmpnotifier.notification.configuration.NotificationPlatformConfiguration
 import config.VERSION_NUMBER
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import sub_pages.AboutPage
-import sub_pages.AboutPageScreen
 import pages.HomePageScreen
-import sub_pages.NotificationPage
-import sub_pages.NotificationPageScreen
 import pages.Timer
 import pages.TimerScreenContent
+import sub_pages.AboutPage
+import sub_pages.AboutPageScreen
+import sub_pages.NotificationPage
+import sub_pages.NotificationPageScreen
 import tabs.HomeTab
 import tabs.ProfileTab
 import utils.HealthKitServiceImpl
+import utils.SettingsManager
 import utils.iOSHealthKitManager
 
 
@@ -36,14 +38,15 @@ import utils.iOSHealthKitManager
 @Preview
 fun App() {
 
-    var isDarkMode by remember { mutableStateOf(false) }
-    var useSystemDefault by remember { mutableStateOf(true) }
+    var isDarkMode by remember { mutableStateOf(SettingsManager.loadDarkMode())}
+    var useSystemDefault by remember { mutableStateOf(SettingsManager.loadUseSystemDefault()) }
 
-    val colors = if (useSystemDefault) {
-        if (isDarkMode) DarkColors else LightColors
-    } else {
-        if (isDarkMode) DarkColors else LightColors
-    }
+    LaunchedEffect(isDarkMode) { SettingsManager.saveDarkMode(isDarkMode) }
+    LaunchedEffect(useSystemDefault) { SettingsManager.saveUseSystemDefault(useSystemDefault) }
+
+    val darkMode =  if (useSystemDefault) isSystemInDarkTheme() else isDarkMode
+
+    val colors = if (darkMode) DarkColors else LightColors
 
     MaterialTheme(colorScheme = colors) {
         val navController = rememberNavController()

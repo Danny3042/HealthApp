@@ -24,11 +24,13 @@ import androidx.compose.ui.unit.dp
 fun HabitTrackerPage() {
     var habits by remember { mutableStateOf(listOf("Drink Water", "Exercise", "Read")) }
     var checkedStates by remember { mutableStateOf(List(habits.size) { false }) }
-    var newHabit by remember { mutableStateOf("") }
+    var editingIndex by remember { mutableStateOf<Int?>(null) }
+    var editingText by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier.padding(24.dp),
-        verticalArrangement = Arrangement.Top
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.Start
     ) {
         Text("Habit Tracker", style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(16.dp))
@@ -41,26 +43,31 @@ fun HabitTrackerPage() {
                         checkedStates = checkedStates.toMutableList().also { it[index] = checked }
                     }
                 )
-                Text(habit, style = MaterialTheme.typography.bodyLarge)
+                if (editingIndex == index) {
+                    BasicTextField(
+                        value = editingText,
+                        onValueChange = { editingText = it },
+                        modifier = Modifier.padding(4.dp)
+                    )
+                    Button(onClick = {
+                        habits = habits.toMutableList().also { it[index] = editingText }
+                        editingIndex = null
+                        editingText = ""
+                    }) { Text("Save") }
+                } else {
+                    Text(habit, style = MaterialTheme.typography.bodyLarge)
+                }
             }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-        Row {
-            BasicTextField(
-                value = newHabit,
-                onValueChange = { newHabit = it },
-                modifier = Modifier.weight(1f).padding(end = 8.dp)
-            )
-            Button(
-                onClick = {
-                    if (newHabit.isNotBlank()) {
-                        habits = habits + newHabit
-                        checkedStates = checkedStates + false
-                        newHabit = ""
-                    }
-                }
-            ) { Text("Add") }
+        Button(onClick = {
+            habits = habits + ""
+            checkedStates = checkedStates + false
+            editingIndex = habits.size // new item index
+            editingText = ""
+        }) {
+            Text("Add")
         }
     }
 }

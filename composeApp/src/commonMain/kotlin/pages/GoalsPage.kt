@@ -7,7 +7,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +34,7 @@ fun GoalsPage() {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(24.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -35,30 +42,48 @@ fun GoalsPage() {
         Text("Goals", style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Mini-app cards
-        MiniAppCard("Meditation") { selectedMiniApp = "Meditation" }
+        MiniAppCard(
+            title = "Meditation",
+            onClick = { selectedMiniApp = "Meditation" },
+            selected = selectedMiniApp == "Meditation"
+        )
         Spacer(modifier = Modifier.height(16.dp))
-        MiniAppCard("Habit Tracker") { selectedMiniApp = "HabitTracker" }
-        // Add more mini-apps here
+        MiniAppCard(
+            title = "Habit Tracker",
+            onClick = { selectedMiniApp = "HabitTracker" },
+            selected = selectedMiniApp == "HabitTracker"
+        )
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Show selected mini-app
         when (selectedMiniApp) {
             "Meditation" -> MeditationPage()
             "HabitTracker" -> HabitTrackerPage()
-            // Add more mini-apps here
         }
     }
 }
 
 @Composable
-fun MiniAppCard(title: String, onClick: () -> Unit) {
-    Button(
+fun MiniAppCard(title: String, onClick: () -> Unit, selected: Boolean) {
+    Card(
         onClick = onClick,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = if (selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
+        )
     ) {
-        Text(title)
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(Icons.Default.Star, contentDescription = null)
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(title, style = MaterialTheme.typography.titleMedium)
+        }
     }
 }
-
