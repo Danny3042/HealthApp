@@ -8,8 +8,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -82,22 +89,27 @@ fun MeditationPage() {
             modifier = Modifier.padding(16.dp),
         )
         Row {
-            Button(
+            IconButton(
                 onClick = { isRunning = true },
-                enabled = !isRunning && timeLeft > 0
-            ) { Text("Start") }
+                enabled = !isRunning && timeLeft > 0,
+                colors = IconButtonDefaults.filledIconButtonColors()
+            ) { Icon(Icons.Default.PlayArrow, contentDescription = "Start") }
             Spacer(modifier = Modifier.width(16.dp))
-            Button(
+            IconButton(
                 onClick = { isRunning = false },
-                enabled = isRunning
-            ) { Text("Pause") }
+                enabled = isRunning,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.error
+                )
+            ) { Icon(Icons.Default.Stop, contentDescription = "Stop") }
             Spacer(modifier = Modifier.width(16.dp))
-            Button(
+            IconButton(
                 onClick = {
                     isRunning = false
                     timeLeft = totalTime
-                }
-            ) { Text("Reset") }
+                },
+                colors = IconButtonDefaults.outlinedIconButtonColors()
+            ) { Icon(Icons.Default.Refresh, contentDescription = "Reset") }
         }
         Spacer(modifier = Modifier.height(16.dp))
         Button(

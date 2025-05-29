@@ -1,5 +1,7 @@
 package sub_pages
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,10 +20,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import utils.HabitRepository
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun HabitTrackerPage() {
+fun HabitTrackerPage(
+    onHabitCompleted: (String) -> Unit = {} // Callback to add to Insights
+) {
     var habits by remember { mutableStateOf(listOf("Drink Water", "Exercise", "Read")) }
     var checkedStates by remember { mutableStateOf(List(habits.size) { false }) }
     var editingIndex by remember { mutableStateOf<Int?>(null) }
@@ -41,6 +48,9 @@ fun HabitTrackerPage() {
                     checked = checkedStates[index],
                     onCheckedChange = { checked ->
                         checkedStates = checkedStates.toMutableList().also { it[index] = checked }
+                        if (checked) {
+                            HabitRepository.addCompletedHabit(habit)
+                        }
                     }
                 )
                 if (editingIndex == index) {
@@ -55,19 +65,18 @@ fun HabitTrackerPage() {
                         editingText = ""
                     }) { Text("Save") }
                 } else {
-                    Text(habit, style = MaterialTheme.typography.bodyLarge)
+                    AnimatedContent(targetState = checkedStates[index], label = "") { checked ->
+                        Text(
+                            habit,
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                textDecoration = if (checked) TextDecoration.LineThrough else TextDecoration.None
+                            )
+                        )
+                    }
                 }
             }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = {
-            habits = habits + ""
-            checkedStates = checkedStates + false
-            editingIndex = habits.size // new item index
-            editingText = "Edit your habit here"
-        }) {
-            Text("Add")
-        }
     }
 }
