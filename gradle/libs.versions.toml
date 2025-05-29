@@ -20,6 +20,7 @@ firebaseAnalyticsKtx = "22.0.0"
 firebaseAuth = "1.12.0"
 generativeai = "0.9.0"
 generativeaiGoogle = "0.5.0-1.0.0"
+glanceAppwidget = "1.1.1"
 integrity = "1.4.0"
 jetbrainsNavigationCompose = "2.7.7"
 junit = "4.13.2"
@@ -53,6 +54,8 @@ calf = "0.5.3"
 accompanist-drawablepainter = { module = "com.google.accompanist:accompanist-drawablepainter", version.ref = "accompanistDrawablepainter" }
 androidx-connect-client = { module = "androidx.health.connect:connect-client", version.ref = "connectClient" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
+androidx-glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "glanceAppwidget" }
+androidx-glance-material3 = { module = "androidx.glance:glance-material3", version.ref = "glanceAppwidget" }
 core = { module = "com.vitoksmile.health-kmp:core", version.ref = "core" }
 firebase-analytics-ktx-v2200 = { module = "com.google.firebase:firebase-analytics-ktx", version.ref = "firebaseAnalyticsKtx" }
 firebase-appcheck-playintegrity = { module = "com.google.firebase:firebase-appcheck-playintegrity" }

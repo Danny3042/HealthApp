@@ -17,11 +17,11 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Brightness2
 import androidx.compose.material.icons.filled.Brightness4
 import androidx.compose.material.icons.filled.Brightness7
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -118,25 +118,25 @@ fun DarkModeSettingsPage(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Checkbox(
-                        checked = useSystemDefault,
-                        onCheckedChange = { onUseSystemDefaultToggle(true); onDarkModeToggle(false) }
+                    RadioButton(
+                        selected = useSystemDefault,
+                        onClick = { onUseSystemDefaultToggle(true); onDarkModeToggle(false) }
                     )
                     Icon(Icons.Default.Brightness4, contentDescription = "System Default", tint = MaterialTheme.colorScheme.onBackground)
                     Text("System", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onBackground)
                 }
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Checkbox(
-                        checked = !useSystemDefault && !isDarkMode,
-                        onCheckedChange = { onUseSystemDefaultToggle(false); onDarkModeToggle(false) }
+                    RadioButton(
+                        selected = !useSystemDefault && !isDarkMode,
+                        onClick = { onUseSystemDefaultToggle(false); onDarkModeToggle(false) }
                     )
                     Icon(Icons.Default.Brightness7, contentDescription = "Light Mode", tint = MaterialTheme.colorScheme.onBackground)
                     Text("Light", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onBackground)
                 }
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Checkbox(
-                        checked = !useSystemDefault && isDarkMode,
-                        onCheckedChange = { onUseSystemDefaultToggle(false); onDarkModeToggle(true) }
+                    RadioButton(
+                        selected = !useSystemDefault && isDarkMode,
+                        onClick = { onUseSystemDefaultToggle(false); onDarkModeToggle(true) }
                     )
                     Icon(Icons.Default.Brightness2, contentDescription = "Dark Mode", tint = MaterialTheme.colorScheme.onBackground)
                     Text("Dark", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onBackground)

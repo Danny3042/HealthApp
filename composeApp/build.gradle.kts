@@ -50,6 +50,8 @@ kotlin {
             implementation(libs.accompanist.drawablepainter)
             implementation(libs.google.firebase.crashlytics)
             implementation(libs.calf.filepicker)
+            implementation(libs.androidx.glance.appwidget)
+            implementation(libs.androidx.glance.material3)
 
 
 
