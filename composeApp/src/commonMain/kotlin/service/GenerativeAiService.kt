@@ -8,8 +8,9 @@ import org.danielramzani.HealthCompose.BuildKonfig
 /**
  * Service for Generative AI operations that can interact with text as well as images.
  */
-class GenerativeAiService private constructor(
-    private val visionModel: GenerativeModel,
+class GenerativeAiService(
+     val visionModel: GenerativeModel,
+     val maxTokens: Int
 ) {
 
     /**
@@ -21,6 +22,12 @@ class GenerativeAiService private constructor(
         return visionModel.startChat(history)
     }
 
+    suspend fun getSuggestions(results: List<String>): String? {
+        val response = visionModel.generateContent(
+            prompt = "Based on the following results: ${results.joinToString(", ")}. Provide suggestions for the week."
+        )
+        return response.text
+    }
     companion object {
         @Suppress("ktlint:standard:property-naming")
         var GEMINI_API_KEY = BuildKonfig.GEMINI_API_KEY
@@ -31,6 +38,7 @@ class GenerativeAiService private constructor(
                     modelName = "gemini-1.5-flash",
                     apiKey = GEMINI_API_KEY,
                 ),
+                maxTokens = 200,
             )
         }
     }

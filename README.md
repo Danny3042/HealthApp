@@ -1,14 +1,29 @@
+# README
+
 This is a Kotlin Multiplatform project targeting Android, iOS.
 
-* `/composeApp` is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - `commonMain` is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    `iosMain` would be the right folder for such calls.
+## Project description
+MyHealthBuddy is a Compose Multiplatform health app that utilises Google Health Connect and Apple HealthKit frameworks to 
+measure health metrics such as steps, sleep, exercise minutes, create goals,and keep track on mood and sleep ratings in the schedule page.
 
-* `/iosApp` contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform, 
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
 
+## Installation instructions
+
+<tabs>
+<tab title="Android">
+To run the Android appliction please select an Android device from the device manager and press the run button
+</tab> 
+<tab title="iOS">
+To run the iOS application please open Xcode and run it there if there are problems running the iOS app in Android Studio
+</tab>
+
+</tabs>
+
+## Setup instructions
+Android Studio Ladybug and Xcode 16.2 is needed to run the Android and iOS applications.
+For creating an account the user can use Sign in with Google, or Sign in with Apple for iOS devices or the user can create a new account in the Sign up page and log in with 
+their newly made credentials.
+
+## Miscellaneous 
 
 Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
