@@ -15,6 +15,7 @@ import com.google.firebase.initialize
 import com.mmk.kmpnotifier.notification.NotifierManager
 import com.mmk.kmpnotifier.notification.configuration.NotificationPlatformConfiguration
 import com.mmk.kmpnotifier.permission.permissionUtil
+import utils.HabitStorage
 import utils.appContext
 
 class MainActivity : ComponentActivity() {
@@ -23,6 +24,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         appContext = this
+        HabitStorage.init(this)
 
         Firebase.initialize(context = this)
         Firebase.appCheck.installAppCheckProviderFactory(

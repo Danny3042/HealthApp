@@ -1,4 +1,4 @@
-package pages
+package sub_pages
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

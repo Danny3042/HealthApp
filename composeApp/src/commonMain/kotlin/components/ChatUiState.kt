@@ -39,7 +39,7 @@ class MutableChatUiState : ChatUiState {
         val lastMessage = messages.lastOrNull() as? ModelChatMessage
         lastMessage?.let {
             val newMessage = block(it)
-            messages.removeLast()
+            messages.removeAt(0)
             messages.add(newMessage)
         }
     }

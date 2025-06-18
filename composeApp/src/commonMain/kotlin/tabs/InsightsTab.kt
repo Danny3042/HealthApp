@@ -1,27 +1,26 @@
 package tabs
 
+import InsightsPage
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MonitorHeart
+import androidx.compose.material.icons.filled.Insights
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.navigation.compose.rememberNavController
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
-import pages.HealthPage
-import pages.Timer
 
-object ScheduleTab : Tab {
+object InsightsTab : Tab {
 
     override val options: TabOptions
         @Composable
         get() {
-            val icon = rememberVectorPainter(Icons.Default.MonitorHeart)
+            val icon = rememberVectorPainter(Icons.Default.Insights)
 
             return remember {
                 TabOptions(
                     index = 4u,
-                    title = "Schedule",
+                    title = "Insights",
                     icon = icon
                 )
             }
@@ -30,6 +29,6 @@ object ScheduleTab : Tab {
     @Composable
     override fun Content() {
         val navController = rememberNavController()
-        HealthPage(onNavigateToTimerView = { navController.navigate(Timer) })
+        InsightsPage()
     }
 }

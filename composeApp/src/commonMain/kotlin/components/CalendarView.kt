@@ -41,6 +41,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.todayIn
 import kotlinx.serialization.Serializable
@@ -70,8 +71,8 @@ data class Event(
 )
 
 data class Rating(
-    val sleepRating: Float,
-    val moodRating: Float
+    val sleepRating: Int,
+    val moodRating: Int
 )
 
 @Serializable
@@ -90,6 +91,29 @@ class CalendarDataSource {
         val endDayOfWeek = firstDayOfWeek.plus(7, DateTimeUnit.DAY)
         val visibleDates = getDatesBetween(firstDayOfWeek, endDayOfWeek)
         return toUiModel(visibleDates, lastSelectedDate)
+    }
+    fun saveRatings(
+        date: LocalDate,
+        sleepRating: Int,
+        moodRating: Int
+    ): CalendarUiModel {
+        val newRatings = mutableMapOf<LocalDate, Rating>()
+        newRatings[date] = Rating(sleepRating, moodRating)
+        return CalendarUiModel(
+            selectedDate = toItemUiModel(date, true),
+            visibleDates = getDatesBetween(date.minus(3, DateTimeUnit.DAY), date.plus(3, DateTimeUnit.DAY))
+                .map { toItemUiModel(it, it == date) },
+            ratings = newRatings
+        )
+    }
+
+    fun loadRatings(date: LocalDate): Rating? {
+        return events.find { it.date == date }?.let {
+            Rating(
+                sleepRating = it.title.split(",")[0].toInt(),
+                moodRating = it.title.split(",")[1].toInt()
+            )
+        }
     }
 
     fun addEvent(event: Event) {
@@ -190,8 +214,6 @@ fun EventInputDialog(
     )
 }
 
-
-
 // this card updates the rating for mood and sleep
 @Composable
 fun RatingCard(rating: Rating, onDelete: () -> Unit) {
@@ -255,50 +277,50 @@ fun Content(
 }
 
 @Composable
-fun RatingInputDialog(
-    onConfirm: (Float, Float) -> Unit,
-    onDismissRequest: () -> Unit
+fun RatingsDialog(
+    sleepRating: Int,
+    moodRating: Int,
+    onSleepRatingChange: (Int) -> Unit,
+    onMoodRatingChange: (Int) -> Unit,
+    onSubmit: () -> Unit,
+    onDismiss: () -> Unit
 ) {
-    var sleepRating by remember { mutableStateOf(5f) }
-    var moodRating by remember { mutableStateOf(5f) }
-
     AlertDialog(
-        onDismissRequest = { onDismissRequest() },
-        title = { Text("New Rating") },
+        onDismissRequest = onDismiss,
+        title = { Text("Add Ratings") },
         text = {
             Column {
                 Text("Sleep Rating")
-                Slider(
-                    value = sleepRating,
-                    onValueChange = { sleepRating = it },
-                    valueRange = 0f..10f,
-                    steps = 9
-                )
+                Slider(value = sleepRating.toFloat(), onValueChange = { onSleepRatingChange(it.toInt()) }, valueRange = 0f..10f)
                 Text("Mood Rating")
-                Slider(
-                    value = moodRating,
-                    onValueChange = { moodRating = it },
-                    valueRange = 0f..10f,
-                    steps = 9
-                )
+                Slider(value = moodRating.toFloat(), onValueChange = { onMoodRatingChange(it.toInt()) }, valueRange = 0f..10f)
             }
         },
         confirmButton = {
-            Button(
-                onClick = {
-                    onConfirm(sleepRating, moodRating)
-                }
-            ) {
-                Text("Confirm")
-            }
+            Button(onClick = onSubmit) { Text("Save") }
         },
         dismissButton = {
-            Button(
-                onClick = { onDismissRequest() }
-            ) {
-                Text("Cancel")
-            }
+            Button(onClick = onDismiss) { Text("Cancel") }
         }
+    )
+}
+
+@Composable
+fun AdviceTypeDialog(onSelect: (String) -> Unit, onDismiss: () -> Unit) {
+    androidx.compose.material3.AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Choose Health Advice Type") },
+        text = {
+            Column {
+                listOf("General", "Sleep", "Nutrition", "Stress").forEach { type ->
+                    Button(onClick = { onSelect(type) }, modifier = Modifier.padding(4.dp)) {
+                        Text(type)
+                    }
+                }
+            }
+        },
+        confirmButton = {},
+        dismissButton = {}
     )
 }
 

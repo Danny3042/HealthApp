@@ -1,7 +1,7 @@
-// Update ProfilePage.kt
 package pages
 
 import Authentication.LoginScreen
+import DarkModeSettingsPageScreen
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.TabRowDefaults.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Badge
+import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.AlertDialog
@@ -39,6 +40,8 @@ import components.SettingsListItem
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
 import kotlinx.coroutines.launch
+import sub_pages.AboutPageScreen
+import sub_pages.NotificationPageScreen
 import utils.deleteUser
 
 @Composable
@@ -93,7 +96,10 @@ fun ProfilePage(navController: NavController) {
                     title = "Notifications",
                     onClick = { navController.navigate(NotificationPageScreen) },
                     leadingIcon = {
-                        Icon(Icons.Outlined.Notifications, contentDescription = "Notifications Icon")
+                        Icon(
+                            Icons.Outlined.Notifications,
+                            contentDescription = "Notifications Icon"
+                        )
                     }
                 )
                 Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
@@ -108,7 +114,16 @@ fun ProfilePage(navController: NavController) {
                 )
                 Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
             }
-
+            item {
+                SettingsListItem(
+                    title = "Dark Mode",
+                    onClick = { navController.navigate(DarkModeSettingsPageScreen) },
+                    leadingIcon = {
+                        Icon(Icons.Outlined.DarkMode, contentDescription = "Dark Mode Icon")
+                    }
+                )
+                Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
+            }
             if (showDeleteDialog) {
                 item {
                     AlertDialog(

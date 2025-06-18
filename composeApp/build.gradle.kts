@@ -50,6 +50,8 @@ kotlin {
             implementation(libs.accompanist.drawablepainter)
             implementation(libs.google.firebase.crashlytics)
             implementation(libs.calf.filepicker)
+            implementation(libs.androidx.glance.appwidget)
+            implementation(libs.androidx.glance.material3)
 
 
 
@@ -132,7 +134,7 @@ buildkonfig {
 
 android {
     namespace = "org.danielramzani.HealthCompose"
-    compileSdk = 35
+    compileSdk = 36
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].res.srcDirs("src/androidMain/res")
@@ -142,7 +144,7 @@ android {
         applicationId = "org.danielramzani.HealthCompose"
         minSdk = 31
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 9
+        versionCode = 10
         versionName = "1.0"
     }
     packaging {

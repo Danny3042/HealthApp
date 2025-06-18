@@ -35,7 +35,7 @@ class GenerativeAiService(
         val instance: GenerativeAiService by lazy {
             GenerativeAiService(
                 visionModel = GenerativeModel(
-                    modelName = "gemini-1.5-flash",
+                    modelName = "gemini-2.0-flash",
                     apiKey = GEMINI_API_KEY,
                 ),
                 maxTokens = 200,

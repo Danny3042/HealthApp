@@ -1,4 +1,6 @@
+
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -66,35 +68,37 @@ fun ChatScreen(
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 state = listState,
-                reverseLayout = true,
+                reverseLayout = false,
             ) {
                 items(
-                    items = chatUiState.messages.reversed(),
+                    items = chatUiState.messages,
                     key = { it.id },
                 ) { message ->
                     ChatBubbleItem(message)
                 }
-                item {
-                    Spacer(modifier = Modifier.height(56.dp)) // Adjust height as needed
-                }
             }
-            MessageInput(
-                enabled = chatUiState.canSendMessage,
-                onSendMessage = { inputText, image ->
-                    chatViewModel.sendMessage(inputText, image)
-                    coroutineScope.launch {
-                        listState.animateScrollToItem(0)
-                    }
-                },
+            Column(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-            )
+            ) {
+                MessageInput(
+                    enabled = chatUiState.canSendMessage,
+                    onSendMessage = { inputText, image ->
+                        chatViewModel.sendMessage(inputText, image)
+                        coroutineScope.launch {
+                            listState.animateScrollToItem(0)
+                        }
+                    },
+                    modifier = Modifier
+                )
+                Spacer(modifier = Modifier.height(56.dp)) // Height of your bottom nav bar
+            }
         }
-    }
 
-    DisposableEffect(Unit) {
-        onDispose {
-            chatViewModel.onCleared()
+        DisposableEffect(Unit) {
+            onDispose {
+                chatViewModel.onCleared()
+            }
         }
     }
 }
