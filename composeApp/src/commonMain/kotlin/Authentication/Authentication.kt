@@ -56,11 +56,11 @@ import keyboardUtil.hideKeyboard
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
-import pages.HomePageScreen
 
 const val SignUpScreen = "SignUp"
 const val LoginScreen = "Login"
 const val ResetPasswordScreen = "ResetPassword"
+const val HomePageScreen = "HomePage"
 
 class Authentication {
 

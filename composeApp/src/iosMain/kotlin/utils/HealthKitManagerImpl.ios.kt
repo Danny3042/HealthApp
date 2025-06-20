@@ -17,6 +17,7 @@ import platform.HealthKit.HKHealthStore
 import platform.HealthKit.HKObjectQueryNoLimit
 import platform.HealthKit.HKObjectType
 import platform.HealthKit.HKQuantityTypeIdentifier
+import platform.HealthKit.HKQuantityTypeIdentifierActiveEnergyBurned
 import platform.HealthKit.HKQuantityTypeIdentifierAppleExerciseTime
 import platform.HealthKit.HKQuantityTypeIdentifierDistanceWalkingRunning
 import platform.HealthKit.HKQuantityTypeIdentifierStepCount
@@ -27,6 +28,7 @@ import platform.HealthKit.HKStatisticsOptionCumulativeSum
 import platform.HealthKit.HKStatisticsQuery
 import platform.HealthKit.HKUnit
 import platform.HealthKit.countUnit
+import platform.HealthKit.kilocalorieUnit
 import platform.HealthKit.meterUnit
 import platform.HealthKit.minuteUnit
 import platform.HealthKit.predicateForSamplesWithStartDate
@@ -79,6 +81,7 @@ override fun checkPermissions(): Boolean {
         val sleepDuration = readCategoryData(HKCategoryTypeIdentifierSleepAnalysis, startDate, endDate)
         val exerciseDuration = readQuantityData(HKQuantityTypeIdentifierAppleExerciseTime, startDate, endDate)
         val distance = readQuantityData(HKQuantityTypeIdentifierDistanceWalkingRunning, startDate, endDate)
+        val calories = readQuantityData(HKQuantityTypeIdentifierActiveEnergyBurned, startDate, endDate)
 
         emit(
             HealthData(
@@ -86,7 +89,8 @@ override fun checkPermissions(): Boolean {
                 stepCount = stepCount?.toInt(),
                 sleepDurationMinutes = sleepDuration?.toInt(),
                 exerciseDurationMinutes = exerciseDuration?.toInt(),
-                distanceMeters = distance
+                distanceMeters = distance,
+                calories = calories?.toInt()
             )
         )
     }
@@ -100,6 +104,7 @@ override fun checkPermissions(): Boolean {
             HKQuantityTypeIdentifierStepCount -> HKUnit.countUnit()
             HKQuantityTypeIdentifierAppleExerciseTime -> HKUnit.minuteUnit()
             HKQuantityTypeIdentifierDistanceWalkingRunning -> HKUnit.meterUnit()
+            HKQuantityTypeIdentifierActiveEnergyBurned -> HKUnit.kilocalorieUnit()
             else -> return null
         }
 

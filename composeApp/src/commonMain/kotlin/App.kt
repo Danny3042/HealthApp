@@ -20,7 +20,6 @@ import com.mmk.kmpnotifier.notification.NotifierManager
 import com.mmk.kmpnotifier.notification.configuration.NotificationPlatformConfiguration
 import config.VERSION_NUMBER
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import pages.HomePageScreen
 import pages.Timer
 import pages.TimerScreenContent
 import sub_pages.AboutPage
