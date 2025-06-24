@@ -5,15 +5,41 @@ import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DirectionsWalk
+import androidx.compose.material.icons.automirrored.filled.DirectionsWalk
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Hotel
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -103,8 +129,9 @@ actual fun HealthConnectScreen(healthKitService: HealthKitService) {
                         LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                             items(
                                 listOf(
-                                    SummaryCardData("Steps", steps, Icons.Filled.DirectionsWalk, Color(0xFF4CAF50)),
-                                    SummaryCardData("Sleep", sleepDuration, Icons.Filled.Hotel, Color(0xFF2196F3)),
+                                    SummaryCardData("Steps", steps,
+                                        Icons.AutoMirrored.Filled.DirectionsWalk, Color(0xFF4CAF50)),
+                                    SummaryCardData("Sleep", formatDuration(sleepDuration), Icons.Filled.Hotel, Color(0xFF2196F3)),
                                     SummaryCardData("Active min", mins, Icons.Filled.FitnessCenter, Color(0xFFFF9800))
                                 )
                             ) { card ->
@@ -188,4 +215,11 @@ fun SummaryCard(data: SummaryCardData) {
             Text(data.title, color = Color.White, fontSize = 14.sp)
         }
     }
+}
+
+fun formatDuration(totalMinutes: String): String {
+    val total = totalMinutes.toIntOrNull() ?: 0
+    val hours = total / 60
+    val mins = total % 60
+    return "${hours}h ${mins}m"
 }

@@ -17,14 +17,16 @@ import cafe.adriel.voyager.navigator.tab.TabNavigator
 import tabs.ChatTab
 import tabs.GoalsTab
 import tabs.HomeTab
-import tabs.ProfileTab
 import tabs.InsightsTab
+import tabs.ProfileTab
+import utils.HandleBackNavigation
 
 const val HeroScreen = "HeroScreen"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HeroScreen(navController: NavController) {
+    HandleBackNavigation(navController)
     TabNavigator(
         HomeTab,
         tabDisposable = {
