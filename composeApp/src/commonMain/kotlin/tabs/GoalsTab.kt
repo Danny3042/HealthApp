@@ -1,8 +1,8 @@
 package tabs
 
-import GoalsPage
+import HabitCoachingPage
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Bolt
+import androidx.compose.material.icons.filled.TrackChanges
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
@@ -23,12 +23,12 @@ object GoalsTab: Tab {
     override val options: TabOptions
         @Composable
         get() {
-            val icon = rememberVectorPainter(Icons.Default.Bolt)
+            val icon = rememberVectorPainter(Icons.Default.TrackChanges)
 
             return remember {
                 TabOptions(
                     index = 2u,
-                    title = "Goals",
+                    title = "Habits",
                     icon = icon
                 )
             }
@@ -36,6 +36,6 @@ object GoalsTab: Tab {
 
     @Composable
     override fun Content() {
-        GoalsPage()
+        HabitCoachingPage()
     }
 }
