@@ -11,8 +11,9 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import utils.HealthKitService
 import utils.HealthKitServiceImpl
 import utils.iOSHealthKitManager
+import androidx.navigation.NavHostController
 
-object GoalsTab: Tab {
+class GoalsTab(private val navcontroller: NavHostController) : Tab {
 
     private lateinit var healthKitService: HealthKitService
 
@@ -36,6 +37,6 @@ object GoalsTab: Tab {
 
     @Composable
     override fun Content() {
-        HabitCoachingPage()
+        HabitCoachingPage(navcontroller)
     }
 }

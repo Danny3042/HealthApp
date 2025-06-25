@@ -1,30 +1,56 @@
-import androidx.compose.foundation.layout.*
+
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Send
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import components.SettingsListItem
 import kotlinx.coroutines.launch
 import service.GenerativeAiService
+import sub_pages.CompletedHabitsPage
 import sub_pages.HabitTrackerPage
+import utils.HabitRepository
+import androidx.navigation.NavController
+import sub_pages.CompletedHabitsPageRoute
 
 @Composable
-fun HabitCoachingPage() {
+fun HabitCoachingPage(navcontroller: NavController) {
     val scope = rememberCoroutineScope()
     var aiTip by remember { mutableStateOf<String?>(null) }
     var isLoading by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
     var userHabit by remember { mutableStateOf("") }
-    var trackedHabits by remember { mutableStateOf(listOf<String>()) }
     val scrollState = rememberScrollState()
+    val trackedHabits = HabitRepository.habits
 
     fun generateTipAndAddHabit() {
         if (userHabit.isBlank()) return
@@ -33,9 +59,9 @@ fun HabitCoachingPage() {
             error = null
             try {
                 aiTip = GenerativeAiService.instance.getSuggestions(
-                    listOf("Give me a practical tip for building the habit: $userHabit")
+                    listOf("Give me a practical succinct tip for building the habit: $userHabit")
                 )
-                trackedHabits = trackedHabits + userHabit
+                HabitRepository.addHabit(userHabit)
                 userHabit = ""
             } catch (e: Exception) {
                 error = e.message
@@ -63,11 +89,6 @@ fun HabitCoachingPage() {
         Text("Habit Coaching", style = MaterialTheme.typography.headlineSmall)
         Spacer(modifier = Modifier.height(8.dp))
 
-        Text(
-            "Get personalized tips and guidance to build better habits. Track your progress, set reminders, and receive motivational advice to stay on track.",
-            style = MaterialTheme.typography.bodyLarge,
-            textAlign = TextAlign.Center
-        )
         Spacer(modifier = Modifier.height(24.dp))
 
         Surface(
@@ -127,7 +148,8 @@ fun HabitCoachingPage() {
         }
         Spacer(modifier = Modifier.height(24.dp))
 
-        HabitTrackerPage(habits = trackedHabits)
+        HabitTrackerPage(habits = trackedHabits,
+            onHabitCompleted = { habit -> HabitRepository.removeHabit(habit) })
         Spacer(modifier = Modifier.height(24.dp))
 
         Surface(
@@ -143,5 +165,15 @@ fun HabitCoachingPage() {
                 modifier = Modifier.padding(12.dp)
             )
         }
+        SettingsListItem(
+            title = "Completed Habits",
+            onClick = { navcontroller.navigate(CompletedHabitsPageRoute) },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.Checklist,
+                    contentDescription = "Completed Habits Icon"
+                )
+            }
+        )
     }
 }

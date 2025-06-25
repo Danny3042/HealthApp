@@ -25,6 +25,8 @@ import pages.Timer
 import pages.TimerScreenContent
 import sub_pages.AboutPage
 import sub_pages.AboutPageScreen
+import sub_pages.CompletedHabitsPage
+import sub_pages.CompletedHabitsPageRoute
 import sub_pages.NotificationPage
 import sub_pages.NotificationPageScreen
 import tabs.HomeTab
@@ -81,6 +83,7 @@ fun App() {
                 )
             }
             composable(Timer) { TimerScreenContent(onBack = { navController.popBackStack() }) }
+            composable(CompletedHabitsPageRoute) { CompletedHabitsPage() }
         }
     }
 }
