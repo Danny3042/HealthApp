@@ -13,7 +13,7 @@ import utils.HealthKitServiceImpl
 import utils.iOSHealthKitManager
 import androidx.navigation.NavHostController
 
-class GoalsTab(private val navcontroller: NavHostController) : Tab {
+class HabitsTab(private val navcontroller: NavHostController) : Tab {
 
     private lateinit var healthKitService: HealthKitService
 

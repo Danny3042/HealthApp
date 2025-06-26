@@ -1,26 +1,26 @@
 package tabs
 
-import InsightsPage
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Insights
+import androidx.compose.material.icons.filled.Spa
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.navigation.compose.rememberNavController
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import pages.StressManagementPage
 
 object InsightsTab : Tab {
 
     override val options: TabOptions
         @Composable
         get() {
-            val icon = rememberVectorPainter(Icons.Default.Insights)
+            val icon = rememberVectorPainter(Icons.Default.Spa)
 
             return remember {
                 TabOptions(
                     index = 4u,
-                    title = "Insights",
+                    title = "Meditate",
                     icon = icon
                 )
             }
@@ -29,6 +29,6 @@ object InsightsTab : Tab {
     @Composable
     override fun Content() {
         val navController = rememberNavController()
-        InsightsPage()
+        StressManagementPage()
     }
 }

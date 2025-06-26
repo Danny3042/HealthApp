@@ -83,7 +83,7 @@ fun App() {
                 )
             }
             composable(Timer) { TimerScreenContent(onBack = { navController.popBackStack() }) }
-            composable(CompletedHabitsPageRoute) { CompletedHabitsPage() }
+            composable(CompletedHabitsPageRoute) { CompletedHabitsPage(navController) }
         }
     }
 }

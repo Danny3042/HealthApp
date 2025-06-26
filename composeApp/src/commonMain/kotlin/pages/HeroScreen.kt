@@ -15,7 +15,7 @@ import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabDisposable
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import tabs.ChatTab
-import tabs.GoalsTab
+import tabs.HabitsTab
 import tabs.HomeTab
 import tabs.InsightsTab
 import tabs.ProfileTab
@@ -34,7 +34,7 @@ fun HeroScreen(navController: NavHostController) {
                 navigator = it,
                 tabs = listOf(
                     HomeTab,
-                    GoalsTab(navController),
+                    HabitsTab(navController),
                     InsightsTab,
                     ProfileTab(navController)
                 )
@@ -51,7 +51,7 @@ fun HeroScreen(navController: NavHostController) {
             bottomBar = {
                 NavigationBar {
                     TabNavigationItem(HomeTab)
-                    TabNavigationItem(GoalsTab(navController))
+                    TabNavigationItem(HabitsTab(navController))
                     TabNavigationItem(ChatTab)
                     TabNavigationItem(InsightsTab)
                     TabNavigationItem(ProfileTab(navController))
