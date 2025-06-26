@@ -1,6 +1,6 @@
 package pages
 
-import MEDITATION_PAGE_ROUTE
+
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import kotlinx.coroutines.launch
 import service.GenerativeAiService
+import sub_pages.MEDITATION_PAGE_ROUTE
 
 const val STRESS_MANAGEMENT_PAGE_ROUTE = "stress_management"
 @Composable

@@ -31,6 +31,8 @@ import sub_pages.CompletedHabitsPage
 import sub_pages.CompletedHabitsPageRoute
 import sub_pages.NotificationPage
 import sub_pages.NotificationPageScreen
+import sub_pages.MEDITATION_PAGE_ROUTE
+import sub_pages.MeditationPage
 import tabs.HomeTab
 import tabs.ProfileTab
 import utils.HealthKitServiceImpl
