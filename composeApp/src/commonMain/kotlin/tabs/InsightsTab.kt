@@ -5,12 +5,13 @@ import androidx.compose.material.icons.filled.Spa
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import pages.StressManagementPage
 
-object InsightsTab : Tab {
+class InsightsTab(private val navController: NavController) : Tab {
 
     override val options: TabOptions
         @Composable
@@ -28,7 +29,6 @@ object InsightsTab : Tab {
 
     @Composable
     override fun Content() {
-        val navController = rememberNavController()
-        StressManagementPage()
+        StressManagementPage(navController)
     }
 }

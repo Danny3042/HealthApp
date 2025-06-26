@@ -41,6 +41,8 @@ import com.mmk.kmpnotifier.notification.NotifierManager
 import components.TimeEditDialog
 import kotlinx.coroutines.delay
 
+const val MEDITATION_PAGE_ROUTE = "meditation"
+
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun MeditationPage() {

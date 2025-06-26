@@ -35,7 +35,7 @@ fun HeroScreen(navController: NavHostController) {
                 tabs = listOf(
                     HomeTab,
                     HabitsTab(navController),
-                    InsightsTab,
+                    InsightsTab(navController),
                     ProfileTab(navController)
                 )
             )
@@ -53,7 +53,7 @@ fun HeroScreen(navController: NavHostController) {
                     TabNavigationItem(HomeTab)
                     TabNavigationItem(HabitsTab(navController))
                     TabNavigationItem(ChatTab)
-                    TabNavigationItem(InsightsTab)
+                    TabNavigationItem(InsightsTab(navController))
                     TabNavigationItem(ProfileTab(navController))
                 }
             }

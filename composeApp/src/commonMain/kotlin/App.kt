@@ -21,6 +21,8 @@ import com.mmk.kmpnotifier.notification.configuration.NotificationPlatformConfig
 import config.VERSION_NUMBER
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import pages.HomePageScreen
+import pages.STRESS_MANAGEMENT_PAGE_ROUTE
+import pages.StressManagementPage
 import pages.Timer
 import pages.TimerScreenContent
 import sub_pages.AboutPage
@@ -84,6 +86,10 @@ fun App() {
             }
             composable(Timer) { TimerScreenContent(onBack = { navController.popBackStack() }) }
             composable(CompletedHabitsPageRoute) { CompletedHabitsPage(navController) }
+            composable(MEDITATION_PAGE_ROUTE) { MeditationPage() }
+            composable(STRESS_MANAGEMENT_PAGE_ROUTE) {
+                StressManagementPage(navController)
+            }
         }
     }
 }
