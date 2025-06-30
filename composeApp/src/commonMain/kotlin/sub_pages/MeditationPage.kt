@@ -8,35 +8,15 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -47,12 +27,21 @@ import androidx.compose.ui.unit.dp
 import com.mmk.kmpnotifier.notification.NotifierManager
 import components.TimeEditDialog
 import kotlinx.coroutines.delay
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import utils.Session
+import androidx.lifecycle.viewmodel.compose.viewModel
+import utils.InsightsViewModel
+import kotlinx.datetime.toLocalDateTime
 
 const val MEDITATION_PAGE_ROUTE = "meditation"
-
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun MeditationPage(onBack: (() -> Unit)? = null) {
+fun MeditationPage(
+    onBack: (() -> Unit)? = null,
+    onNavigateToInsights: (() -> Unit)? = null,
+    insightsViewModel: InsightsViewModel = viewModel()
+) {
     var totalTime by remember { mutableStateOf(5 * 60) }
     var timeLeft by remember { mutableStateOf(totalTime) }
     val progress = timeLeft / totalTime.toFloat()
@@ -68,12 +57,21 @@ fun MeditationPage(onBack: (() -> Unit)? = null) {
             delay(1000)
             timeLeft -= 1
         }
-        if (timeLeft == 0) {
+        if (timeLeft == 0 && isRunning) {
             isRunning = false
+            // Add session to shared state
+            val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+            insightsViewModel.addSession(
+                Session(
+                    time = "${now.hour.toString().padStart(2, '0')}:${now.minute.toString().padStart(2, '0')}",
+                    duration = totalTime / 60
+                )
+            )
             notifier.notify(
                 title = "Meditation Timer Finished",
                 body = "Your meditation session has ended. Take a moment to reflect.",
             )
+            onNavigateToInsights?.invoke()
         }
     }
 
