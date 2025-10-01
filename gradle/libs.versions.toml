@@ -14,7 +14,7 @@ androidx-test-junit = "1.2.1"
 compose = "1.8.2"
 compose-plugin = "1.6.11"
 connectClient = "1.1.0-rc01"
-core = "0.0.3"
+
 datastorePreferences = "1.1.7"
 firebaseAnalyticsKtx = "22.0.0"
 firebaseAuth = "1.12.0"
@@ -56,7 +56,6 @@ androidx-connect-client = { module = "androidx.health.connect:connect-client", v
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "glanceAppwidget" }
 androidx-glance-material3 = { module = "androidx.glance:glance-material3", version.ref = "glanceAppwidget" }
-core = { module = "com.vitoksmile.health-kmp:core", version.ref = "core" }
 firebase-analytics-ktx-v2200 = { module = "com.google.firebase:firebase-analytics-ktx", version.ref = "firebaseAnalyticsKtx" }
 firebase-appcheck-playintegrity = { module = "com.google.firebase:firebase-appcheck-playintegrity" }
 firebase-auth = { module = "dev.gitlive:firebase-auth", version.ref = "firebaseAuth" }

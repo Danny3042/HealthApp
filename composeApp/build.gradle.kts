@@ -85,7 +85,6 @@ kotlin {
             implementation(libs.material.icons.extended)
             implementation(libs.kotlinx.datetime)
             // Health APIs
-            implementation(libs.core)
             implementation(libs.ktor.client.logging)
             implementation(libs.generativeai)
             implementation(libs.multiplatform.markdown.renderer)
