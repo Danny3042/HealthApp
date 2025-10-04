@@ -9,9 +9,10 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.vitoksmile.kmp.health.HealthDataType
-import com.vitoksmile.kmp.health.HealthRecord
-import com.vitoksmile.kmp.health.records.StepsRecord
+import com.viktormykhailiv.kmp.health.HealthDataType
+import com.viktormykhailiv.kmp.health.HealthRecord
+import com.viktormykhailiv.kmp.health.records.StepsRecord
+
 
 @Composable
 fun HealthMetricsCard(metric: Pair<HealthDataType, Result<List<HealthRecord>>>) {

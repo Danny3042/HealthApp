@@ -23,6 +23,7 @@ dependencyResolutionManagement {
                 includeGroupAndSubgroups("com.android")
                 includeGroupAndSubgroups("com.google")
             }
+            mavenCentral()
         }
         maven {
             url = uri("https://maven.pkg.github.com/vitoksmile/HealthKMP")

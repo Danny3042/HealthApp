@@ -21,13 +21,14 @@ firebaseAuth = "1.12.0"
 generativeai = "0.9.0"
 generativeaiGoogle = "0.5.0-1.0.0"
 glanceAppwidget = "1.1.1"
+healthKmp = "0.0.13"
 integrity = "1.4.0"
 jetbrainsNavigationCompose = "2.7.7"
 junit = "4.13.2"
 kmpauthGoogle = "2.0.0"
 kmpnotifier = "1.2.1"
 kmpnotifierVersion = "1.2.1"
-kotlin = "2.0.10"
+kotlin = "2.2.20"
 kotlinxDatetime = "0.6.0"
 ktor = "2.3.12"
 ktorClientDarwin = "2.3.12"
@@ -62,6 +63,7 @@ firebase-auth = { module = "dev.gitlive:firebase-auth", version.ref = "firebaseA
 generativeai = { module = "com.google.ai.client.generativeai:generativeai", version.ref = "generativeai" }
 generativeai-google = { module = "dev.shreyaspatil.generativeai:generativeai-google", version.ref = "generativeaiGoogle" }
 google-firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
+health-kmp = { module = "com.viktormykhailiv:health-kmp", version.ref = "healthKmp" }
 integrity = { module = "com.google.android.play:integrity", version.ref = "integrity" }
 jetbrains-navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationComposeVersion" }
 kmpauth-firebase = { module = "io.github.mirzemehdi:kmpauth-firebase", version.ref = "kmpauthGoogle" }

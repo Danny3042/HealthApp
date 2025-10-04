@@ -1,7 +1,8 @@
 package utils
 
 import androidx.health.connect.client.HealthConnectClient
-import com.vitoksmile.kmp.health.HealthManagerFactory
+import com.viktormykhailiv.kmp.health.HealthManagerFactory
+
 
 actual object HealthConnectChecker {
     actual fun checkHealthConnectAvailability(): Int {
