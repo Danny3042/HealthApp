@@ -8,29 +8,36 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabDisposable
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import tabs.ChatTab
-import tabs.GoalsTab
+import tabs.HabitsTab
 import tabs.HomeTab
+import tabs.MeditateTab
 import tabs.ProfileTab
-import tabs.InsightsTab
+import utils.HandleBackNavigation
 
 const val HeroScreen = "HeroScreen"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HeroScreen(navController: NavController) {
+fun HeroScreen(navController: NavHostController) {
+    HandleBackNavigation(navController)
     TabNavigator(
         HomeTab,
         tabDisposable = {
             TabDisposable(
                 navigator = it,
-                tabs = listOf(HomeTab, GoalsTab, InsightsTab, ProfileTab(navController) )
+                tabs = listOf(
+                    HomeTab,
+                    HabitsTab(navController),
+                    MeditateTab(navController),
+                    ProfileTab(navController)
+                )
             )
         }
     ) { tabNavigator ->
@@ -44,9 +51,9 @@ fun HeroScreen(navController: NavController) {
             bottomBar = {
                 NavigationBar {
                     TabNavigationItem(HomeTab)
-                    TabNavigationItem(GoalsTab)
+                    TabNavigationItem(HabitsTab(navController))
                     TabNavigationItem(ChatTab)
-                    TabNavigationItem(InsightsTab)
+                    TabNavigationItem(MeditateTab(navController))
                     TabNavigationItem(ProfileTab(navController))
                 }
             }
