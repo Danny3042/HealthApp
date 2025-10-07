@@ -1,4 +1,5 @@
 package tabs
+
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Spa
 import androidx.compose.runtime.Composable

@@ -1,5 +1,3 @@
-package pages
-
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,7 +9,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.SelfImprovement
+import androidx.compose.material.icons.filled.Checklist
+import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -34,35 +33,36 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import components.SettingsListItem
 import kotlinx.coroutines.launch
 import service.GenerativeAiService
-import sub_pages.MEDITATION_PAGE_ROUTE
+import sub_pages.CompletedHabitsPage
+import sub_pages.HabitTrackerPage
+import utils.HabitRepository
+import androidx.navigation.NavController
+import sub_pages.CompletedHabitsPageRoute
 
-const val STRESS_MANAGEMENT_PAGE_ROUTE = "stress_management"
 @Composable
-fun StressManagementPage(navController: NavController) {
+fun HabitCoachingPage(navcontroller: NavController) {
     val scope = rememberCoroutineScope()
     var aiTip by remember { mutableStateOf<String?>(null) }
     var isLoading by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
-    var userActivity by remember { mutableStateOf("") }
+    var userHabit by remember { mutableStateOf("") }
     val scrollState = rememberScrollState()
+    val trackedHabits = HabitRepository.habits
 
-    fun generateTipAndAddActivity() {
-        if (userActivity.isBlank()) return
-        if (userActivity.trim().equals("meditate", ignoreCase = true)) {
-            navController.navigate(MEDITATION_PAGE_ROUTE) // Replace with your actual MeditationPage route
-            return
-        }
+    fun generateTipAndAddHabit() {
+        if (userHabit.isBlank()) return
         scope.launch {
             isLoading = true
             error = null
             try {
                 aiTip = GenerativeAiService.instance.getSuggestions(
-                    listOf("Give me a practical succinct tip for managing stress with: $userActivity")
+                    listOf("Give me a practical succinct tip for building the habit: $userHabit")
                 )
-                userActivity = ""
+                HabitRepository.addHabit(userHabit)
+                userHabit = ""
             } catch (e: Exception) {
                 error = e.message
             } finally {
@@ -79,14 +79,14 @@ fun StressManagementPage(navController: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(
-            painter = rememberVectorPainter(Icons.Default.SelfImprovement),
-            contentDescription = "Stress Management",
+            painter = rememberVectorPainter(Icons.Default.School),
+            contentDescription = "Habit Coaching",
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.size(48.dp)
         )
         Spacer(modifier = Modifier.height(8.dp))
 
-        Text("Stress Management", style = MaterialTheme.typography.headlineSmall)
+        Text("Habit Coaching", style = MaterialTheme.typography.headlineSmall)
         Spacer(modifier = Modifier.height(8.dp))
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -97,7 +97,7 @@ fun StressManagementPage(navController: NavController) {
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                "Tip: Take deep breaths and give yourself a short break when feeling overwhelmed.",
+                "Tip: Start small and be consistent. Focus on one habit at a time for better results.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
                 modifier = Modifier.padding(12.dp)
@@ -106,18 +106,18 @@ fun StressManagementPage(navController: NavController) {
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
-            value = userActivity,
-            onValueChange = { userActivity = it },
-            label = { Text("What stress relief activity do you want to try?") },
+            value = userHabit,
+            onValueChange = { userHabit = it },
+            label = { Text("What habit do you want to build?") },
             modifier = Modifier.fillMaxWidth(),
             trailingIcon = {
                 IconButton(
-                    onClick = { generateTipAndAddActivity() },
-                    enabled = userActivity.isNotBlank() && !isLoading
+                    onClick = { generateTipAndAddHabit() },
+                    enabled = userHabit.isNotBlank() && !isLoading
                 ) {
                     Icon(
                         imageVector = Icons.Default.Send,
-                        contentDescription = "Send Activity"
+                        contentDescription = "Send Habit"
                     )
                 }
             }
@@ -141,16 +141,15 @@ fun StressManagementPage(navController: NavController) {
         }
         Spacer(modifier = Modifier.height(8.dp))
         Button(
-            onClick = { generateTipAndAddActivity() },
-            enabled = userActivity.isNotBlank() && !isLoading
+            onClick = { generateTipAndAddHabit() },
+            enabled = userHabit.isNotBlank() && !isLoading
         ) {
-            Text("Get AI Tip & Add Activity")
+            Text("Get AI Tip & Add Habit")
         }
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Replace with your own tracker for stress activities
-        // StressTrackerPage(activities = trackedActivities, onActivityCompleted = { ... })
-
+        HabitTrackerPage(habits = trackedHabits,
+            onHabitCompleted = { habit -> HabitRepository.removeHabit(habit) })
         Spacer(modifier = Modifier.height(24.dp))
 
         Surface(
@@ -159,12 +158,22 @@ fun StressManagementPage(navController: NavController) {
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                "\"You can't always control what goes on outside. But you can always control what goes on inside.\"",
+                "\"Success is the sum of small efforts, repeated day in and day out.\"",
                 style = MaterialTheme.typography.bodySmall.copy(fontStyle = FontStyle.Italic),
                 color = MaterialTheme.colorScheme.primary,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(12.dp)
             )
         }
+        SettingsListItem(
+            title = "Completed Habits",
+            onClick = { navcontroller.navigate(CompletedHabitsPageRoute) },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.Checklist,
+                    contentDescription = "Completed Habits Icon"
+                )
+            }
+        )
     }
 }

@@ -2,7 +2,7 @@ package tabs
 
 import ChatScreen
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Chat
+import androidx.compose.material.icons.filled.ChatBubble
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import cafe.adriel.voyager.navigator.tab.Tab
@@ -12,7 +12,7 @@ object ChatTab : Tab {
     override val options: TabOptions
         @Composable
         get() {
-            val icon = rememberVectorPainter(Icons.AutoMirrored.Filled.Chat)
+            val icon = rememberVectorPainter(Icons.Default.ChatBubble)
 
             return TabOptions(
                 index = 3u,

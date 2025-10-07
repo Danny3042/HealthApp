@@ -6,9 +6,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import screens.HealthConnectScreen
 import utils.HealthConnectChecker
-import utils.HealthConnectScreen
-import utils.HealthDataView
 import utils.HealthKitService
 import utils.isAndroid
 
@@ -22,19 +21,19 @@ fun HomePage(healthKitService: HealthKitService) {
     var isRevokeSupported by remember { mutableStateOf(false) }
     var hasPermissions by remember { mutableStateOf(false) }
 
-LaunchedEffect(Unit) {
-    if (!isAndroid()) {
-        hasPermissions = healthKitService.checkPermissions()
-        if (!hasPermissions) {
-            hasPermissions = healthKitService.requestAuthorization()
+    LaunchedEffect(Unit) {
+        if (!isAndroid()) {
+            hasPermissions = healthKitService.checkPermissions()
+            if (!hasPermissions) {
+                hasPermissions = healthKitService.requestAuthorization()
+            }
         }
     }
-}
 
     val healthConnectAvailability = HealthConnectChecker.checkHealthConnectAvailability()
     if (isAndroid() && isAuthorizedResult?.getOrNull() != true) {
-        HealthConnectScreen()
+        HealthConnectScreen(healthKitService)
     } else {
-        HealthDataView(healthKitService)
+        HealthConnectScreen(healthKitService)
     }
 }

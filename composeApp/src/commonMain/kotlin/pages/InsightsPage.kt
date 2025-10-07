@@ -1,86 +1,70 @@
 
+package pages
+
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Button
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import components.AdviceTypeDialog
-import components.CalendarDataSource
-import components.CompletedHabitsCard
-import components.Content
-import components.Header
-import components.InfoCard
-import components.RatingsDialog
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
-import pages.SuggestionsCard
-import utils.getGeminiSuggestions
+import kotlinx.datetime.todayIn
+import utils.InsightsViewModel
 
-@Composable
-fun InsightsPage() {
-    val dataSource = remember { CalendarDataSource() }
-    ScheduleView(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        dataSource = dataSource
-    )
+const val InsightsPageScreen = "Insights"
+
+fun getStartOfWeek(today: LocalDate): LocalDate {
+    val daysFromMonday = (today.dayOfWeek.ordinal - DayOfWeek.MONDAY.ordinal + 7) % 7
+    return today.minus(daysFromMonday, DateTimeUnit.DAY)
 }
 
 @Composable
-fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) {
-    var calendarUiModel by remember { mutableStateOf(dataSource.getData(lastSelectedDate = dataSource.today)) }
-    var showAdviceDialog by remember { mutableStateOf(false) }
-    var showInfoCard by remember { mutableStateOf(true) }
-    var selectedDate by remember { mutableStateOf(calendarUiModel.selectedDate.date) }
-    var suggestions by remember { mutableStateOf(listOf<String>()) }
-    var isLoading by remember { mutableStateOf(false) }
-    var isFabVisible by remember { mutableStateOf(true) }
-    var adviceType by remember { mutableStateOf("General") }
-    val scope = rememberCoroutineScope()
+fun InsightsPage(
+    modifier: Modifier = Modifier,
+    insightsViewModel: InsightsViewModel = viewModel()
+) {
+    val sessionsPerDay by insightsViewModel.sessionsPerDay
+    val today = Clock.System.todayIn(TimeZone.currentSystemDefault())
+    val startOfWeek = getStartOfWeek(today)
+    val weekDates = List(7) { startOfWeek.plus(it, DateTimeUnit.DAY) }
+    val daysOfWeek = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+    val currentDayIndex = (today.dayOfWeek.ordinal + 7 - DayOfWeek.MONDAY.ordinal) % 7
     val scrollState = rememberScrollState()
-    var showRatingsDialog by remember { mutableStateOf(false) }
-    var tempSleepRating by remember { mutableStateOf(0) }
-    var tempMoodRating by remember { mutableStateOf(0) }
-    var showInfoCardAnim by remember { mutableStateOf(false) }
-    var showSuggestionsCardAnim by remember { mutableStateOf(false) }
-    var showCompletedHabitsCardAnim by remember { mutableStateOf(false) }
-
-    LaunchedEffect(scrollState.value) {
-        isFabVisible = scrollState.value == 0
-    }
+    var showCardsAnim by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        showInfoCardAnim = true
-        delay(150)
-        showSuggestionsCardAnim = true
-        delay(150)
-        showCompletedHabitsCardAnim = true
+        showCardsAnim = true
     }
 
     Box(modifier = modifier.fillMaxSize()) {
@@ -92,113 +76,80 @@ fun ScheduleView(modifier: Modifier = Modifier, dataSource: CalendarDataSource) 
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            AnimatedVisibility(
-                visible = showInfoCard && showInfoCardAnim,
-                enter = slideInVertically(initialOffsetY = { -40 }, animationSpec = tween(500)) + fadeIn()
+            // Week Header
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.Top
             ) {
-                InfoCard(onDismiss = { showInfoCard = false })
-            }
-            Header(
-                data = calendarUiModel,
-                onPrevClickListener = { startDate ->
-                    calendarUiModel = dataSource.getData(
-                        startDate.minus(7, DateTimeUnit.DAY),
-                        calendarUiModel.selectedDate.date
-                    )
-                },
-                onNextClickListener = { endDate ->
-                    calendarUiModel = dataSource.getData(
-                        endDate.plus(7, DateTimeUnit.DAY),
-                        calendarUiModel.selectedDate.date
-                    )
-                },
-                onTodayClickListener = {
-                    calendarUiModel = dataSource.getData(lastSelectedDate = dataSource.today)
-                }
-            )
-            Content(
-                calendarUiModel = calendarUiModel,
-                selectedDate = selectedDate,
-                onDateClickListener = { date ->
-                    selectedDate = date.date
-                    calendarUiModel = calendarUiModel.copy(selectedDate = date)
-                },
-                onUpdateCalendarUiModel = { updatedModel ->
-                    calendarUiModel = updatedModel
-                }
-            )
-            Button(
-                onClick = { showAdviceDialog = true },
-                modifier = Modifier.padding(16.dp)
-            ) {
-                Text("Get Tips")
-            }
-            AnimatedVisibility(
-                visible = showSuggestionsCardAnim,
-                enter = slideInVertically(initialOffsetY = { 40 }, animationSpec = tween(500, delayMillis = 100)) + fadeIn()
-            ) {
-                SuggestionsCard(suggestions, isLoading)
-            }
-            AnimatedVisibility(
-                visible = showCompletedHabitsCardAnim,
-                enter = slideInVertically(initialOffsetY = { 80 }, animationSpec = tween(500, delayMillis = 200)) + fadeIn()
-            ) {
-                CompletedHabitsCard()
-            }
-        }
-
-        if (isFabVisible) {
-            Box(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(bottom = 100.dp, end = 50.dp)
-            ) {
-                FloatingActionButton(
-                    onClick = {
-                        showRatingsDialog = true
+                daysOfWeek.forEachIndexed { index, day ->
+                    val date = weekDates[index]
+                    val sessions = sessionsPerDay.getOrNull(index) ?: emptyList()
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            "$day\n${date.dayOfMonth} ${date.month.name.take(3)}",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = if (index == currentDayIndex) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Surface(
+                            shape = CircleShape,
+                            color = when {
+                                index == currentDayIndex -> MaterialTheme.colorScheme.secondary
+                                sessions.isNotEmpty() -> MaterialTheme.colorScheme.primary
+                                else -> MaterialTheme.colorScheme.surfaceVariant
+                            },
+                            modifier = Modifier.size(40.dp)
+                        ) {
+                            Box(contentAlignment = Alignment.Center) {
+                                Text(
+                                    text = sessions.size.toString(),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MaterialTheme.colorScheme.onPrimary
+                                )
+                            }
+                        }
                     }
-                ) {
-                    Icon(imageVector = Icons.Default.Add, contentDescription = "Add Event")
                 }
+            }
+            Spacer(modifier = Modifier.height(32.dp))
 
-                if (showRatingsDialog) {
-                    RatingsDialog(
-                        sleepRating = tempSleepRating,
-                        moodRating = tempMoodRating,
-                        onSleepRatingChange = { tempSleepRating = it },
-                        onMoodRatingChange = { tempMoodRating = it },
-                        onSubmit = {
-                            val updatedRatings = calendarUiModel.ratings.toMutableMap()
-                            updatedRatings[selectedDate] = components.Rating(
-                                sleepRating = tempSleepRating,
-                                moodRating = tempMoodRating
-                            )
-                            calendarUiModel = calendarUiModel.copy(ratings = updatedRatings)
-                            dataSource.saveRatings(selectedDate, tempSleepRating, tempMoodRating)
-                            showRatingsDialog = false
-                        },
-                        onDismiss = { showRatingsDialog = false }
-                    )
+            // Animated Session Cards for each day
+            daysOfWeek.forEachIndexed { index, day ->
+                val date = weekDates[index]
+                val sessions = sessionsPerDay.getOrNull(index) ?: emptyList()
+                AnimatedVisibility(
+                    visible = showCardsAnim,
+                    enter = slideInVertically(initialOffsetY = { 40 * (index + 1) }) + fadeIn()
+                ) {
+                    if (sessions.isNotEmpty()) {
+                        Text(
+                            "$day, ${date.dayOfMonth} ${date.month.name.take(3)}",
+                            style = MaterialTheme.typography.titleSmall,
+                            modifier = Modifier.padding(top = 16.dp, bottom = 4.dp)
+                        )
+                        sessions.forEach { session ->
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 4.dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.surfaceVariant
+                                )
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .padding(16.dp)
+                                        .fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text("Time: ${session.time}", style = MaterialTheme.typography.bodyLarge)
+                                    Text("${session.duration} min", style = MaterialTheme.typography.bodyLarge)
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
-    }
-
-    if (showAdviceDialog) {
-        AdviceTypeDialog(
-            onSelect = { type ->
-                adviceType = type
-                showAdviceDialog = false
-                scope.launch {
-                    isLoading = true
-                    val ratings = calendarUiModel.ratings[selectedDate]
-                    val sleepRating = (ratings?.sleepRating ?: 0).toInt()
-                    val moodRating = (ratings?.moodRating ?: 0).toInt()
-                    suggestions = getGeminiSuggestions(listOf(type), sleepRating, moodRating)
-                    isLoading = false
-                }
-            },
-            onDismiss = { showAdviceDialog = false }
-        )
     }
 }
