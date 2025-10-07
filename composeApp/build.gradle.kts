@@ -1,4 +1,5 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.Properties
 
 plugins {
@@ -16,9 +17,10 @@ plugins {
 
 kotlin {
     androidTarget {
-        compilations.all {
-            kotlinOptions {
-                jvmTarget = "17"
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+            compilations.all {
+
             }
         }
     }
@@ -85,7 +87,6 @@ kotlin {
             implementation(libs.material.icons.extended)
             implementation(libs.kotlinx.datetime)
             // Health APIs
-            implementation(libs.core)
             implementation(libs.ktor.client.logging)
             implementation(libs.generativeai)
             implementation(libs.multiplatform.markdown.renderer)
@@ -94,10 +95,12 @@ kotlin {
             implementation(libs.kmpauth.uihelper) //UiHelper SignIn buttons (AppleSignIn, GoogleSignInButton)
             implementation(compose.material3)
             implementation(libs.androidx.datastore.preferences)
+            implementation(libs.health.kmp)
             // Gemini API
             implementation(libs.generativeai.google)
             implementation(libs.calf.filepicker)
             api(libs.kmpnotifier.v121) // in iOS export this library
+
 
 
         }
