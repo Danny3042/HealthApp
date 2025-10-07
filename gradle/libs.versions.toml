@@ -1,6 +1,6 @@
 [versions]
 accompanistDrawablepainter = "0.34.0"
-agp = "8.11.0"
+agp = "8.13.0"
 android-compileSdk = "34"
 android-minSdk = "24"
 android-targetSdk = "34"
@@ -14,20 +14,21 @@ androidx-test-junit = "1.2.1"
 compose = "1.8.2"
 compose-plugin = "1.6.11"
 connectClient = "1.1.0-rc01"
-core = "0.0.3"
+
 datastorePreferences = "1.1.7"
 firebaseAnalyticsKtx = "22.0.0"
 firebaseAuth = "1.12.0"
 generativeai = "0.9.0"
 generativeaiGoogle = "0.5.0-1.0.0"
 glanceAppwidget = "1.1.1"
+healthKmp = "0.0.13"
 integrity = "1.4.0"
 jetbrainsNavigationCompose = "2.7.7"
 junit = "4.13.2"
 kmpauthGoogle = "2.0.0"
 kmpnotifier = "1.2.1"
 kmpnotifierVersion = "1.2.1"
-kotlin = "2.0.10"
+kotlin = "2.2.20"
 kotlinxDatetime = "0.6.0"
 ktor = "2.3.12"
 ktorClientDarwin = "2.3.12"
@@ -56,13 +57,13 @@ androidx-connect-client = { module = "androidx.health.connect:connect-client", v
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "glanceAppwidget" }
 androidx-glance-material3 = { module = "androidx.glance:glance-material3", version.ref = "glanceAppwidget" }
-core = { module = "com.vitoksmile.health-kmp:core", version.ref = "core" }
 firebase-analytics-ktx-v2200 = { module = "com.google.firebase:firebase-analytics-ktx", version.ref = "firebaseAnalyticsKtx" }
 firebase-appcheck-playintegrity = { module = "com.google.firebase:firebase-appcheck-playintegrity" }
 firebase-auth = { module = "dev.gitlive:firebase-auth", version.ref = "firebaseAuth" }
 generativeai = { module = "com.google.ai.client.generativeai:generativeai", version.ref = "generativeai" }
 generativeai-google = { module = "dev.shreyaspatil.generativeai:generativeai-google", version.ref = "generativeaiGoogle" }
 google-firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
+health-kmp = { module = "com.viktormykhailiv:health-kmp", version.ref = "healthKmp" }
 integrity = { module = "com.google.android.play:integrity", version.ref = "integrity" }
 jetbrains-navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationComposeVersion" }
 kmpauth-firebase = { module = "io.github.mirzemehdi:kmpauth-firebase", version.ref = "kmpauthGoogle" }
