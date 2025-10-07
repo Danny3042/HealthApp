@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -21,10 +22,18 @@ import com.mmk.kmpnotifier.notification.configuration.NotificationPlatformConfig
 import config.VERSION_NUMBER
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import pages.HomePageScreen
+import pages.InsightsPage
+import pages.InsightsPageScreen
+import pages.STRESS_MANAGEMENT_PAGE_ROUTE
+import pages.StressManagementPage
 import pages.Timer
 import pages.TimerScreenContent
 import sub_pages.AboutPage
 import sub_pages.AboutPageScreen
+import sub_pages.CompletedHabitsPage
+import sub_pages.CompletedHabitsPageRoute
+import sub_pages.MEDITATION_PAGE_ROUTE
+import sub_pages.MeditationPage
 import sub_pages.NotificationPage
 import sub_pages.NotificationPageScreen
 import tabs.HomeTab
@@ -81,6 +90,18 @@ fun App() {
                 )
             }
             composable(Timer) { TimerScreenContent(onBack = { navController.popBackStack() }) }
+            composable(CompletedHabitsPageRoute) { CompletedHabitsPage(navController) }
+            composable(MEDITATION_PAGE_ROUTE) {
+                MeditationPage(
+                    onBack = { navController.popBackStack() },
+                    onNavigateToInsights = { navController.navigate(InsightsPageScreen) }
+                )
+            }
+            composable(STRESS_MANAGEMENT_PAGE_ROUTE) {
+                StressManagementPage(navController)
+            }
+            composable(InsightsPageScreen) { InsightsPage(insightsViewModel = viewModel()) }
+
         }
     }
 }
