@@ -1,4 +1,3 @@
-// kotlin
 package pages
 
 import androidx.compose.foundation.layout.Box
