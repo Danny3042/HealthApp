@@ -1,6 +1,6 @@
 package tabs
 
-import InsightsPage
+import pages.InsightsPage
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Insights
 import androidx.compose.runtime.Composable

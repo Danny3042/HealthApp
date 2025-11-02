@@ -42,7 +42,7 @@ import androidx.navigation.NavController
 import sub_pages.CompletedHabitsPageRoute
 
 @Composable
-fun HabitCoachingPage(navcontroller: NavController) {
+fun HabitTrackerPage(navcontroller: NavController) {
     val scope = rememberCoroutineScope()
     var aiTip by remember { mutableStateOf<String?>(null) }
     var isLoading by remember { mutableStateOf(false) }
