@@ -1,3 +1,5 @@
+// kotlin
+package pages
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,6 +41,7 @@ import service.GenerativeAiService
 import sub_pages.CompletedHabitsPage
 import sub_pages.HabitTrackerPage
 import utils.HabitRepository
+import keyboardUtil.hideKeyboard
 import androidx.navigation.NavController
 import sub_pages.CompletedHabitsPageRoute
 
@@ -54,6 +57,8 @@ fun HabitCoachingPage(navcontroller: NavController) {
 
     fun generateTipAndAddHabit() {
         if (userHabit.isBlank()) return
+        // Dismiss keyboard (iOS actual implementation will hide the keyboard)
+        hideKeyboard()
         scope.launch {
             isLoading = true
             error = null
