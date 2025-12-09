@@ -123,7 +123,9 @@ class Authentication {
                         label = { Text("Email address") },
                         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
                         keyboardActions = KeyboardActions(onDone = {
+                            // prefer compose controller hide + cross-platform hide
                             keyboardController?.hide()
+                            hideKeyboard()
                         }),
                         colors = TextFieldDefaults.textFieldColors(
                             containerColor = MaterialTheme.colorScheme.surface,
@@ -140,6 +142,7 @@ class Authentication {
                         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
                         keyboardActions = KeyboardActions(onDone = {
                             keyboardController?.hide()
+                            hideKeyboard()
                         }),
                         visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         trailingIcon = {
@@ -259,6 +262,7 @@ class Authentication {
                         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
                         keyboardActions = KeyboardActions(onDone = {
                             keyboardController?.hide()
+                            hideKeyboard()
                         }),
                         colors = TextFieldDefaults.textFieldColors(
                             containerColor = MaterialTheme.colorScheme.surface,
@@ -275,6 +279,7 @@ class Authentication {
                         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
                         keyboardActions = KeyboardActions(onDone = {
                             keyboardController?.hide()
+                            hideKeyboard()
                         }),
                         visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         trailingIcon = {
@@ -352,6 +357,7 @@ class Authentication {
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(onDone = {
                         keyboardController?.hide()
+                        hideKeyboard()
                     }),
                 )
                 Spacer(modifier = Modifier.height(8.dp))

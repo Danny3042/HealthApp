@@ -11,7 +11,11 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
 
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import keyboardUtil.hideKeyboard
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 
 @Composable
 fun TimeEditDialog(
@@ -32,14 +36,18 @@ fun TimeEditDialog(
                     value = minutesText,
                     onValueChange = { minutesText = it.filter { c -> c.isDigit() } },
                     label = { Text("Minutes") },
-                    modifier = Modifier.width(100.dp)
+                    modifier = Modifier.width(100.dp),
+                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(onDone = { hideKeyboard() })
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 OutlinedTextField(
                     value = secondsText,
                     onValueChange = { secondsText = it.filter { c -> c.isDigit() } },
                     label = { Text("Seconds") },
-                    modifier = Modifier.width(100.dp)
+                    modifier = Modifier.width(100.dp),
+                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(onDone = { hideKeyboard() })
                 )
             }
         },
@@ -48,6 +56,7 @@ fun TimeEditDialog(
                 val min = minutesText.toIntOrNull() ?: 0
                 val sec = secondsText.toIntOrNull() ?: 0
                 if (min >= 0 && sec in 0..59 && (min > 0 || sec > 0)) {
+                    hideKeyboard()
                     onConfirm(min, sec)
                 }
             }) { Text("OK") }

@@ -35,6 +35,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
+import keyboardUtil.hideKeyboard
 
 @Composable
 fun MessageInput(
@@ -85,6 +86,7 @@ fun MessageInput(
                     ),
                     keyboardActions = KeyboardActions(onDone = {
                         keyboardController?.hide()
+                        hideKeyboard()
                     }),
                     leadingIcon = if (selectedImageBitmap == null) {
                         {
@@ -103,6 +105,7 @@ fun MessageInput(
                                     onSendMessage(userMessage, selectedImage)
                                     userMessage = ""
                                     selectedImage = null
+                                    hideKeyboard()
                                 }
                             },
                         ) {

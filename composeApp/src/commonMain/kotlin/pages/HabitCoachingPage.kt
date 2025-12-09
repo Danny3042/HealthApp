@@ -31,11 +31,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import components.SettingsListItem
-import kotlinx.coroutines.launch
 import service.GenerativeAiService
 import sub_pages.CompletedHabitsPage
 import sub_pages.HabitTrackerPage
@@ -43,6 +44,10 @@ import utils.HabitRepository
 import keyboardUtil.hideKeyboard
 import androidx.navigation.NavController
 import sub_pages.CompletedHabitsPageRoute
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.ImeAction
+import kotlinx.coroutines.launch
 
 @Composable
 fun HabitCoachingPage(navcontroller: NavController) {
@@ -82,6 +87,9 @@ fun HabitCoachingPage(navcontroller: NavController) {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        val keyboardController = LocalSoftwareKeyboardController.current
+        val focusManager = LocalFocusManager.current
+
         Icon(
             painter = rememberVectorPainter(Icons.Default.School),
             contentDescription = "Habit Coaching",
@@ -114,9 +122,20 @@ fun HabitCoachingPage(navcontroller: NavController) {
             onValueChange = { userHabit = it },
             label = { Text("What habit do you want to build?") },
             modifier = Modifier.fillMaxWidth(),
+            singleLine = true,
+            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(onDone = {
+                // clear focus and request platform hide immediately so iOS blue tick dismisses keyboard
+                focusManager.clearFocus()
+                hideKeyboard()
+            }),
             trailingIcon = {
                 IconButton(
-                    onClick = { generateTipAndAddHabit() },
+                    onClick = {
+                        focusManager.clearFocus()
+                        hideKeyboard()
+                        scope.launch { generateTipAndAddHabit() }
+                    },
                     enabled = userHabit.isNotBlank() && !isLoading
                 ) {
                     Icon(
@@ -145,7 +164,11 @@ fun HabitCoachingPage(navcontroller: NavController) {
         }
         Spacer(modifier = Modifier.height(8.dp))
         Button(
-            onClick = { generateTipAndAddHabit() },
+            onClick = {
+                focusManager.clearFocus()
+                hideKeyboard()
+                scope.launch { generateTipAndAddHabit() }
+            },
             enabled = userHabit.isNotBlank() && !isLoading
         ) {
             Text("Get AI Tip & Add Habit")
