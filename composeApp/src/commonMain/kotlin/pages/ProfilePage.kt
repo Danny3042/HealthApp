@@ -6,9 +6,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.TabRowDefaults.Divider
 import androidx.compose.material.icons.Icons
@@ -24,8 +27,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,6 +47,7 @@ import dev.gitlive.firebase.auth.auth
 import kotlinx.coroutines.launch
 import sub_pages.AboutPageScreen
 import sub_pages.NotificationPageScreen
+import utils.SettingsManager
 import utils.deleteUser
 
 @Composable
@@ -52,6 +58,16 @@ fun ProfilePage(navController: NavController) {
     val snackbarHostState = remember { SnackbarHostState() }
     val user = auth.currentUser
     val (notificationsEnabled, setNotificationsEnabled) = remember { mutableStateOf(false) }
+
+    // Hoist dev mode state so it persists across list recompositions
+    var devModeEnabled by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        try {
+            devModeEnabled = SettingsManager.loadDevMode()
+        } catch (e: Exception) {
+            devModeEnabled = false
+        }
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
@@ -124,6 +140,40 @@ fun ProfilePage(navController: NavController) {
                 )
                 Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
             }
+            // Developer mode toggle (runtime persisted)
+            item {
+                SettingsListItem(
+                    title = "Developer",
+                    onClick = { /* no-op, toggle in content */ },
+                    leadingIcon = {
+                        Icon(Icons.Outlined.Badge, contentDescription = "Developer Icon")
+                    }
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("Enable Dev Mode")
+                        Switch(
+                            checked = devModeEnabled,
+                            onCheckedChange = { checked ->
+                                devModeEnabled = checked
+                                coroutineScope.launch {
+                                    try {
+                                        SettingsManager.saveDevMode(checked)
+                                    } catch (e: Exception) {
+                                        // ignore
+                                    }
+                                }
+                            }
+                        )
+                    }
+                }
+                Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
+            }
             if (showDeleteDialog) {
                 item {
                     AlertDialog(
@@ -133,18 +183,20 @@ fun ProfilePage(navController: NavController) {
                         confirmButton = {
                             Button(
                                 onClick = {
+                                    // Perform deletion and navigate; handle errors inside
                                     coroutineScope.launch {
-                                        deleteUser(auth, navController, snackbarHostState)
+                                        try {
+                                            deleteUser(auth, navController, snackbarHostState)
+                                            navController.navigate(LoginScreen)
+                                        } catch (e: Exception) {
+                                            // ignore or surface in snackbar
+                                        }
                                     }
                                     showDeleteDialog = false
                                 },
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
                             ) {
                                 Text("Confirm", color = Color.White)
-                                coroutineScope.launch {
-                                    deleteUser(auth, navController, snackbarHostState)
-                                    navController.navigate(LoginScreen)
-                                }
                             }
                         },
                         dismissButton = {

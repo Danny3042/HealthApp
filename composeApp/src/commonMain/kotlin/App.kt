@@ -1,4 +1,3 @@
-
 import Authentication.Authentication
 import Authentication.LoginScreen
 import Authentication.ResetPasswordScreen
@@ -41,6 +40,7 @@ import tabs.ProfileTab
 import utils.HealthKitServiceImpl
 import utils.SettingsManager
 import utils.iOSHealthKitManager
+import debug.AIDebug
 
 @Composable
 @Preview

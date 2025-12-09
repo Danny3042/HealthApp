@@ -19,8 +19,14 @@ suspend fun getGeminiSuggestions(results: List<String>, sleepRating: Int, moodRa
             maxTokens = 20
         )
 
-        // Mocked API call to Gemini
-        val response = instance.getSuggestions(results + "Sleep Rating: $sleepRating" + "Mood Rating: $moodRating")
-        response?.split(",")?.map { it.trim() } ?: emptyList()
+        try {
+            val promptList = results + listOf("Sleep Rating: $sleepRating", "Mood Rating: $moodRating")
+            val response = instance.getSuggestions(promptList)
+            response?.split(",")?.map { it.trim() } ?: emptyList()
+        } catch (e: Exception) {
+            // Log the error and return an empty list so callers can handle gracefully
+            println("Gemini API call failed: ${e.message}")
+            emptyList()
+        }
     }
 }

@@ -30,4 +30,15 @@ actual object SettingsManager {
         val prefs = appContext.dataStore.data.first()
         return prefs[key] ?: true
     }
+
+    actual suspend fun saveDevMode(enabled: Boolean) {
+        val key = booleanPreferencesKey("dev_mode")
+        appContext.dataStore.edit { it[key] = enabled }
+    }
+
+    actual suspend fun loadDevMode(): Boolean {
+        val key = booleanPreferencesKey("dev_mode")
+        val prefs = appContext.dataStore.data.first()
+        return prefs[key] ?: false
+    }
 }
