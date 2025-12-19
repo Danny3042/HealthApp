@@ -64,6 +64,7 @@ actual fun PlatformApp() {
         val route = pendingRoute
         if (!route.isNullOrEmpty()) {
             try {
+                println("PlatformIos: LaunchedEffect navigating to route: $route")
                 navController.navigate(route)
             } catch (e: Throwable) {
                 println("Failed to navigate from LaunchedEffect to route: $route, error: ${e.message}")
@@ -79,8 +80,10 @@ actual fun PlatformApp() {
             `object` = null,
             queue = NSOperationQueue.mainQueue
         ) { notification: NSNotification? ->
+            println("PlatformIos: Received AuthManagerNavigateToRoute notification")
             val userInfo = notification?.userInfo as? NSDictionary
             val route = (userInfo?.objectForKey("route") as? String)
+            println("PlatformIos: route from notification = $route")
             if (!route.isNullOrEmpty()) {
                 try {
                     // If the route looks like a tab request, set the PlatformBridge requestedTab and request navigation
@@ -109,7 +112,7 @@ actual fun PlatformApp() {
             val navControllerLocal = navController
             NavHost(navController = navControllerLocal, startDestination = LoginScreen) {
                 composable(LoginScreen) { Authentication().Login(navControllerLocal) }
-                composable("HeroScreen") { HeroScreen(navControllerLocal) }
+                composable("HeroScreen") { HeroScreen(navControllerLocal, showBottomBar = false) }
                 composable(SignUpScreen) { Authentication().signUp(navControllerLocal) }
                 composable(ResetPasswordScreen) { Authentication().ResetPassword(navControllerLocal) }
                 composable(HomePageScreen) { HomeTab.Content() }

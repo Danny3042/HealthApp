@@ -29,7 +29,7 @@ const val HeroScreen = "HeroScreen"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HeroScreen(navController: NavHostController) {
+fun HeroScreen(navController: NavHostController, showBottomBar: Boolean = true) {
     HandleBackNavigation(navController)
     TabNavigator(
         HomeTab,
@@ -70,12 +70,14 @@ fun HeroScreen(navController: NavHostController) {
                 CurrentTab()
             },
             bottomBar = {
-                NavigationBar {
-                    TabNavigationItem(HomeTab)
-                    TabNavigationItem(HabitsTab(navController))
-                    TabNavigationItem(ChatTab)
-                    TabNavigationItem(MeditateTab(navController))
-                    TabNavigationItem(ProfileTab(navController))
+                if (showBottomBar) {
+                    NavigationBar {
+                        TabNavigationItem(HomeTab)
+                        TabNavigationItem(HabitsTab(navController))
+                        TabNavigationItem(ChatTab)
+                        TabNavigationItem(MeditateTab(navController))
+                        TabNavigationItem(ProfileTab(navController))
+                    }
                 }
             }
         )

@@ -8,32 +8,55 @@ struct ComposeViewController: UIViewControllerRepresentable {
     let onClose: (() -> Void)?
 
     func makeUIViewController(context: Context) -> UIViewController {
-        MainViewControllerKt.MainViewController()
+        let vc = MainViewControllerKt.MainViewController()
+        // Make sure the Compose view doesn't draw an opaque background that hides native overlay
+        vc.view.backgroundColor = UIColor.clear
+        vc.view.isOpaque = false
+        print("ComposeViewController created: \(vc)")
+        return vc
     }
 
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
-        // no-op
+        // keep the compose view visible and transparent
+        uiViewController.view.backgroundColor = UIColor.clear
+        uiViewController.view.isOpaque = false
     }
 }
 
-/// Root SwiftUI view that shows tabs with a shared Compose host.
+// Single shared Compose host used by native SwiftUI tab bar
+struct SharedComposeHost: View {
+    @Binding var selectedTab: Int
+    private let tabRoutes = ["HomePage", "HabitCoachingPage", "ChatScreen", "meditation", "profile"]
+
+    var body: some View {
+        ComposeViewController(onClose: nil)
+            .ignoresSafeArea(edges: .all)
+            .onAppear {
+                let route = tabRoutes.indices.contains(selectedTab) ? tabRoutes[selectedTab] : "HomePage"
+                AuthManager.shared.requestNavigateTo(route: route)
+            }
+            .onChange(of: selectedTab) { newIndex in
+                guard newIndex >= 0 && newIndex < tabRoutes.count else { return }
+                AuthManager.shared.requestNavigateTo(route: tabRoutes[newIndex])
+            }
+    }
+}
+
+/// Root SwiftUI view that uses a native SwiftUI TabView and a single shared Compose host underneath.
 struct ContentView: View {
-    @StateObject private var settings = AppSettings()
-    @State private var isSignedIn: Bool = Auth.auth().currentUser != nil
-    @State private var authHandle: AuthStateDidChangeListenerHandle? = nil
     @State private var selectedTab: Int = 0
+    @StateObject private var settings = AppSettings()
+    @State private var authHandle: AuthStateDidChangeListenerHandle? = nil
 
     var body: some View {
         ZStack(alignment: .bottom) {
-            if isSignedIn {
-                HeroTabView(selectedTab: $selectedTab)
-                    .ignoresSafeArea(edges: .all)
-            } else {
-                // Show login when not signed in
-                ComposeViewController(onClose: nil)
-                    .ignoresSafeArea(edges: .all)
-            }
+            // Compose content sits underneath and responds to native tab selections
+            SharedComposeHost(selectedTab: $selectedTab)
 
+            // Native SwiftUI TabView on top with transparent content
+            HeroTabView(selectedTab: $selectedTab)
+
+            // Snackbar
             if settings.showSnackbar {
                 Text(settings.snackbarMessage)
                     .padding()
@@ -47,7 +70,6 @@ struct ContentView: View {
         .onAppear {
             authHandle = Auth.auth().addStateDidChangeListener { _, user in
                 DispatchQueue.main.async {
-                    self.isSignedIn = (user != nil)
                     if user != nil {
                         AuthManager.shared.requestNavigateTo(route: "HeroScreen")
                     } else {
