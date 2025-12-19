@@ -53,6 +53,7 @@ import dev.gitlive.firebase.auth.FirebaseAuthInvalidUserException
 import dev.gitlive.firebase.auth.FirebaseUser
 import dev.gitlive.firebase.auth.auth
 import keyboardUtil.hideKeyboard
+import keyboardUtil.onDoneHideKeyboardAction
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
@@ -122,11 +123,7 @@ class Authentication {
                         onValueChange = { userEmail = it },
                         label = { Text("Email address") },
                         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-                        keyboardActions = KeyboardActions(onDone = {
-                            // prefer compose controller hide + cross-platform hide
-                            keyboardController?.hide()
-                            hideKeyboard()
-                        }),
+                        keyboardActions = onDoneHideKeyboardAction(onDone = {}),
                         colors = TextFieldDefaults.textFieldColors(
                             containerColor = MaterialTheme.colorScheme.surface,
                             cursorColor = MaterialTheme.colorScheme.onSurface,
@@ -140,10 +137,7 @@ class Authentication {
                         onValueChange = { userPassword = it },
                         placeholder = { Text("Password") },
                         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-                        keyboardActions = KeyboardActions(onDone = {
-                            keyboardController?.hide()
-                            hideKeyboard()
-                        }),
+                        keyboardActions = onDoneHideKeyboardAction(onDone = {}),
                         visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         trailingIcon = {
                             val image =
@@ -260,10 +254,7 @@ class Authentication {
                         onValueChange = { userEmail = it },
                         placeholder = { Text("Email address") },
                         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-                        keyboardActions = KeyboardActions(onDone = {
-                            keyboardController?.hide()
-                            hideKeyboard()
-                        }),
+                        keyboardActions = onDoneHideKeyboardAction(onDone = {}),
                         colors = TextFieldDefaults.textFieldColors(
                             containerColor = MaterialTheme.colorScheme.surface,
                             cursorColor = MaterialTheme.colorScheme.onSurface,
@@ -277,10 +268,7 @@ class Authentication {
                         onValueChange = { userPassword = it },
                         placeholder = { Text("Password") },
                         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-                        keyboardActions = KeyboardActions(onDone = {
-                            keyboardController?.hide()
-                            hideKeyboard()
-                        }),
+                        keyboardActions = onDoneHideKeyboardAction(onDone = {}),
                         visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         trailingIcon = {
                             val image =
@@ -355,10 +343,7 @@ class Authentication {
                     placeholder = { Text("Email address") },
                     modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(onDone = {
-                        keyboardController?.hide()
-                        hideKeyboard()
-                    }),
+                    keyboardActions = onDoneHideKeyboardAction(onDone = {}),
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(

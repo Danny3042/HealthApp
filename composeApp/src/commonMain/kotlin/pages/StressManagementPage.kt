@@ -36,6 +36,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import keyboardUtil.hideKeyboard
+import keyboardUtil.onDoneHideKeyboardAction
 import kotlinx.coroutines.launch
 import service.GenerativeAiService
 import sub_pages.MEDITATION_PAGE_ROUTE
@@ -119,9 +120,8 @@ fun StressManagementPage(navController: NavController) {
             label = { Text("What stress relief activity do you want to try?") },
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(onDone = {
-                keyboardController?.hide()
-                hideKeyboard()
+            keyboardActions = onDoneHideKeyboardAction(onDone = {
+                // keep existing behavior: keep keyboard hidden and do not auto-submit (Button handles it)
             }),
             trailingIcon = {
                 IconButton(

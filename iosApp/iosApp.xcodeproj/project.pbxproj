@@ -18,8 +18,16 @@
 		087F31292C431A7A00F6B3B2 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 087F31282C431A7A00F6B3B2 /* GoogleSignIn */; };
 		087F312B2C431A7A00F6B3B2 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 087F312A2C431A7A00F6B3B2 /* GoogleSignInSwift */; };
 		087F312D2C43376A00F6B3B2 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 087F312C2C43376A00F6B3B2 /* FirebaseCrashlytics */; };
+		11D975B877485487ECF8CE18 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9ADFC5CF1EEB008FA5CFBBB /* ProfileView.swift */; };
 		2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152FB032600AC8F00CF470E /* iOSApp.swift */; };
+		5B82680352B7629EF01DAADE /* HabitTrackerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77DB1ADDE43B01D3CE686819 /* HabitTrackerView.swift */; };
+		6DFC66CBE1BD1D7726073B6E /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F0B7DD8A4785B4B0561ECA2 /* ChatView.swift */; };
 		7555FF83242A565900829871 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF82242A565900829871 /* ContentView.swift */; };
+		8184AE2A02BB85A5EE3C081C /* StressManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC261745F742E979D8616BD8 /* StressManagementView.swift */; };
+		9D9BB4BA477F86A64EDEF86E /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECD4BA3927B146147BE5C613 /* LoginView.swift */; };
+		BD43E0CE05D2A5BB6BDAA62C /* MeditationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3128225D7AA2A8125DC51CC5 /* MeditationView.swift */; };
+		CAB727CFD7E2ED3BAC58EE86 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 778ECC663B9304975B6D68DF /* AppSettings.swift */; };
+		F30FFFEAD8DC3DBC46A59E01 /* HeroTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F246AD5AA2D4656298A31CC /* HeroTabView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,10 +83,18 @@
 		08683C0C2C28801300180F44 /* HealthConnectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthConnectView.swift; sourceTree = "<group>"; };
 		08D07E0C2BFA712D00C7C391 /* ResearchKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ResearchKit.xcodeproj; path = "../../../Downloads/ResearchKit-main/ResearchKit.xcodeproj"; sourceTree = "<group>"; };
 		2152FB032600AC8F00CF470E /* iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSApp.swift; sourceTree = "<group>"; };
+		3128225D7AA2A8125DC51CC5 /* MeditationView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MeditationView.swift; path = MeditationView.swift; sourceTree = "<group>"; };
 		7555FF7B242A565900829871 /* MyHealthBuddy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyHealthBuddy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7555FF82242A565900829871 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		7555FF8C242A565B00829871 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		778ECC663B9304975B6D68DF /* AppSettings.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AppSettings.swift; path = AppSettings.swift; sourceTree = "<group>"; };
+		77DB1ADDE43B01D3CE686819 /* HabitTrackerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HabitTrackerView.swift; path = HabitTrackerView.swift; sourceTree = "<group>"; };
+		8F0B7DD8A4785B4B0561ECA2 /* ChatView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ChatView.swift; path = ChatView.swift; sourceTree = "<group>"; };
+		9F246AD5AA2D4656298A31CC /* HeroTabView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HeroTabView.swift; path = HeroTabView.swift; sourceTree = "<group>"; };
 		AB3632DC29227652001CCB65 /* Config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
+		AC261745F742E979D8616BD8 /* StressManagementView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = StressManagementView.swift; path = StressManagementView.swift; sourceTree = "<group>"; };
+		D9ADFC5CF1EEB008FA5CFBBB /* ProfileView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProfileView.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		ECD4BA3927B146147BE5C613 /* LoginView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LoginView.swift; path = LoginView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -164,6 +180,14 @@
 				058557D7273AAEEB004C7B11 /* Preview Content */,
 				08683C0A2C287E8D00180F44 /* HealthKitManager.swift */,
 				08683C0C2C28801300180F44 /* HealthConnectView.swift */,
+				ECD4BA3927B146147BE5C613 /* LoginView.swift */,
+				9F246AD5AA2D4656298A31CC /* HeroTabView.swift */,
+				77DB1ADDE43B01D3CE686819 /* HabitTrackerView.swift */,
+				8F0B7DD8A4785B4B0561ECA2 /* ChatView.swift */,
+				3128225D7AA2A8125DC51CC5 /* MeditationView.swift */,
+				D9ADFC5CF1EEB008FA5CFBBB /* ProfileView.swift */,
+				AC261745F742E979D8616BD8 /* StressManagementView.swift */,
+				778ECC663B9304975B6D68DF /* AppSettings.swift */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -346,6 +370,14 @@
 				08683C0D2C28801300180F44 /* HealthConnectView.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
 				08683C0B2C287E8D00180F44 /* HealthKitManager.swift in Sources */,
+				9D9BB4BA477F86A64EDEF86E /* LoginView.swift in Sources */,
+				F30FFFEAD8DC3DBC46A59E01 /* HeroTabView.swift in Sources */,
+				5B82680352B7629EF01DAADE /* HabitTrackerView.swift in Sources */,
+				6DFC66CBE1BD1D7726073B6E /* ChatView.swift in Sources */,
+				BD43E0CE05D2A5BB6BDAA62C /* MeditationView.swift in Sources */,
+				11D975B877485487ECF8CE18 /* ProfileView.swift in Sources */,
+				8184AE2A02BB85A5EE3C081C /* StressManagementView.swift in Sources */,
+				CAB727CFD7E2ED3BAC58EE86 /* AppSettings.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -481,9 +513,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
 				DEVELOPMENT_TEAM = 49BZF93FUP;
 				ENABLE_PREVIEWS = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)\n$(SRCROOT)/../composeApp/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)\n$(SRCROOT)/../composeApp/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)";
 				INFOPLIST_FILE = iosApp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = MyHealthBuddy;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
@@ -519,9 +549,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
 				DEVELOPMENT_TEAM = 49BZF93FUP;
 				ENABLE_PREVIEWS = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)\n$(SRCROOT)/../composeApp/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)\n$(SRCROOT)/../composeApp/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)";
 				INFOPLIST_FILE = iosApp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = MyHealthBuddy;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;

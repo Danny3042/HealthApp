@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import keyboardUtil.hideKeyboard
+import keyboardUtil.onDoneHideKeyboardAction
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 
@@ -38,7 +39,7 @@ fun TimeEditDialog(
                     label = { Text("Minutes") },
                     modifier = Modifier.width(100.dp),
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(onDone = { hideKeyboard() })
+                    keyboardActions = onDoneHideKeyboardAction(onDone = { })
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 OutlinedTextField(
@@ -47,7 +48,7 @@ fun TimeEditDialog(
                     label = { Text("Seconds") },
                     modifier = Modifier.width(100.dp),
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(onDone = { hideKeyboard() })
+                    keyboardActions = onDoneHideKeyboardAction(onDone = { })
                 )
             }
         },

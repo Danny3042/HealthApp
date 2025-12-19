@@ -34,6 +34,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import components.SettingsListItem
 import keyboardUtil.hideKeyboard
+import keyboardUtil.onDoneHideKeyboardAction
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import service.GenerativeAiService
@@ -121,15 +122,14 @@ fun HabitTrackerPage(navcontroller: NavController) {
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(onDone = {
-                // clear focus and request platform hide immediately so iOS blue tick dismisses keyboard
-                focusManager.clearFocus()
-                hideKeyboard()
+            keyboardActions = onDoneHideKeyboardAction(onDone = {
+                // submission after keyboard hide
+                scope.launch { generateTipAndAddHabit() }
             }),
             trailingIcon = {
                 IconButton(
                     onClick = {
-                        // ensure compose and platform keyboards are hidden before submitting
+                        // ensure keyboard hidden then submit
                         focusManager.clearFocus()
                         hideKeyboard()
                         scope.launch { generateTipAndAddHabit() }

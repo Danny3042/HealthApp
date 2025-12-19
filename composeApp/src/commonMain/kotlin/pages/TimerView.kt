@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import keyboardUtil.hideKeyboard
+import keyboardUtil.onDoneHideKeyboardAction
 
 const val Timer = "timer"
 @Composable
@@ -178,7 +179,7 @@ fun SetTimerDialog(
                     onValueChange = { input = it },
                     label = { Text("Enter time in seconds") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(onDone = { hideKeyboard() })
+                    keyboardActions = onDoneHideKeyboardAction(onDone = {})
                 )
             },
             confirmButton = {

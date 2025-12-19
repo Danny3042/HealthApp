@@ -42,6 +42,7 @@ import sub_pages.CompletedHabitsPage
 import sub_pages.HabitTrackerPage
 import utils.HabitRepository
 import keyboardUtil.hideKeyboard
+import keyboardUtil.onDoneHideKeyboardAction
 import androidx.navigation.NavController
 import sub_pages.CompletedHabitsPageRoute
 import androidx.compose.foundation.text.KeyboardActions
@@ -124,11 +125,7 @@ fun HabitCoachingPage(navcontroller: NavController) {
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(onDone = {
-                // clear focus and request platform hide immediately so iOS blue tick dismisses keyboard
-                focusManager.clearFocus()
-                hideKeyboard()
-            }),
+            keyboardActions = onDoneHideKeyboardAction(onDone = {}),
             trailingIcon = {
                 IconButton(
                     onClick = {
