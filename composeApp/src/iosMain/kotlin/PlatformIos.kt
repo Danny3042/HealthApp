@@ -8,6 +8,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,19 +44,83 @@ import androidx.compose.ui.Modifier
 import androidx.compose.material3.Text
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import platform.Foundation.NSNotification
+import platform.Foundation.NSNotificationCenter
+import platform.Foundation.NSDictionary
+import platform.Foundation.NSOperationQueue
+import platform.PlatformBridge
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 actual fun PlatformApp() {
-    // iOS uses native SwiftUI views (see iosApp/ContentView.swift and other Swift files).
-    // Keep this Compose entry minimal to avoid conflicting navigation graphs.
-    // If you want to render Compose on iOS, replace this implementation accordingly.
+    // remember a NavController for Compose navigation on iOS
+    val navController = rememberNavController()
 
-    // No-op placeholder UI: a small Surface with a developer hint. The real iOS UI should be
-    // implemented with SwiftUI inside the iosApp target (ContentView.swift).
+    // pending route set by native observer; Compose will navigate when this changes
+    var pendingRoute by remember { mutableStateOf<String?>(null) }
+
+    // If a pending route is set (by the NotificationCenter callback), navigate from Compose context
+    LaunchedEffect(pendingRoute) {
+        val route = pendingRoute
+        if (!route.isNullOrEmpty()) {
+            try {
+                navController.navigate(route)
+            } catch (e: Throwable) {
+                println("Failed to navigate from LaunchedEffect to route: $route, error: ${e.message}")
+            }
+            pendingRoute = null
+        }
+    }
+
+    // Observe native navigation requests from AuthManager (Swift) via NotificationCenter
+    DisposableEffect(navController) {
+        val observer = NSNotificationCenter.defaultCenter.addObserverForName(
+            name = "AuthManagerNavigateToRoute",
+            `object` = null,
+            queue = NSOperationQueue.mainQueue
+        ) { notification: NSNotification? ->
+            val userInfo = notification?.userInfo as? NSDictionary
+            val route = (userInfo?.objectForKey("route") as? String)
+            if (!route.isNullOrEmpty()) {
+                try {
+                    // If the route looks like a tab request, set the PlatformBridge requestedTab and request navigation
+                    val tabRoutes = setOf("HomePage", "HabitCoachingPage", "ChatScreen", "meditation", "profile", "Home", "Habits", "Chat", "Meditate", "Profile")
+                    if (tabRoutes.contains(route)) {
+                        PlatformBridge.requestedTab = route
+                        pendingRoute = "HeroScreen"
+                    } else {
+                        pendingRoute = route
+                    }
+                } catch (e: Throwable) {
+                    println("Failed to handle notification route: $route, error: ${e.message}")
+                }
+            }
+        }
+        onDispose {
+            if (observer != null) {
+                NSNotificationCenter.defaultCenter.removeObserver(observer as Any)
+            }
+        }
+    }
+
+    // Render the shared Compose NavHost on iOS so the Compose MainViewController shows the full app
     MaterialTheme(colorScheme = LightColors) {
         Surface(modifier = Modifier.fillMaxSize()) {
-            CenterAlignedTopAppBar(title = { Text(text = "iOS: use SwiftUI (iosApp)") })
+            val navControllerLocal = navController
+            NavHost(navController = navControllerLocal, startDestination = LoginScreen) {
+                composable(LoginScreen) { Authentication().Login(navControllerLocal) }
+                composable("HeroScreen") { HeroScreen(navControllerLocal) }
+                composable(SignUpScreen) { Authentication().signUp(navControllerLocal) }
+                composable(ResetPasswordScreen) { Authentication().ResetPassword(navControllerLocal) }
+                composable(HomePageScreen) { HomeTab.Content() }
+                composable(InsightsPageScreen) { InsightsPage() }
+                composable(STRESS_MANAGEMENT_PAGE_ROUTE) { StressManagementPage(navControllerLocal) }
+                composable(MEDITATION_PAGE_ROUTE) { MeditationPage(onBack = { navControllerLocal.popBackStack() }, onNavigateToInsights = { navControllerLocal.navigate(InsightsPageScreen) }) }
+                composable(CompletedHabitsPageRoute) { CompletedHabitsPage(navControllerLocal) }
+                composable(NotificationPageScreen) { NotificationPage(navControllerLocal) }
+                composable(AboutPageScreen) { AboutPage(navControllerLocal, versionNumber = VERSION_NUMBER) }
+                composable("TimerScreen") { TimerScreenContent(onBack = { navControllerLocal.popBackStack() }) }
+            }
         }
     }
 }

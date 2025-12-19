@@ -20,7 +20,11 @@ SWIFT_FILES = [
   'MeditationView.swift',
   'ProfileView.swift',
   'StressManagementView.swift',
-  'AppSettings.swift'
+  'AppSettings.swift',
+  # Added missing sign-up / reset views
+  'SignUpView.swift',
+  'ResetPasswordView.swift',
+  'AuthManager.swift'
 ]
 
 project_dir = Pathname.new(File.dirname(PROJECT_PATH))
@@ -80,7 +84,7 @@ SWIFT_FILES.each do |rel_path|
   end
 
   # check if project already has a file reference for this path
-  existing = proj.files.find { |f| f.path == rel_path || f.path == "iosApp/\#{rel_path}" }
+  existing = proj.files.find { |f| f.path == rel_path || f.path == "iosApp/#{rel_path}" }
   if existing
     puts "Already referenced in project: #{rel_path}"
     # ensure it's added to the target build phase

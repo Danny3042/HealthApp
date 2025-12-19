@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 struct HeroTabView: View {
     @Binding var selectedTab: Int
@@ -6,38 +7,34 @@ struct HeroTabView: View {
     var body: some View {
         TabView(selection: $selectedTab) {
             HomeTabView()
-                .tabItem {
-                    Label("Home", systemImage: "house")
-                }
+                .tabItem { Label("Home", systemImage: "house") }
                 .tag(0)
 
-            HabitTrackerView()
-                .tabItem {
-                    Label("Habits", systemImage: "checkmark.circle")
-                }
+            HabitsTabView()
+                .tabItem { Label("Habits", systemImage: "checkmark.circle") }
                 .tag(1)
 
-            ChatView()
-                .tabItem {
-                    Label("Chat", systemImage: "message")
-                }
+            ChatTabView()
+                .tabItem { Label("Chat", systemImage: "message") }
                 .tag(2)
 
-            MeditationView()
-                .tabItem {
-                    Label("Meditate", systemImage: "person.crop.circle")
-                }
+            MeditateTabView()
+                .tabItem { Label("Meditate", systemImage: "person.crop.circle") }
                 .tag(3)
 
-            ProfileView()
-                .tabItem {
-                    Label("Profile", systemImage: "person")
-                }
+            ProfileTabView()
+                .tabItem { Label("Profile", systemImage: "person") }
                 .tag(4)
+        }
+        .onChange(of: selectedTab) { newIndex in
+            // If you still need to notify Compose of tab changes from native, use AuthManager
+            // let tabRoutes = ["HomePage","HabitCoachingPage","ChatScreen","meditation","profile"]
+            // if newIndex >= 0 && newIndex < tabRoutes.count { AuthManager.shared.requestNavigateTo(route: tabRoutes[newIndex]) }
         }
     }
 }
 
+// Keep the original placeholder views for previews or fallback
 struct HomeTabView: View {
     var body: some View {
         NavigationView {
