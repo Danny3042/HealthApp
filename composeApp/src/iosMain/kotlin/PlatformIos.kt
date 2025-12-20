@@ -39,10 +39,17 @@ import sub_pages.MEDITATION_PAGE_ROUTE
 import sub_pages.MeditationPage
 import sub_pages.NotificationPage
 import sub_pages.NotificationPageScreen
+import sub_pages.DarkModeSettingsPage
+import sub_pages.DarkModeSettingsPageScreen
 import tabs.HomeTab
 import tabs.ProfileTab
 import utils.SettingsManager
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.ui.Modifier
 import androidx.compose.material3.Text
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -58,6 +65,60 @@ import platform.PlatformBridge
 actual fun PlatformApp() {
     // remember a NavController for Compose navigation on iOS
     val navController = rememberNavController()
+
+    // Dark mode state (iOS) - load/save using SettingsManager similar to Android
+    var isDarkMode by remember { mutableStateOf(false) }
+    var useSystemDefault by remember { mutableStateOf(true) }
+    
+    // Safe area insets from iOS - these will be updated via PlatformBridge
+    var topInset by remember { mutableStateOf(0.0) }
+    var bottomInset by remember { mutableStateOf(0.0) }
+    
+    // Listen for safe area changes from iOS
+    DisposableEffect(Unit) {
+        val observer = NSNotificationCenter.defaultCenter.addObserverForName(
+            name = "SafeAreaInsetsChanged",
+            `object` = null,
+            queue = NSOperationQueue.mainQueue
+        ) { notification: NSNotification? ->
+            val userInfo = notification?.userInfo as? NSDictionary
+            topInset = (userInfo?.objectForKey("top") as? Double) ?: 0.0
+            bottomInset = (userInfo?.objectForKey("bottom") as? Double) ?: 0.0
+            println("PlatformIos: Safe area updated - top: $topInset, bottom: $bottomInset")
+        }
+        onDispose {
+            if (observer != null) {
+                NSNotificationCenter.defaultCenter.removeObserver(observer as Any)
+            }
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        try {
+            isDarkMode = SettingsManager.loadDarkMode()
+            useSystemDefault = SettingsManager.loadUseSystemDefault()
+        } catch (e: Throwable) {
+            println("PlatformIos: failed loading dark mode settings: ${e.message}")
+            isDarkMode = false
+            useSystemDefault = true
+        }
+    }
+
+    LaunchedEffect(isDarkMode) {
+        try {
+            SettingsManager.saveDarkMode(isDarkMode)
+        } catch (e: Throwable) {
+            println("PlatformIos: failed saving dark mode: ${e.message}")
+        }
+    }
+
+    LaunchedEffect(useSystemDefault) {
+        try {
+            SettingsManager.saveUseSystemDefault(useSystemDefault)
+        } catch (e: Throwable) {
+            println("PlatformIos: failed saving useSystemDefault: ${e.message}")
+        }
+    }
 
     // pending route set by native observer; Compose will navigate when this changes
     var pendingRoute by remember { mutableStateOf<String?>(null) }
@@ -141,7 +202,11 @@ actual fun PlatformApp() {
     }
 
     // Render the shared Compose NavHost on iOS so the Compose MainViewController shows the full app
-    MaterialTheme(colorScheme = LightColors) {
+    // Compute effective dark mode (use system default unless overridden)
+    val darkModeEffective = if (useSystemDefault) isSystemInDarkTheme() else isDarkMode
+    val colors = if (darkModeEffective) DarkColors else LightColors
+
+    MaterialTheme(colorScheme = colors) {
         Surface(modifier = Modifier.fillMaxSize()) {
             val navControllerLocal = navController
             NavHost(navController = navControllerLocal, startDestination = LoginScreen) {
@@ -150,6 +215,15 @@ actual fun PlatformApp() {
                 composable(SignUpScreen) { Authentication().signUp(navControllerLocal) }
                 composable(ResetPasswordScreen) { Authentication().ResetPassword(navControllerLocal) }
                 composable(HomePageScreen) { HomeTab.Content() }
+                composable(DarkModeSettingsPageScreen) {
+                    DarkModeSettingsPage(
+                        isDarkMode = isDarkMode,
+                        onDarkModeToggle = { checked: Boolean -> isDarkMode = checked },
+                        useSystemDefault = useSystemDefault,
+                        onUseSystemDefaultToggle = { use: Boolean -> useSystemDefault = use },
+                        navController = navControllerLocal
+                    )
+                }
                 composable(InsightsPageScreen) { InsightsPage() }
                 composable(STRESS_MANAGEMENT_PAGE_ROUTE) { StressManagementPage(navControllerLocal) }
                 composable(MEDITATION_PAGE_ROUTE) { MeditationPage(onBack = { navControllerLocal.popBackStack() }, onNavigateToInsights = { navControllerLocal.navigate(InsightsPageScreen) }) }

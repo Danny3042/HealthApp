@@ -24,6 +24,7 @@ import tabs.HomeTab
 import tabs.MeditateTab
 import tabs.ProfileTab
 import utils.HandleBackNavigation
+import utils.isAndroid
 
 const val HeroScreen = "HeroScreen"
 
@@ -93,7 +94,9 @@ fun HeroScreen(navController: NavHostController, showBottomBar: Boolean = true) 
 
         Scaffold(
             topBar = {
-                TopAppBar(title = { Text(text = tabNavigator.current.options.title) })
+                if (isAndroid()) {
+                    TopAppBar(title = { Text(text = tabNavigator.current.options.title) })
+                }
             },
             content = {
                 CurrentTab()

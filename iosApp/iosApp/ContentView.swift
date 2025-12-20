@@ -168,7 +168,6 @@ struct ContentView: View {
             TabView(selection: $selectedTab) {
                 NavigationView {
                     SharedComposeHost(selectedTab: $selectedTab)
-                        .ignoresSafeArea(.all, edges: [.top, .bottom])
                         .navigationTitle("Home")
                         .navigationBarTitleDisplayMode(.large)
                 }
@@ -179,7 +178,6 @@ struct ContentView: View {
                 
                 NavigationView {
                     SharedComposeHost(selectedTab: $selectedTab)
-                        .ignoresSafeArea(.all, edges: [.top, .bottom])
                         .navigationTitle("Habits")
                         .navigationBarTitleDisplayMode(.large)
                 }
@@ -190,7 +188,6 @@ struct ContentView: View {
                 
                 NavigationView {
                     SharedComposeHost(selectedTab: $selectedTab)
-                        .ignoresSafeArea(.all, edges: [.top, .bottom])
                         .navigationTitle("Chat")
                         .navigationBarTitleDisplayMode(.large)
                 }
@@ -201,7 +198,6 @@ struct ContentView: View {
                 
                 NavigationView {
                     SharedComposeHost(selectedTab: $selectedTab)
-                        .ignoresSafeArea(.all, edges: [.top, .bottom])
                         .navigationTitle("Meditate")
                         .navigationBarTitleDisplayMode(.large)
                 }
@@ -212,7 +208,6 @@ struct ContentView: View {
                 
                 NavigationView {
                     SharedComposeHost(selectedTab: $selectedTab)
-                        .ignoresSafeArea(.all, edges: [.top, .bottom])
                         .navigationTitle("Profile")
                         .navigationBarTitleDisplayMode(.large)
                 }
