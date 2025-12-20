@@ -11,6 +11,8 @@ struct SharedComposeHost: View {
     @State private var composeReady: Bool = false
     @State private var lastRequestedRoute: String? = nil
     @State private var observerAdded: Bool = false
+    @State private var showBackButton: Bool = false
+    @State private var currentRoute: String = ""
     private let composeReadyNotification = Notification.Name("ComposeReady")
 
     var body: some View {
@@ -24,6 +26,8 @@ struct SharedComposeHost: View {
                     // Only register observer once globally
                     if !observerAdded {
                         observerAdded = true
+                        
+                        // Listen for ComposeReady
                         NotificationCenter.default.addObserver(
                             forName: composeReadyNotification,
                             object: nil,
@@ -34,6 +38,26 @@ struct SharedComposeHost: View {
                             if let queued = lastRequestedRoute {
                                 sendRouteWithRetries(route: queued)
                                 lastRequestedRoute = nil
+                            }
+                        }
+                        
+                        // Listen for route changes from Compose
+                        NotificationCenter.default.addObserver(
+                            forName: Notification.Name("ComposeRouteChanged"),
+                            object: nil,
+                            queue: .main
+                        ) { notification in
+                            if let route = notification.userInfo?["route"] as? String {
+                                print("SharedComposeHost: Route changed to: \(route)")
+                                currentRoute = route
+                                
+                                // Show back button for sub-pages
+                                let mainRoutes = ["HomePage", "HabitCoachingPage", "ChatScreen", "meditation", "profile", "HeroScreen", "Login", "SignUp", "ResetPassword"]
+                                
+                                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                    showBackButton = !mainRoutes.contains(route)
+                                }
+                                print("SharedComposeHost: Show back button: \(showBackButton)")
                             }
                         }
                     }
@@ -50,6 +74,34 @@ struct SharedComposeHost: View {
                 }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                if showBackButton {
+                    Button(action: handleBackButton) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "chevron.left")
+                                .font(.system(size: 17, weight: .semibold))
+                            Text("Back")
+                                .font(.system(size: 17))
+                        }
+                    }
+                    .transition(.opacity.combined(with: .scale))
+                }
+            }
+        }
+    }
+    
+    private func handleBackButton() {
+        print("SharedComposeHost: Back button tapped")
+        // Add haptic feedback
+        let impactFeedback = UIImpactFeedbackGenerator(style: .light)
+        impactFeedback.impactOccurred()
+        
+        // Post notification to Compose to handle back navigation
+        NotificationCenter.default.post(
+            name: Notification.Name("ComposeBackPressed"),
+            object: nil
+        )
     }
 
     private func requestRoute(_ route: String) {
@@ -168,6 +220,7 @@ struct ContentView: View {
             TabView(selection: $selectedTab) {
                 NavigationView {
                     SharedComposeHost(selectedTab: $selectedTab)
+                        .ignoresSafeArea(.all, edges: [.top, .bottom])
                         .navigationTitle("Home")
                         .navigationBarTitleDisplayMode(.large)
                 }
@@ -178,6 +231,7 @@ struct ContentView: View {
                 
                 NavigationView {
                     SharedComposeHost(selectedTab: $selectedTab)
+                        .ignoresSafeArea(.all, edges: [.top, .bottom])
                         .navigationTitle("Habits")
                         .navigationBarTitleDisplayMode(.large)
                 }
@@ -188,6 +242,7 @@ struct ContentView: View {
                 
                 NavigationView {
                     SharedComposeHost(selectedTab: $selectedTab)
+                        .ignoresSafeArea(.all, edges: [.top, .bottom])
                         .navigationTitle("Chat")
                         .navigationBarTitleDisplayMode(.large)
                 }
@@ -198,6 +253,7 @@ struct ContentView: View {
                 
                 NavigationView {
                     SharedComposeHost(selectedTab: $selectedTab)
+                        .ignoresSafeArea(.all, edges: [.top, .bottom])
                         .navigationTitle("Meditate")
                         .navigationBarTitleDisplayMode(.large)
                 }
@@ -208,6 +264,7 @@ struct ContentView: View {
                 
                 NavigationView {
                     SharedComposeHost(selectedTab: $selectedTab)
+                        .ignoresSafeArea(.all, edges: [.top, .bottom])
                         .navigationTitle("Profile")
                         .navigationBarTitleDisplayMode(.large)
                 }

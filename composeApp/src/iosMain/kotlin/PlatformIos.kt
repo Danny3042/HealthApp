@@ -54,6 +54,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.material3.Text
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.ui.unit.dp
 import platform.Foundation.NSNotification
 import platform.Foundation.NSNotificationCenter
 import platform.Foundation.NSDictionary
@@ -181,10 +182,21 @@ actual fun PlatformApp() {
             try {
                 val destName = destination.route ?: destination.toString()
                 println("PlatformIos: destination changed -> $destName")
+                
+                // Notify iOS about the current route so it can show/hide back button
+                NSOperationQueue.mainQueue.addOperationWithBlock {
+                    val userInfo = mapOf("route" to destName)
+                    NSNotificationCenter.defaultCenter.postNotificationName(
+                        aName = "ComposeRouteChanged",
+                        `object` = null,
+                        userInfo = userInfo as Map<Any?, *>
+                    )
+                }
+                
                 if (!posted && destName == "HeroScreen") {
                     posted = true
                     println("PlatformIos: Posting ComposeReady because destination is HeroScreen")
-                    NSOperationQueue.mainQueue().addOperationWithBlock {
+                    NSOperationQueue.mainQueue.addOperationWithBlock {
                         NSNotificationCenter.defaultCenter.postNotificationName(
                             aName = "ComposeReady",
                             `object` = null
@@ -200,6 +212,32 @@ actual fun PlatformApp() {
             navController.removeOnDestinationChangedListener(listener)
         }
     }
+    
+    // Listen for back button press from iOS
+    DisposableEffect(navController) {
+        val observer = NSNotificationCenter.defaultCenter.addObserverForName(
+            name = "ComposeBackPressed",
+            `object` = null,
+            queue = NSOperationQueue.mainQueue
+        ) { notification: NSNotification? ->
+            println("PlatformIos: Back button pressed from iOS")
+            try {
+                if (navController.previousBackStackEntry != null) {
+                    navController.popBackStack()
+                    println("PlatformIos: Navigated back successfully")
+                } else {
+                    println("PlatformIos: No back stack entry to pop")
+                }
+            } catch (e: Throwable) {
+                println("PlatformIos: Error handling back press: ${e.message}")
+            }
+        }
+        onDispose {
+            if (observer != null) {
+                NSNotificationCenter.defaultCenter.removeObserver(observer as Any)
+            }
+        }
+    }
 
     // Render the shared Compose NavHost on iOS so the Compose MainViewController shows the full app
     // Compute effective dark mode (use system default unless overridden)
@@ -209,28 +247,36 @@ actual fun PlatformApp() {
     MaterialTheme(colorScheme = colors) {
         Surface(modifier = Modifier.fillMaxSize()) {
             val navControllerLocal = navController
-            NavHost(navController = navControllerLocal, startDestination = LoginScreen) {
-                composable(LoginScreen) { Authentication().Login(navControllerLocal) }
-                composable("HeroScreen") { HeroScreen(navControllerLocal, showBottomBar = false) }
-                composable(SignUpScreen) { Authentication().signUp(navControllerLocal) }
-                composable(ResetPasswordScreen) { Authentication().ResetPassword(navControllerLocal) }
-                composable(HomePageScreen) { HomeTab.Content() }
-                composable(DarkModeSettingsPageScreen) {
-                    DarkModeSettingsPage(
-                        isDarkMode = isDarkMode,
-                        onDarkModeToggle = { checked: Boolean -> isDarkMode = checked },
-                        useSystemDefault = useSystemDefault,
-                        onUseSystemDefaultToggle = { use: Boolean -> useSystemDefault = use },
-                        navController = navControllerLocal
-                    )
+            
+            // Apply padding for safe area insets to prevent content from being hidden
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = topInset.dp, bottom = bottomInset.dp)
+            ) {
+                NavHost(navController = navControllerLocal, startDestination = LoginScreen) {
+                    composable(LoginScreen) { Authentication().Login(navControllerLocal) }
+                    composable("HeroScreen") { HeroScreen(navControllerLocal, showBottomBar = false) }
+                    composable(SignUpScreen) { Authentication().signUp(navControllerLocal) }
+                    composable(ResetPasswordScreen) { Authentication().ResetPassword(navControllerLocal) }
+                    composable(HomePageScreen) { HomeTab.Content() }
+                    composable(DarkModeSettingsPageScreen) {
+                        DarkModeSettingsPage(
+                            isDarkMode = isDarkMode,
+                            onDarkModeToggle = { checked: Boolean -> isDarkMode = checked },
+                            useSystemDefault = useSystemDefault,
+                            onUseSystemDefaultToggle = { use: Boolean -> useSystemDefault = use },
+                            navController = navControllerLocal
+                        )
+                    }
+                    composable(InsightsPageScreen) { InsightsPage() }
+                    composable(STRESS_MANAGEMENT_PAGE_ROUTE) { StressManagementPage(navControllerLocal) }
+                    composable(MEDITATION_PAGE_ROUTE) { MeditationPage(onBack = { navControllerLocal.popBackStack() }, onNavigateToInsights = { navControllerLocal.navigate(InsightsPageScreen) }) }
+                    composable(CompletedHabitsPageRoute) { CompletedHabitsPage(navControllerLocal) }
+                    composable(NotificationPageScreen) { NotificationPage(navControllerLocal) }
+                    composable(AboutPageScreen) { AboutPage(navControllerLocal, versionNumber = VERSION_NUMBER) }
+                    composable("TimerScreen") { TimerScreenContent(onBack = { navControllerLocal.popBackStack() }) }
                 }
-                composable(InsightsPageScreen) { InsightsPage() }
-                composable(STRESS_MANAGEMENT_PAGE_ROUTE) { StressManagementPage(navControllerLocal) }
-                composable(MEDITATION_PAGE_ROUTE) { MeditationPage(onBack = { navControllerLocal.popBackStack() }, onNavigateToInsights = { navControllerLocal.navigate(InsightsPageScreen) }) }
-                composable(CompletedHabitsPageRoute) { CompletedHabitsPage(navControllerLocal) }
-                composable(NotificationPageScreen) { NotificationPage(navControllerLocal) }
-                composable(AboutPageScreen) { AboutPage(navControllerLocal, versionNumber = VERSION_NUMBER) }
-                composable("TimerScreen") { TimerScreenContent(onBack = { navControllerLocal.popBackStack() }) }
             }
         }
     }
