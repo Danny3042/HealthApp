@@ -7,6 +7,22 @@ import androidx.compose.runtime.setValue
 // Mutable holder for platform requests. HeroScreen will observe this to switch tabs when requested by native iOS.
 object PlatformBridge {
     // Title of tab requested (e.g., "Habits", "Home", "Chat", "Meditate", "Profile").
-    var requestedTab: String? by mutableStateOf(null)
-}
+    var requestedTabName: String? by mutableStateOf(null)
+    // Incrementing signal to force observers to see repeated requests for the same tab.
+    var requestedTabSignal: Long by mutableStateOf(0L)
 
+    // Safe area insets in point units — updated by Swift via the generated ObjC/Swift bridge.
+    var safeAreaTop: Double by mutableStateOf(0.0)
+    var safeAreaBottom: Double by mutableStateOf(0.0)
+    var safeAreaLeading: Double by mutableStateOf(0.0)
+    var safeAreaTrailing: Double by mutableStateOf(0.0)
+
+    // Called from Swift/ObjC bindings (ComposeAppPlatformBridge.shared.setSafeAreaInsets)
+    fun setSafeAreaInsets(top: Double, bottom: Double, leading: Double, trailing: Double) {
+        safeAreaTop = top
+        safeAreaBottom = bottom
+        safeAreaLeading = leading
+        safeAreaTrailing = trailing
+        println("PlatformBridge: setSafeAreaInsets top=$top bottom=$bottom leading=$leading trailing=$trailing")
+    }
+}

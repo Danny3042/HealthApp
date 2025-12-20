@@ -15,6 +15,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination
+import androidx.navigation.NavGraph
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -89,7 +92,11 @@ actual fun PlatformApp() {
                     // If the route looks like a tab request, set the PlatformBridge requestedTab and request navigation
                     val tabRoutes = setOf("HomePage", "HabitCoachingPage", "ChatScreen", "meditation", "profile", "Home", "Habits", "Chat", "Meditate", "Profile")
                     if (tabRoutes.contains(route)) {
-                        PlatformBridge.requestedTab = route
+                        // Write requested tab name and increment signal so Compose observers detect repeated clicks
+                        println("PlatformIos: requesting Compose tab -> $route")
+                        PlatformBridge.requestedTabName = route
+                        PlatformBridge.requestedTabSignal = PlatformBridge.requestedTabSignal + 1
+                        println("PlatformIos: requestedTabSignal now = ${PlatformBridge.requestedTabSignal}")
                         pendingRoute = "HeroScreen"
                     } else {
                         pendingRoute = route
@@ -103,6 +110,33 @@ actual fun PlatformApp() {
             if (observer != null) {
                 NSNotificationCenter.defaultCenter.removeObserver(observer as Any)
             }
+        }
+    }
+
+    // Strong readiness signal: post ComposeReady once NavController reaches HeroScreen
+    DisposableEffect(navController) {
+        var posted = false
+        val listener = NavController.OnDestinationChangedListener { controller, destination, arguments ->
+            try {
+                val destName = destination.route ?: destination.toString()
+                println("PlatformIos: destination changed -> $destName")
+                if (!posted && destName == "HeroScreen") {
+                    posted = true
+                    println("PlatformIos: Posting ComposeReady because destination is HeroScreen")
+                    NSOperationQueue.mainQueue().addOperationWithBlock {
+                        NSNotificationCenter.defaultCenter.postNotificationName(
+                            aName = "ComposeReady",
+                            `object` = null
+                        )
+                    }
+                }
+            } catch (e: Throwable) {
+                println("PlatformIos: OnDestinationChanged listener error: ${e.message}")
+            }
+        }
+        navController.addOnDestinationChangedListener(listener)
+        onDispose {
+            navController.removeOnDestinationChangedListener(listener)
         }
     }
 

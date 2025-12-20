@@ -31,34 +31,63 @@ const val HeroScreen = "HeroScreen"
 @Composable
 fun HeroScreen(navController: NavHostController, showBottomBar: Boolean = true) {
     HandleBackNavigation(navController)
+
+    // Create tab instances once so we can reliably switch to these exact instances later
+    val homeTab = HomeTab
+    val habitsTab = HabitsTab(navController)
+    val chatTab = ChatTab
+    val meditateTab = MeditateTab(navController)
+    val profileTab = ProfileTab(navController)
+
     TabNavigator(
-        HomeTab,
+        homeTab,
         tabDisposable = {
             TabDisposable(
                 navigator = it,
                 tabs = listOf(
-                    HomeTab,
-                    HabitsTab(navController),
-                    MeditateTab(navController),
-                    ProfileTab(navController)
+                    homeTab,
+                    habitsTab,
+                    chatTab,
+                    meditateTab,
+                    profileTab
                 )
             )
         }
     ) { tabNavigator ->
+
+        // If a tab was requested before HeroScreen composition, apply it immediately
+        LaunchedEffect(Unit) {
+            val initial = PlatformBridge.requestedTabName
+            println("HeroScreen: initial requestedTabName = $initial")
+            if (initial != null) {
+                when (initial) {
+                    "HomePage", "Home" -> tabNavigator.current = homeTab
+                    "HabitCoachingPage", "Habits" -> tabNavigator.current = habitsTab
+                    "ChatScreen", "Chat" -> tabNavigator.current = chatTab
+                    "meditation", "Meditate" -> tabNavigator.current = meditateTab
+                    "profile", "Profile" -> tabNavigator.current = profileTab
+                }
+                PlatformBridge.requestedTabName = null
+            }
+        }
+
         // Observe platform requested tab reactively (no polling)
         LaunchedEffect(Unit) {
-            snapshotFlow { PlatformBridge.requestedTab }
-                .filterNotNull()
-                .collectLatest { requested ->
-                    when (requested) {
-                        "HomePage", "Home" -> tabNavigator.current = HomeTab
-                        "HabitCoachingPage", "Habits" -> tabNavigator.current = HabitsTab(navController)
-                        "ChatScreen", "Chat" -> tabNavigator.current = ChatTab
-                        "meditation", "Meditate" -> tabNavigator.current = MeditateTab(navController)
-                        "profile", "Profile" -> tabNavigator.current = ProfileTab(navController)
+            snapshotFlow { PlatformBridge.requestedTabSignal }
+                .collectLatest {
+                    println("HeroScreen: received requestedTabSignal = ${PlatformBridge.requestedTabSignal}, name=${PlatformBridge.requestedTabName}")
+                    val requested = PlatformBridge.requestedTabName
+                    if (requested != null) {
+                        when (requested) {
+                            "HomePage", "Home" -> tabNavigator.current = homeTab
+                            "HabitCoachingPage", "Habits" -> tabNavigator.current = habitsTab
+                            "ChatScreen", "Chat" -> tabNavigator.current = chatTab
+                            "meditation", "Meditate" -> tabNavigator.current = meditateTab
+                            "profile", "Profile" -> tabNavigator.current = profileTab
+                        }
+                        // Clear the name after handling so subsequent signals can set it again
+                        PlatformBridge.requestedTabName = null
                     }
-                    // Clear the request after handling
-                    PlatformBridge.requestedTab = null
                 }
         }
 
@@ -72,11 +101,11 @@ fun HeroScreen(navController: NavHostController, showBottomBar: Boolean = true) 
             bottomBar = {
                 if (showBottomBar) {
                     NavigationBar {
-                        TabNavigationItem(HomeTab)
-                        TabNavigationItem(HabitsTab(navController))
-                        TabNavigationItem(ChatTab)
-                        TabNavigationItem(MeditateTab(navController))
-                        TabNavigationItem(ProfileTab(navController))
+                        TabNavigationItem(homeTab)
+                        TabNavigationItem(habitsTab)
+                        TabNavigationItem(chatTab)
+                        TabNavigationItem(meditateTab)
+                        TabNavigationItem(profileTab)
                     }
                 }
             }

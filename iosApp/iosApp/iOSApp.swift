@@ -1,7 +1,9 @@
 import SwiftUI
 import FirebaseCore
 import FirebaseAnalytics
+#if canImport(GoogleSignIn)
 import GoogleSignIn
+#endif
 import FirebaseMessaging
 import UserNotifications
 import AppTrackingTransparency
@@ -12,6 +14,8 @@ struct iOSApp: App {
     
     init() {
         FirebaseApp.configure()
+        // Make hosting window backgrounds clear so Compose window underlay can show through
+        UIWindow.appearance().backgroundColor = .clear
         logInitialEvent()
     }
     
@@ -19,7 +23,9 @@ struct iOSApp: App {
         WindowGroup {
             ContentView()
                 .onOpenURL { url in
+                    #if canImport(GoogleSignIn)
                     GIDSignIn.sharedInstance.handle(url)
+                    #endif
                     UIApplication.shared.endEditing()
                 }
         }
@@ -34,7 +40,18 @@ struct iOSApp: App {
     
     class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
         func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-            
+
+            // Ensure existing windows are transparent
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                for scene in UIApplication.shared.connectedScenes {
+                    if let ws = scene as? UIWindowScene {
+                        for w in ws.windows {
+                            w.backgroundColor = .clear
+                        }
+                    }
+                }
+            }
+
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 self.requestTrackingPermission()
             }
