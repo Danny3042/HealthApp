@@ -22,6 +22,7 @@ import androidx.navigation.compose.rememberNavController
 import com.mmk.kmpnotifier.notification.NotifierManager
 import com.mmk.kmpnotifier.notification.configuration.NotificationPlatformConfiguration
 import config.VERSION_NUMBER
+import kotlinx.coroutines.flow.collectLatest
 import pages.ChartsPage
 import pages.ChartsPageScreen
 import pages.HomePageScreen
@@ -32,17 +33,16 @@ import pages.StressManagementPage
 import pages.Timer
 import pages.TimerScreenContent
 import platform.PlatformBridge
-import kotlinx.coroutines.flow.collectLatest
 import sub_pages.AboutPage
 import sub_pages.AboutPageScreen
 import sub_pages.CompletedHabitsPage
 import sub_pages.CompletedHabitsPageRoute
+import sub_pages.DarkModeSettingsPage
+import sub_pages.DarkModeSettingsPageScreen
 import sub_pages.MEDITATION_PAGE_ROUTE
 import sub_pages.MeditationPage
 import sub_pages.NotificationPage
 import sub_pages.NotificationPageScreen
-import sub_pages.DarkModeSettingsPage
-import sub_pages.DarkModeSettingsPageScreen
 import tabs.HomeTab
 import tabs.ProfileTab
 import utils.SettingsManager
@@ -81,7 +81,7 @@ actual fun PlatformApp() {
                         try {
                             navController.navigate(route)
                         } catch (t: Throwable) {
-                            println("Failed to navigate to route=$route: $t")
+                            // navigation failed
                         }
                         PlatformBridge.requestedRoute = null
                     }

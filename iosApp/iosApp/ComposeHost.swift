@@ -11,14 +11,12 @@ final class SharedComposeHolder {
                 vc = MainViewControllerKt.MainViewController()
                 vc.view.backgroundColor = .clear
                 vc.view.isOpaque = false
-                print("SharedComposeHolder: created shared VC on main: \(vc)")
             }
             return vc
         } else {
             let vc = MainViewControllerKt.MainViewController()
             vc.view.backgroundColor = .clear
             vc.view.isOpaque = false
-            print("SharedComposeHolder: created shared VC: \(vc)")
             return vc
         }
     }()
@@ -36,7 +34,6 @@ final class ComposeHostAttacher {
             guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
                   let window = scene.windows.first,
                   let root = window.rootViewController else {
-                print("ComposeHostAttacher: cannot find root view controller to attach")
                 return
             }
 
@@ -63,7 +60,6 @@ final class ComposeHostAttacher {
 
             self.hostContainer = root
             self.attached = true
-            print("ComposeHostAttacher: attached shared Compose VC to root view (index 0)")
 
             // DEBUG: add a small, removable overlay label so we can visually confirm attachment
             #if DEBUG
@@ -93,7 +89,6 @@ final class ComposeHostAttacher {
             guard let root = self.hostContainer ?? UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).first?.windows.first?.rootViewController else { return }
             let shared = SharedComposeHolder.sharedVC
             if shared.view.superview == nil || shared.parent == nil {
-                print("ComposeHostAttacher: reattaching shared VC to root view")
                 if let prev = shared.parent {
                     shared.willMove(toParent: nil)
                     shared.view.removeFromSuperview()
@@ -109,7 +104,6 @@ final class ComposeHostAttacher {
                     shared.view.trailingAnchor.constraint(equalTo: root.view.trailingAnchor)
                 ])
                 shared.didMove(toParent: root)
-                print("ComposeHostAttacher: reattached shared VC to root view")
             }
         }
     }
@@ -119,7 +113,6 @@ final class ComposeHostAttacher {
         DispatchQueue.main.asyncAfter(deadline: .now() + interval) {
             let shared = SharedComposeHolder.sharedVC
             let hasSuperview = shared.view.superview != nil
-            print("ComposeHostAttacher.monitor -> hasSuperview=\(hasSuperview) parent=\(String(describing: shared.parent))")
             if !hasSuperview {
                 self.reattachIfNeeded()
             }
