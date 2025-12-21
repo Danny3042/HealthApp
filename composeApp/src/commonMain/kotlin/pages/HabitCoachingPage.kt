@@ -1,3 +1,6 @@
+package pages
+
+
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -29,27 +32,27 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import components.SettingsListItem
-import keyboardUtil.hideKeyboard
-import keyboardUtil.onDoneHideKeyboardAction
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import service.GenerativeAiService
+import sub_pages.CompletedHabitsPage
 import sub_pages.HabitTrackerPage
 import utils.HabitRepository
+import keyboardUtil.hideKeyboard
+import keyboardUtil.onDoneHideKeyboardAction
 import androidx.navigation.NavController
 import sub_pages.CompletedHabitsPageRoute
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.platform.LocalFocusManager
+import kotlinx.coroutines.launch
 
 @Composable
-fun HabitTrackerPage(navcontroller: NavController) {
+fun HabitCoachingPage(navcontroller: NavController) {
     val scope = rememberCoroutineScope()
     var aiTip by remember { mutableStateOf<String?>(null) }
     var isLoading by remember { mutableStateOf(false) }
@@ -60,7 +63,8 @@ fun HabitTrackerPage(navcontroller: NavController) {
 
     fun generateTipAndAddHabit() {
         if (userHabit.isBlank()) return
-        // perform network/habit work, callers should handle focus/keyboard
+        // Dismiss keyboard (iOS actual implementation will hide the keyboard)
+        hideKeyboard()
         scope.launch {
             isLoading = true
             error = null
@@ -122,14 +126,10 @@ fun HabitTrackerPage(navcontroller: NavController) {
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-            keyboardActions = onDoneHideKeyboardAction(onDone = {
-                // submission after keyboard hide
-                scope.launch { generateTipAndAddHabit() }
-            }),
+            keyboardActions = onDoneHideKeyboardAction(onDone = {}),
             trailingIcon = {
                 IconButton(
                     onClick = {
-                        // ensure keyboard hidden then submit
                         focusManager.clearFocus()
                         hideKeyboard()
                         scope.launch { generateTipAndAddHabit() }
@@ -173,7 +173,8 @@ fun HabitTrackerPage(navcontroller: NavController) {
         }
         Spacer(modifier = Modifier.height(24.dp))
 
-        HabitTrackerPage(habits = trackedHabits,
+        HabitTrackerPage(
+            habits = trackedHabits,
             onHabitCompleted = { habit -> HabitRepository.removeHabit(habit) })
         Spacer(modifier = Modifier.height(24.dp))
 
