@@ -2,6 +2,9 @@ import UIKit
 import SwiftUI
 import ComposeApp
 import FirebaseAuth
+#if canImport(Charts)
+import Charts
+#endif
 
 // Helper to apply native interface style and update native bar appearances
 func applyNativeInterfaceStyle(dark: Bool?, useSystem: Bool) {
@@ -256,6 +259,7 @@ struct ContentView: View {
     @State private var selectedTab: Int = 0
     @StateObject private var settings = AppSettings()
     @State private var authHandle: AuthStateDidChangeListenerHandle? = nil
+    @State private var showChartsSheet: Bool = false
 
     var body: some View {
         ZStack {
@@ -333,6 +337,39 @@ struct ContentView: View {
             }
         }
         .ignoresSafeArea(.all)
+        .sheet(isPresented: $showChartsSheet) {
+            NavigationView {
+                Group {
+                    if #available(iOS 16.0, *) {
+                        ChartView()
+                            .navigationTitle("Charts")
+                            .navigationBarTitleDisplayMode(.large)
+                            .toolbar {
+                                ToolbarItem(placement: .navigationBarTrailing) {
+                                    Button("Done") {
+                                        showChartsSheet = false
+                                    }
+                                }
+                            }
+                    } else {
+                        VStack {
+                            Text("Charts require iOS 16 or newer")
+                                .multilineTextAlignment(.center)
+                                .padding()
+                        }
+                        .navigationTitle("Charts")
+                        .navigationBarTitleDisplayMode(.large)
+                        .toolbar {
+                            ToolbarItem(placement: .navigationBarTrailing) {
+                                Button("Done") {
+                                    showChartsSheet = false
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
         .onAppear {
             print("=== ContentView.onAppear ===")
             
@@ -351,6 +388,14 @@ struct ContentView: View {
 
             NotificationCenter.default.addObserver(forName: Notification.Name("ComposeReady"), object: nil, queue: .main) { _ in
                 print("ContentView: ComposeReady received - ensuring Compose VC visible")
+                ComposeViewController.ensureSharedVisible()
+            }
+
+            // Listen for native Charts open request from Kotlin/Compose (PlatformBridge -> PlatformIos)
+            NotificationCenter.default.addObserver(forName: Notification.Name("OpenNativeCharts"), object: nil, queue: .main) { _ in
+                print("ContentView: OpenNativeCharts received - showing Charts sheet")
+                showChartsSheet = true
+                // ensure compose VC is visible in case it's needed for shared host
                 ComposeViewController.ensureSharedVisible()
             }
 
@@ -383,4 +428,245 @@ struct VisualEffectBlur: UIViewRepresentable {
     func updateUIView(_ uiView: UIVisualEffectView, context: Context) {}
 }
 
-// keep file ending
+// --- Begin embedded Chart support (moved here so ContentView can always reference ChartView) ---
+// Simple strongly-typed point model used by the SwiftUI Chart
+struct ChartPoint: Identifiable {
+    let id = UUID()
+    let date: Date
+    let value: Double
+}
+
+class ChartDataModel: ObservableObject {
+    @Published var points: [ChartPoint] = []
+    private var observer: NSObjectProtocol? = nil
+
+    init() {
+        self.points = Self.sampleData()
+        observer = NotificationCenter.default.addObserver(forName: Notification.Name("ChartDataUpdated"), object: nil, queue: .main) { [weak self] note in
+            guard let self = self else { return }
+            let payloadAny = (note.userInfo?["data"]) ?? note.object
+            if let arr = payloadAny as? [[String: Any]] {
+                self.update(fromMaps: arr)
+            } else if let arrNS = payloadAny as? NSArray {
+                self.update(from: arrNS)
+            } else if let dict = note.userInfo as? [AnyHashable: Any], let arr = dict["data"] as? NSArray {
+                self.update(from: arr)
+            } else {
+                print("ChartDataModel: unsupported payload: \(String(describing: note.userInfo))")
+            }
+        }
+    }
+
+    deinit {
+        if let obs = observer { NotificationCenter.default.removeObserver(obs) }
+    }
+
+    private func update(fromMaps maps: [[String: Any]]) {
+        var newPoints: [ChartPoint] = []
+        for map in maps {
+            if let xAny = map["x"], let yAny = map["y"], let date = Self.dateFrom(xAny), let value = Self.doubleFrom(yAny) {
+                newPoints.append(ChartPoint(date: date, value: value))
+            }
+        }
+        newPoints.sort { $0.date < $1.date }
+        DispatchQueue.main.async { self.points = newPoints }
+    }
+
+    func update(from arr: NSArray) {
+        var newPoints: [ChartPoint] = []
+        for item in arr {
+            if let map = item as? NSDictionary {
+                if let x = map["x"] ?? map["timestamp"] ?? map["date"], let yAny = map["y"] ?? map["value"] {
+                    if let date = Self.dateFrom(x), let value = Self.doubleFrom(yAny) {
+                        newPoints.append(ChartPoint(date: date, value: value))
+                        continue
+                    }
+                }
+                if let dateStr = map["date"] as? String, let valueAny = map["value"], let value = Self.doubleFrom(valueAny), let date = Self.dateFrom(dateStr) {
+                    newPoints.append(ChartPoint(date: date, value: value))
+                    continue
+                }
+            }
+            if let pair = item as? NSArray, pair.count >= 2 {
+                let a = pair[0]
+                let b = pair[1]
+                if let date = Self.dateFrom(a), let value = Self.doubleFrom(b) {
+                    newPoints.append(ChartPoint(date: date, value: value))
+                    continue
+                }
+            }
+            if let number = item as? NSNumber {
+                let date = Date()
+                newPoints.append(ChartPoint(date: date, value: number.doubleValue))
+            }
+        }
+        newPoints.sort { $0.date < $1.date }
+        DispatchQueue.main.async { self.points = newPoints }
+    }
+
+    private static func dateFrom(_ any: Any) -> Date? {
+        if let d = any as? Date { return d }
+        if let n = any as? NSNumber {
+            let val = n.doubleValue
+            if val > 1_000_000_000_000 { return Date(timeIntervalSince1970: val / 1000.0) }
+            if val > 1_000_000_000 { return Date(timeIntervalSince1970: val) }
+            return Date().addingTimeInterval(val)
+        }
+        if let s = any as? String {
+            let iso = ISO8601DateFormatter()
+            if let d = iso.date(from: s) { return d }
+            if let dbl = Double(s) { return dateFrom(NSNumber(value: dbl)) }
+        }
+        return nil
+    }
+
+    private static func doubleFrom(_ any: Any) -> Double? {
+        if let d = any as? Double { return d }
+        if let n = any as? NSNumber { return n.doubleValue }
+        if let s = any as? String { return Double(s) }
+        return nil
+    }
+
+    static func sampleData() -> [ChartPoint] {
+        let now = Date()
+        return (0..<7).map { i in
+            ChartPoint(date: Calendar.current.date(byAdding: .day, value: -6 + i, to: now) ?? now, value: Double(arc4random_uniform(80) + 20))
+        }
+    }
+}
+
+#if canImport(Charts)
+@available(iOS 16.0, *)
+struct ChartView: View {
+    @StateObject private var model = ChartDataModel()
+
+    // Helper to convert points into day labels and values
+    private func dayLabel(_ date: Date) -> String {
+        let df = DateFormatter()
+        df.dateFormat = "E"
+        return df.string(from: date)
+    }
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                HStack(alignment: .center) {
+                    Text("Key metrics")
+                        .font(.title2)
+                        .bold()
+                    Spacer()
+                    Button(action: { /* See all action */ }) {
+                        Text("See all")
+                            .font(.subheadline)
+                    }
+                }
+                .padding(.horizontal)
+
+                // Small metric cards
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 12) {
+                        MetricSmallCard(title: "Meditation", value: model.points.map { $0.value }.reduce(0, +).formatted(.number.precision(.fractionLength(0))))
+                        MetricSmallCard(title: "Sessions", value: String(model.points.count))
+                        MetricSmallCard(title: "Avg min", value: averageString())
+                    }
+                    .padding(.horizontal)
+                }
+
+                // Large detail card
+                MetricDetailCard(title: "Meditation minutes", subtitle: "Last 7 days", points: model.points)
+                    .padding(.horizontal)
+
+                // Extra spacing
+                Spacer(minLength: 30)
+            }
+            .padding(.top)
+        }
+    }
+
+    private func averageString() -> String {
+        let vals = model.points.map { $0.value }
+        guard !vals.isEmpty else { return "0" }
+        let avg = vals.reduce(0, +) / Double(vals.count)
+        return String(Int(avg))
+    }
+}
+
+@available(iOS 16.0, *)
+private struct MetricSmallCard: View {
+    let title: String
+    let value: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(title)
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+            Text(value)
+                .font(.title2)
+                .bold()
+        }
+        .padding()
+        .frame(width: 140, height: 100)
+        .background(.regularMaterial)
+        .cornerRadius(12)
+        .shadow(color: Color.black.opacity(0.04), radius: 6, x: 0, y: 4)
+    }
+}
+
+@available(iOS 16.0, *)
+private struct MetricDetailCard: View {
+    let title: String
+    let subtitle: String
+    let points: [ChartPoint]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .top) {
+                VStack(alignment: .leading) {
+                    Text(title).font(.headline)
+                    Text(subtitle).font(.subheadline).foregroundColor(.secondary)
+                }
+                Spacer()
+                Text(totalString()).font(.title).bold()
+            }
+
+            if points.isEmpty {
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color(UIColor.systemGray6))
+                    .frame(height: 160)
+                    .overlay(Text("No data").foregroundColor(.secondary))
+            } else {
+                Chart {
+                    ForEach(points) { p in
+                        BarMark(x: .value("Date", p.date), y: .value("Value", p.value))
+                            .foregroundStyle(LinearGradient(gradient: Gradient(colors: [Color.accentColor.opacity(0.9), Color.accentColor.opacity(0.3)]), startPoint: .top, endPoint: .bottom))
+                            .cornerRadius(6)
+                        LineMark(x: .value("Date", p.date), y: .value("Value", p.value))
+                            .interpolationMethod(.catmullRom)
+                            .foregroundStyle(Color.accentColor)
+                    }
+                }
+                .chartXAxis { AxisMarks(values: .automatic) { _ in AxisValueLabel(format: .dateTime.weekday(.abbreviated)) } }
+                .chartYAxis { AxisMarks(position: .leading) }
+                .frame(height: 180)
+            }
+        }
+        .padding()
+        .background(.regularMaterial)
+        .cornerRadius(16)
+        .shadow(color: Color.black.opacity(0.04), radius: 8, x: 0, y: 6)
+    }
+
+    private func totalString() -> String {
+        let total = points.map { $0.value }.reduce(0, +)
+        return String(Int(total))
+    }
+}
+
+#else
+@available(iOS 16.0, *)
+struct ChartView: View {
+    var body: some View { Text("Charts unavailable on this SDK").padding() }
+}
+#endif
+// --- End embedded Chart support ---

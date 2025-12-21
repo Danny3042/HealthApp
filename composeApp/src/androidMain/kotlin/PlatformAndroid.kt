@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -21,6 +22,8 @@ import androidx.navigation.compose.rememberNavController
 import com.mmk.kmpnotifier.notification.NotifierManager
 import com.mmk.kmpnotifier.notification.configuration.NotificationPlatformConfiguration
 import config.VERSION_NUMBER
+import pages.ChartsPage
+import pages.ChartsPageScreen
 import pages.HomePageScreen
 import pages.InsightsPage
 import pages.InsightsPageScreen
@@ -28,6 +31,8 @@ import pages.STRESS_MANAGEMENT_PAGE_ROUTE
 import pages.StressManagementPage
 import pages.Timer
 import pages.TimerScreenContent
+import platform.PlatformBridge
+import kotlinx.coroutines.flow.collectLatest
 import sub_pages.AboutPage
 import sub_pages.AboutPageScreen
 import sub_pages.CompletedHabitsPage
@@ -67,6 +72,22 @@ actual fun PlatformApp() {
             NotifierManager.initialize(NotificationPlatformConfiguration.Android(notificationIconResId = 0))
         }
 
+        // Observe platform requestedRoute and navigate when set
+        LaunchedEffect(Unit) {
+            snapshotFlow { PlatformBridge.requestedRouteSignal }
+                .collectLatest {
+                    val route = PlatformBridge.requestedRoute
+                    if (route != null) {
+                        try {
+                            navController.navigate(route)
+                        } catch (t: Throwable) {
+                            println("Failed to navigate to route=$route: $t")
+                        }
+                        PlatformBridge.requestedRoute = null
+                    }
+                }
+        }
+
         NavHost(navController, startDestination = LoginScreen) {
             composable(LoginScreen) { Authentication().Login(navController) }
             composable("HeroScreen") { HeroScreen(navController) }
@@ -97,6 +118,8 @@ actual fun PlatformApp() {
                 StressManagementPage(navController)
             }
             composable(InsightsPageScreen) { InsightsPage(insightsViewModel = viewModel()) }
+            // New charts page
+            composable(ChartsPageScreen) { ChartsPage() }
         }
     }
 }

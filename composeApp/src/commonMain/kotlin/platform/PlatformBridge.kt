@@ -11,6 +11,10 @@ object PlatformBridge {
     // Incrementing signal to force observers to see repeated requests for the same tab.
     var requestedTabSignal: Long by mutableStateOf(0L)
 
+    // New: request a navigation route from platform nav host (e.g., "ChartsPage")
+    var requestedRoute: String? by mutableStateOf(null)
+    var requestedRouteSignal: Long by mutableStateOf(0L)
+
     // Safe area insets in point units — updated by Swift via the generated ObjC/Swift bridge.
     var safeAreaTop: Double by mutableStateOf(0.0)
     var safeAreaBottom: Double by mutableStateOf(0.0)

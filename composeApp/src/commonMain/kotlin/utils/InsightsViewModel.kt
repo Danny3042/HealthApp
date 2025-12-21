@@ -6,6 +6,7 @@ import androidx.compose.runtime.State
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
+import platform.ChartPublisher
 
 data class Session(val time: String, val duration: Int)
 
@@ -13,10 +14,27 @@ class InsightsViewModel : ViewModel() {
     private val _sessionsPerDay = mutableStateOf(List(7) { emptyList<Session>() })
     val sessionsPerDay: State<List<List<Session>>> = _sessionsPerDay
 
+    init {
+        // Publish initial totals so native charts display existing data on startup
+        publishTotalsToPlatform()
+    }
+
     fun addSession(session: Session) {
         val currentDayIndex = getTodayIndex()
         _sessionsPerDay.value = _sessionsPerDay.value.toMutableList().also { list ->
             list[currentDayIndex] = list[currentDayIndex] + session
+        }
+
+        // Compute totals and publish to platform chart bridge so native views can update
+        publishTotalsToPlatform()
+    }
+
+    private fun publishTotalsToPlatform() {
+        val totals = _sessionsPerDay.value.map { dayList -> dayList.sumOf { it.duration }.toFloat() }
+        try {
+            ChartPublisher.publishTotals(totals)
+        } catch (e: Throwable) {
+            println("InsightsViewModel: failed to publish totals to platform: ${e.message}")
         }
     }
 

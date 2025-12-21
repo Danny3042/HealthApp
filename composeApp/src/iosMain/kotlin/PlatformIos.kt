@@ -27,6 +27,7 @@ import config.VERSION_NUMBER
 import pages.HomePageScreen
 import pages.InsightsPage
 import pages.InsightsPageScreen
+import pages.ChartsPageScreen
 import pages.STRESS_MANAGEMENT_PAGE_ROUTE
 import pages.StressManagementPage
 import pages.Timer
@@ -54,7 +55,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.material3.Text
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.flow.collectLatest
+import platform.ChartBridge
 import platform.Foundation.NSNotification
 import platform.Foundation.NSNotificationCenter
 import platform.Foundation.NSDictionary
@@ -188,6 +192,44 @@ actual fun PlatformApp() {
         onDispose {
             if (observer != null) {
                 NSNotificationCenter.defaultCenter.removeObserver(observer as Any)
+            }
+        }
+    }
+
+    // Also observe PlatformBridge.requestedRouteSignal (requests from Compose UI/native host)
+    LaunchedEffect(Unit) {
+        snapshotFlow { PlatformBridge.requestedRouteSignal }.collectLatest {
+            val route = PlatformBridge.requestedRoute
+            if (!route.isNullOrEmpty()) {
+                // If route requests the ChartsPage on iOS, ask native Swift to open the native Charts view
+                try {
+                    if (route == ChartsPageScreen) {
+                        println("PlatformIos: requested native Charts page -> posting OpenNativeCharts to Swift")
+                        NSOperationQueue.mainQueue.addOperationWithBlock {
+                            NSNotificationCenter.defaultCenter.postNotificationName(
+                                aName = "OpenNativeCharts",
+                                `object` = null,
+                                userInfo = null
+                            )
+                        }
+
+                        // Publish sample chart data immediately so native Swift Charts can display something
+                        try {
+                            ChartBridge.publishSample()
+                        } catch (e: Throwable) {
+                            println("PlatformIos: failed to publish sample chart data: ${e.message}")
+                        }
+
+                        // Clear the requestedRoute so it can be requested again later
+                        PlatformBridge.requestedRoute = null
+                    } else {
+                        println("PlatformIos: PlatformBridge requested route = $route")
+                        pendingRoute = route
+                        PlatformBridge.requestedRoute = null
+                    }
+                } catch (e: Throwable) {
+                    println("PlatformIos: error handling requestedRoute: ${e.message}")
+                }
             }
         }
     }
