@@ -301,7 +301,7 @@ struct ContentView: View {
                         .navigationBarTitleDisplayMode(.large)
                 }
                 .tabItem {
-                    Label("Meditate", systemImage: "person.crop.circle")
+                    Label("Meditate", systemImage: "apple.meditate.circle.fill")
                 }
                 .tag(3)
                 

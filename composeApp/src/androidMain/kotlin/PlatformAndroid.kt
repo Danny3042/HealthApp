@@ -36,6 +36,8 @@ import sub_pages.MEDITATION_PAGE_ROUTE
 import sub_pages.MeditationPage
 import sub_pages.NotificationPage
 import sub_pages.NotificationPageScreen
+import sub_pages.DarkModeSettingsPage
+import sub_pages.DarkModeSettingsPageScreen
 import tabs.HomeTab
 import tabs.ProfileTab
 import utils.SettingsManager
