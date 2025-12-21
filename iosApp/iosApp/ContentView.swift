@@ -3,6 +3,35 @@ import SwiftUI
 import ComposeApp
 import FirebaseAuth
 
+// Helper to apply native interface style and update native bar appearances
+func applyNativeInterfaceStyle(dark: Bool?, useSystem: Bool) {
+    DispatchQueue.main.async {
+        let style: UIUserInterfaceStyle = useSystem ? .unspecified : ((dark ?? false) ? .dark : .light)
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+            for window in windowScene.windows {
+                window.overrideUserInterfaceStyle = style
+            }
+        }
+
+        // Update navigation bar appearance to use system background (adapts to dark/light)
+        let navAppearance = UINavigationBarAppearance()
+        navAppearance.configureWithDefaultBackground()
+        UINavigationBar.appearance().standardAppearance = navAppearance
+        UINavigationBar.appearance().scrollEdgeAppearance = navAppearance
+        UINavigationBar.appearance().tintColor = UIColor.label
+
+        // Update tab bar appearance
+        let tabAppearance = UITabBarAppearance()
+        tabAppearance.configureWithDefaultBackground()
+        UITabBar.appearance().standardAppearance = tabAppearance
+        if #available(iOS 15.0, *) {
+            UITabBar.appearance().scrollEdgeAppearance = tabAppearance
+        }
+        UITabBar.appearance().tintColor = UIColor.systemBlue
+        UITabBar.appearance().unselectedItemTintColor = UIColor.secondaryLabel
+    }
+}
+
 // Shared Compose host that uses a single view across all tabs with safe area handling
 struct SharedComposeHost: View {
     @Binding var selectedTab: Int
@@ -176,6 +205,20 @@ struct ComposeViewController: UIViewControllerRepresentable {
         return composeVC
     }
     
+    // Ensure the shared compose VC is visible and in front of other UI layers
+    static func ensureSharedVisible() {
+        DispatchQueue.main.async {
+            guard let vc = ComposeViewController.sharedComposeVC else { return }
+            vc.view.isHidden = false
+            if let sup = vc.view.superview {
+                print("ComposeViewController: bringing existing sharedComposeVC.view to front of its superview")
+                sup.bringSubviewToFront(vc.view)
+            } else {
+                print("ComposeViewController: sharedComposeVC.view has no superview yet — nothing to bring to front")
+            }
+        }
+    }
+
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
         // Only send safe area insets once per update cycle
         if !context.coordinator.hasSetupObserver {
@@ -293,15 +336,31 @@ struct ContentView: View {
         .onAppear {
             print("=== ContentView.onAppear ===")
             
-            authHandle = Auth.auth().addStateDidChangeListener { _, user in
-                DispatchQueue.main.async {
-                    print("ContentView: Auth state changed, user: \(user?.email ?? "nil")")
-                    if user != nil {
-                        AuthManager.shared.requestNavigateTo(route: "HeroScreen")
-                    } else {
-                        AuthManager.shared.requestNavigateTo(route: "Login")
-                    }
+            // Force update window interface style
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                windowScene.windows.forEach { window in
+                    window.overrideUserInterfaceStyle = .unspecified
                 }
+            }
+
+            // Ensure Compose shared VC is visible when Compose reports navigation changes or is ready
+            NotificationCenter.default.addObserver(forName: Notification.Name("ComposeNavigationChanged"), object: nil, queue: .main) { note in
+                print("ContentView: ComposeNavigationChanged received - ensuring Compose VC visible")
+                ComposeViewController.ensureSharedVisible()
+            }
+
+            NotificationCenter.default.addObserver(forName: Notification.Name("ComposeReady"), object: nil, queue: .main) { _ in
+                print("ContentView: ComposeReady received - ensuring Compose VC visible")
+                ComposeViewController.ensureSharedVisible()
+            }
+
+            // Listen for dark mode updates from Compose and apply native style & appearances
+            NotificationCenter.default.addObserver(forName: Notification.Name("ComposeDarkModeChanged"), object: nil, queue: .main) { note in
+                print("ContentView: ComposeDarkModeChanged received: \(String(describing: note.userInfo))")
+                guard let userInfo = note.userInfo as? [String: Any] else { return }
+                let dark = userInfo["dark"] as? Bool
+                let useSystem = userInfo["useSystem"] as? Bool ?? true
+                applyNativeInterfaceStyle(dark: dark, useSystem: useSystem)
             }
         }
         .onDisappear {

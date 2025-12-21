@@ -16,6 +16,22 @@ struct iOSApp: App {
         FirebaseApp.configure()
         // Make hosting window backgrounds clear so Compose window underlay can show through
         UIWindow.appearance().backgroundColor = .clear
+        
+        // Configure navigation bar appearance for proper dark mode support
+        let navigationBarAppearance = UINavigationBarAppearance()
+        navigationBarAppearance.configureWithDefaultBackground()
+        UINavigationBar.appearance().standardAppearance = navigationBarAppearance
+        UINavigationBar.appearance().compactAppearance = navigationBarAppearance
+        UINavigationBar.appearance().scrollEdgeAppearance = navigationBarAppearance
+        
+        // Configure tab bar appearance for proper dark mode support
+        let tabBarAppearance = UITabBarAppearance()
+        tabBarAppearance.configureWithDefaultBackground()
+        UITabBar.appearance().standardAppearance = tabBarAppearance
+        if #available(iOS 15.0, *) {
+            UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
+        }
+        
         logInitialEvent()
     }
     

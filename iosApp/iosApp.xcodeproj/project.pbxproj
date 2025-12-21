@@ -19,6 +19,8 @@
 		087F31292C431A7A00F6B3B2 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 087F31282C431A7A00F6B3B2 /* GoogleSignIn */; };
 		087F312B2C431A7A00F6B3B2 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 087F312A2C431A7A00F6B3B2 /* GoogleSignInSwift */; };
 		087F312D2C43376A00F6B3B2 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 087F312C2C43376A00F6B3B2 /* FirebaseCrashlytics */; };
+		08D7A4B82EF76CE200F44193 /* ComposeNavigationBridge.kt in Resources */ = {isa = PBXBuildFile; fileRef = 08D7A4B72EF76CE200F44193 /* ComposeNavigationBridge.kt */; };
+		08D7A4BA2EF76CFD00F44193 /* NAVIGATION_SETUP.md in Resources */ = {isa = PBXBuildFile; fileRef = 08D7A4B92EF76CFD00F44193 /* NAVIGATION_SETUP.md */; };
 		08DBFD912EF72EF000CCB6B3 /* SafeAreaHelper.kt in Resources */ = {isa = PBXBuildFile; fileRef = 08DBFD902EF72EF000CCB6B3 /* SafeAreaHelper.kt */; };
 		08DBFD932EF72EFE00CCB6B3 /* ComposeScreenExample.kt in Resources */ = {isa = PBXBuildFile; fileRef = 08DBFD922EF72EFE00CCB6B3 /* ComposeScreenExample.kt */; };
 		11D975B877485487ECF8CE18 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9ADFC5CF1EEB008FA5CFBBB /* ProfileView.swift */; };
@@ -89,6 +91,8 @@
 		08683C0A2C287E8D00180F44 /* HealthKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitManager.swift; sourceTree = "<group>"; };
 		08683C0C2C28801300180F44 /* HealthConnectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthConnectView.swift; sourceTree = "<group>"; };
 		08D07E0C2BFA712D00C7C391 /* ResearchKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ResearchKit.xcodeproj; path = "../../../Downloads/ResearchKit-main/ResearchKit.xcodeproj"; sourceTree = "<group>"; };
+		08D7A4B72EF76CE200F44193 /* ComposeNavigationBridge.kt */ = {isa = PBXFileReference; lastKnownFileType = text; path = ComposeNavigationBridge.kt; sourceTree = "<group>"; };
+		08D7A4B92EF76CFD00F44193 /* NAVIGATION_SETUP.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = NAVIGATION_SETUP.md; sourceTree = "<group>"; };
 		08DBFD902EF72EF000CCB6B3 /* SafeAreaHelper.kt */ = {isa = PBXFileReference; lastKnownFileType = text; path = SafeAreaHelper.kt; sourceTree = "<group>"; };
 		08DBFD922EF72EFE00CCB6B3 /* ComposeScreenExample.kt */ = {isa = PBXFileReference; lastKnownFileType = text; path = ComposeScreenExample.kt; sourceTree = "<group>"; };
 		1958CFAA761ACF86E9DC48CF /* SignUpView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
@@ -209,6 +213,8 @@
 				6EBE72B78D2F17121FAE95DF /* AuthManager.swift */,
 				08DBFD902EF72EF000CCB6B3 /* SafeAreaHelper.kt */,
 				08DBFD922EF72EFE00CCB6B3 /* ComposeScreenExample.kt */,
+				08D7A4B72EF76CE200F44193 /* ComposeNavigationBridge.kt */,
+				08D7A4B92EF76CFD00F44193 /* NAVIGATION_SETUP.md */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -332,7 +338,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				058557D9273AAEEB004C7B11 /* Preview Assets.xcassets in Resources */,
+				08D7A4BA2EF76CFD00F44193 /* NAVIGATION_SETUP.md in Resources */,
 				0836A8E52DE674A2008755A3 /* GoogleService-Info.plist in Resources */,
+				08D7A4B82EF76CE200F44193 /* ComposeNavigationBridge.kt in Resources */,
 				08DBFD912EF72EF000CCB6B3 /* SafeAreaHelper.kt in Resources */,
 				058557BB273AAA24004C7B11 /* Assets.xcassets in Resources */,
 				08DBFD932EF72EFE00CCB6B3 /* ComposeScreenExample.kt in Resources */,

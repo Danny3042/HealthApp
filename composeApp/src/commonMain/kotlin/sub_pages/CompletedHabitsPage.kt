@@ -30,7 +30,7 @@ fun CompletedHabitsPage(navController: NavHostController) {
     val completedHabits = HabitRepository.completedHabits
     val scrollState = rememberScrollState()
 
-    Column {
+    Column(modifier = Modifier.fillMaxSize()) {
         if (isAndroid()) {
             TopAppBar(
                 title = { Text("Completed Habits") },
@@ -41,6 +41,7 @@ fun CompletedHabitsPage(navController: NavHostController) {
                 }
             )
         }
+
         Column(
             modifier = Modifier
                 .padding(16.dp)

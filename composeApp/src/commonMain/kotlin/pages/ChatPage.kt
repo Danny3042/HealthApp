@@ -30,8 +30,6 @@ import model.ChatViewModel
 import service.GenerativeAiService
 import utils.isAndroid
 
-const val ChatPageScreen = "ChatScreen"
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatScreen(

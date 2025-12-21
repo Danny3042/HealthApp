@@ -121,6 +121,23 @@ actual fun PlatformApp() {
         }
     }
 
+    // Notify iOS (Swift) when dark mode or 'use system default' changes so native bars can update
+    LaunchedEffect(isDarkMode, useSystemDefault) {
+        try {
+            println("PlatformIos: posting ComposeDarkModeChanged dark=$isDarkMode useSystem=$useSystemDefault")
+            NSOperationQueue.mainQueue.addOperationWithBlock {
+                val userInfo = mapOf("dark" to isDarkMode, "useSystem" to useSystemDefault)
+                NSNotificationCenter.defaultCenter.postNotificationName(
+                    aName = "ComposeDarkModeChanged",
+                    `object` = null,
+                    userInfo = userInfo as Map<Any?, *>
+                )
+            }
+        } catch (e: Throwable) {
+            println("PlatformIos: failed posting ComposeDarkModeChanged: ${e.message}")
+        }
+    }
+
     // pending route set by native observer; Compose will navigate when this changes
     var pendingRoute by remember { mutableStateOf<String?>(null) }
 
