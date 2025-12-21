@@ -35,6 +35,8 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
+import keyboardUtil.hideKeyboard
+import keyboardUtil.onDoneHideKeyboardAction
 
 @Composable
 fun MessageInput(
@@ -74,7 +76,6 @@ fun MessageInput(
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                val keyboardController = LocalSoftwareKeyboardController.current
                 OutlinedTextField(
                     value = userMessage,
                     label = { Text("Talk to AI...") },
@@ -83,8 +84,8 @@ fun MessageInput(
                         capitalization = KeyboardCapitalization.Sentences,
                         imeAction = ImeAction.Done,
                     ),
-                    keyboardActions = KeyboardActions(onDone = {
-                        keyboardController?.hide()
+                    keyboardActions = onDoneHideKeyboardAction(onDone = {
+                        // submission handled by trailing icon; keep input cleared if desired
                     }),
                     leadingIcon = if (selectedImageBitmap == null) {
                         {
@@ -103,6 +104,7 @@ fun MessageInput(
                                     onSendMessage(userMessage, selectedImage)
                                     userMessage = ""
                                     selectedImage = null
+                                    hideKeyboard()
                                 }
                             },
                         ) {

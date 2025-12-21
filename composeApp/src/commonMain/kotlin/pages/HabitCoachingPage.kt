@@ -1,6 +1,5 @@
 package pages
 
-
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -173,8 +172,7 @@ fun HabitCoachingPage(navcontroller: NavController) {
         }
         Spacer(modifier = Modifier.height(24.dp))
 
-        HabitTrackerPage(
-            habits = trackedHabits,
+        HabitTrackerPage(habits = trackedHabits,
             onHabitCompleted = { habit -> HabitRepository.removeHabit(habit) })
         Spacer(modifier = Modifier.height(24.dp))
 

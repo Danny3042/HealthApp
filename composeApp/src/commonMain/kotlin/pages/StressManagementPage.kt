@@ -35,9 +35,15 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import keyboardUtil.hideKeyboard
+import keyboardUtil.onDoneHideKeyboardAction
 import kotlinx.coroutines.launch
 import service.GenerativeAiService
 import sub_pages.MEDITATION_PAGE_ROUTE
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.ImeAction
 
 const val STRESS_MANAGEMENT_PAGE_ROUTE = "stress_management"
 @Composable
@@ -51,6 +57,7 @@ fun StressManagementPage(navController: NavController) {
 
     fun generateTipAndAddActivity() {
         if (userActivity.isBlank()) return
+        hideKeyboard()
         if (userActivity.trim().equals("meditate", ignoreCase = true)) {
             navController.navigate(MEDITATION_PAGE_ROUTE) // Replace with your actual MeditationPage route
             return
@@ -78,6 +85,8 @@ fun StressManagementPage(navController: NavController) {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        val keyboardController = LocalSoftwareKeyboardController.current
+
         Icon(
             painter = rememberVectorPainter(Icons.Default.SelfImprovement),
             contentDescription = "Stress Management",
@@ -110,9 +119,13 @@ fun StressManagementPage(navController: NavController) {
             onValueChange = { userActivity = it },
             label = { Text("What stress relief activity do you want to try?") },
             modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+            keyboardActions = onDoneHideKeyboardAction(onDone = {
+                // keep existing behavior: keep keyboard hidden and do not auto-submit (Button handles it)
+            }),
             trailingIcon = {
                 IconButton(
-                    onClick = { generateTipAndAddActivity() },
+                    onClick = { hideKeyboard(); generateTipAndAddActivity() },
                     enabled = userActivity.isNotBlank() && !isLoading
                 ) {
                     Icon(
@@ -141,7 +154,7 @@ fun StressManagementPage(navController: NavController) {
         }
         Spacer(modifier = Modifier.height(8.dp))
         Button(
-            onClick = { generateTipAndAddActivity() },
+            onClick = { hideKeyboard(); generateTipAndAddActivity() },
             enabled = userActivity.isNotBlank() && !isLoading
         ) {
             Text("Get AI Tip & Add Activity")

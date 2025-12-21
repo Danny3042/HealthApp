@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.AlertDialog
@@ -180,12 +182,14 @@ fun SliderExample(currentValue: String, onSave: (Float) -> Unit) {
 @Composable
 fun MyButton(onClick: () -> Unit) {
     Box(modifier = Modifier.fillMaxSize()) {
+        val scrollState = rememberScrollState()
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(60.dp)
+                .verticalScroll(scrollState)
         ) {
             Button(
                 onClick = onClick,

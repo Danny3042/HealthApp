@@ -1,4 +1,3 @@
-
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -29,8 +28,7 @@ import components.MessageInput
 import kotlinx.coroutines.launch
 import model.ChatViewModel
 import service.GenerativeAiService
-
-const val ChatPageScreen = "ChatScreen"
+import utils.isAndroid
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,21 +41,23 @@ fun ChatScreen(
     val listState = rememberLazyListState()
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Gemini Chat") },
-                navigationIcon = {
-                    Icon(
-                        Icons.Default.AutoAwesome,
-                        "Gemini Chat",
-                        modifier = Modifier.padding(4.dp)
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
-                ),
-            )
+            if (isAndroid()) {
+                TopAppBar(
+                    title = { Text("Gemini Chat") },
+                    navigationIcon = {
+                        Icon(
+                            Icons.Default.AutoAwesome,
+                            "Gemini Chat",
+                            modifier = Modifier.padding(4.dp)
+                        )
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                        navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+                    ),
+                )
+            }
         },
     ) { paddingValues ->
         Box(

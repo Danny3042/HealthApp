@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -36,10 +38,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import keyboardUtil.hideKeyboard
+import keyboardUtil.onDoneHideKeyboardAction
+import utils.isAndroid
 
 const val Timer = "timer"
 @Composable
@@ -87,14 +93,16 @@ fun TimerScreenContent(onBack: () -> Unit ) {
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Timer View") },
-                navigationIcon = {
-                    IconButton(onClick = onBack) { // Handle navigation icon press
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+            if (isAndroid()) {
+                TopAppBar(
+                    title = { Text("Timer View") },
+                    navigationIcon = {
+                        IconButton(onClick = onBack) { // Handle navigation icon press
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        }
                     }
-                }
-            )
+                )
+            }
         }
     ) {
         TimerScreen(
@@ -121,8 +129,11 @@ fun TimerScreen(
     onStopClick: () -> Unit,
     onSetClick: () -> Unit
 ) {
+    val scrollState = rememberScrollState()
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(scrollState),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -174,11 +185,13 @@ fun SetTimerDialog(
                     value = input,
                     onValueChange = { input = it },
                     label = { Text("Enter time in seconds") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
+                    keyboardActions = onDoneHideKeyboardAction(onDone = {})
                 )
             },
             confirmButton = {
                 Button(onClick = {
+                    hideKeyboard()
                     onConfirm(input.toLongOrNull() ?: 0L)
                     onDismiss()
                 }) {

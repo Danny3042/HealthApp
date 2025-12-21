@@ -28,4 +28,17 @@ actual object SettingsManager {
             true
         }
     }
+
+    actual suspend fun saveDevMode(enabled: Boolean) {
+        NSUserDefaults.standardUserDefaults.setBool(enabled, forKey = "dev_mode")
+    }
+
+    actual suspend fun loadDevMode(): Boolean {
+        val defaults = NSUserDefaults.standardUserDefaults
+        return if (defaults.objectForKey("dev_mode") != null) {
+            defaults.boolForKey("dev_mode")
+        } else {
+            false
+        }
+    }
 }

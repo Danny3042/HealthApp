@@ -1,16 +1,19 @@
 package pages
 
 import Authentication.LoginScreen
-import DarkModeSettingsPageScreen
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.TabRowDefaults.Divider
+import androidx.compose.material3.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Badge
 import androidx.compose.material.icons.outlined.DarkMode
@@ -24,8 +27,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,6 +47,8 @@ import dev.gitlive.firebase.auth.auth
 import kotlinx.coroutines.launch
 import sub_pages.AboutPageScreen
 import sub_pages.NotificationPageScreen
+import sub_pages.DarkModeSettingsPageScreen
+import utils.SettingsManager
 import utils.deleteUser
 
 @Composable
@@ -50,8 +57,13 @@ fun ProfilePage(navController: NavController) {
     val coroutineScope = rememberCoroutineScope()
     var showDeleteDialog by remember { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
-    val user = auth.currentUser
-    val (notificationsEnabled, setNotificationsEnabled) = remember { mutableStateOf(false) }
+    // val user = auth.currentUser (unused on this screen)
+    // notificationsEnabled state not used yet
+
+    // Dev mode (was accidentally removed during edits)
+    var devModeEnabled by remember { mutableStateOf(false) }
+
+    // (Dark mode is handled in its own screen; navigate to it to modify settings)
 
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
@@ -117,11 +129,51 @@ fun ProfilePage(navController: NavController) {
             item {
                 SettingsListItem(
                     title = "Dark Mode",
-                    onClick = { navController.navigate(DarkModeSettingsPageScreen) },
+                    onClick = {
+                        try {
+                            navController.navigate(DarkModeSettingsPageScreen)
+                        } catch (e: Throwable) {
+                            println("ProfilePage: failed to navigate to DarkModeSettingsPageScreen: ${e.message}")
+                        }
+                    },
                     leadingIcon = {
                         Icon(Icons.Outlined.DarkMode, contentDescription = "Dark Mode Icon")
                     }
                 )
+                Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
+            }
+            // Developer mode toggle (runtime persisted)
+            item {
+                SettingsListItem(
+                    title = "Developer",
+                    onClick = { /* no-op, toggle in content */ },
+                    leadingIcon = {
+                        Icon(Icons.Outlined.Badge, contentDescription = "Developer Icon")
+                    }
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("Enable Dev Mode")
+                        Switch(
+                            checked = devModeEnabled,
+                            onCheckedChange = { checked ->
+                                devModeEnabled = checked
+                                coroutineScope.launch {
+                                    try {
+                                        SettingsManager.saveDevMode(checked)
+                                    } catch (_: Exception) {
+                                        // ignore
+                                    }
+                                }
+                            }
+                        )
+                    }
+                }
                 Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
             }
             if (showDeleteDialog) {
@@ -133,18 +185,20 @@ fun ProfilePage(navController: NavController) {
                         confirmButton = {
                             Button(
                                 onClick = {
+                                    // Perform deletion and navigate; handle errors inside
                                     coroutineScope.launch {
-                                        deleteUser(auth, navController, snackbarHostState)
+                                        try {
+                                            deleteUser(auth, navController, snackbarHostState)
+                                            navController.navigate(LoginScreen)
+                                        } catch (_: Exception) {
+                                            // ignore or surface in snackbar
+                                        }
                                     }
                                     showDeleteDialog = false
                                 },
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
                             ) {
                                 Text("Confirm", color = Color.White)
-                                coroutineScope.launch {
-                                    deleteUser(auth, navController, snackbarHostState)
-                                    navController.navigate(LoginScreen)
-                                }
                             }
                         },
                         dismissButton = {

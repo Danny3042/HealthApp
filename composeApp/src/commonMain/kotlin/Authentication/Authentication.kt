@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ContentAlpha
@@ -53,6 +55,7 @@ import dev.gitlive.firebase.auth.FirebaseAuthInvalidUserException
 import dev.gitlive.firebase.auth.FirebaseUser
 import dev.gitlive.firebase.auth.auth
 import keyboardUtil.hideKeyboard
+import keyboardUtil.onDoneHideKeyboardAction
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
@@ -111,8 +114,12 @@ class Authentication {
             }
 
             if (firebaseUser == null) {
+                val scrollState = rememberScrollState()
                 Column(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(scrollState)
+                        .padding(16.dp),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -122,9 +129,7 @@ class Authentication {
                         onValueChange = { userEmail = it },
                         label = { Text("Email address") },
                         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-                        keyboardActions = KeyboardActions(onDone = {
-                            keyboardController?.hide()
-                        }),
+                        keyboardActions = onDoneHideKeyboardAction(onDone = {}),
                         colors = TextFieldDefaults.textFieldColors(
                             containerColor = MaterialTheme.colorScheme.surface,
                             cursorColor = MaterialTheme.colorScheme.onSurface,
@@ -138,9 +143,7 @@ class Authentication {
                         onValueChange = { userPassword = it },
                         placeholder = { Text("Password") },
                         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-                        keyboardActions = KeyboardActions(onDone = {
-                            keyboardController?.hide()
-                        }),
+                        keyboardActions = onDoneHideKeyboardAction(onDone = {}),
                         visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         trailingIcon = {
                             val image =
@@ -248,7 +251,10 @@ class Authentication {
             ) {
                 val keyboardController = LocalSoftwareKeyboardController.current
                 Column(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .padding(16.dp),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -257,9 +263,7 @@ class Authentication {
                         onValueChange = { userEmail = it },
                         placeholder = { Text("Email address") },
                         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-                        keyboardActions = KeyboardActions(onDone = {
-                            keyboardController?.hide()
-                        }),
+                        keyboardActions = onDoneHideKeyboardAction(onDone = {}),
                         colors = TextFieldDefaults.textFieldColors(
                             containerColor = MaterialTheme.colorScheme.surface,
                             cursorColor = MaterialTheme.colorScheme.onSurface,
@@ -273,9 +277,7 @@ class Authentication {
                         onValueChange = { userPassword = it },
                         placeholder = { Text("Password") },
                         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-                        keyboardActions = KeyboardActions(onDone = {
-                            keyboardController?.hide()
-                        }),
+                        keyboardActions = onDoneHideKeyboardAction(onDone = {}),
                         visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         trailingIcon = {
                             val image =
@@ -350,9 +352,7 @@ class Authentication {
                     placeholder = { Text("Email address") },
                     modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(onDone = {
-                        keyboardController?.hide()
-                    }),
+                    keyboardActions = onDoneHideKeyboardAction(onDone = {}),
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(

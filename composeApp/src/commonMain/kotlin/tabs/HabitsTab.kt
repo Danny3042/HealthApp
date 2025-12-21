@@ -1,6 +1,6 @@
 package tabs
 
-import HabitCoachingPage
+import pages.HabitCoachingPage
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.TrackChanges
 import androidx.compose.runtime.Composable

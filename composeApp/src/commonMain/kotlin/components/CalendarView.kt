@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import keyboardUtil.hideKeyboard
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
@@ -198,6 +199,8 @@ fun EventInputDialog(
         confirmButton = {
             Button(
                 onClick = {
+                    // hide keyboard when confirming
+                    hideKeyboard()
                     onConfirm(input)
                 }
             ) {

@@ -6,4 +6,8 @@ expect object SettingsManager {
 
     suspend fun saveUseSystemDefault(enabled: Boolean)
     suspend fun loadUseSystemDefault(): Boolean
+
+    // runtime developer mode toggle persisted locally
+    suspend fun saveDevMode(enabled: Boolean)
+    suspend fun loadDevMode(): Boolean
 }

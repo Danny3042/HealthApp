@@ -9,8 +9,9 @@ import org.danielramzani.HealthCompose.BuildKonfig
  * Service for Generative AI operations that can interact with text as well as images.
  */
 class GenerativeAiService(
-     val visionModel: GenerativeModel,
-     val maxTokens: Int
+     private val visionModel: GenerativeModel,
+     private val maxTokens: Int,
+     private val enabled: Boolean = true
 ) {
 
     /**
@@ -23,22 +24,36 @@ class GenerativeAiService(
     }
 
     suspend fun getSuggestions(results: List<String>): String? {
+        if (!enabled) {
+            throw IllegalStateException(
+                "GEMINI_API_KEY is not configured. Please add 'gemini_api_key=YOUR_KEY' to project local.properties or set the GEMINI_API_KEY environment variable, then rebuild."
+            )
+        }
+
         val response = visionModel.generateContent(
-            prompt = "Based on the following results: ${results.joinToString(", ")}. Provide suggestions for the week."
+            prompt = "Based on the following results: ${results.joinToString(", ")}. Provide suggestions for the week.",
+            // maxTokens is currently passed implicitly by model/client - keep for future
         )
         return response.text
     }
     companion object {
         @Suppress("ktlint:standard:property-naming")
-        var GEMINI_API_KEY = BuildKonfig.GEMINI_API_KEY
+        // Use BuildKonfig (set at build time). Do not call JVM-specific APIs in commonMain.
+        var GEMINI_API_KEY: String = BuildKonfig.GEMINI_API_KEY
 
         val instance: GenerativeAiService by lazy {
+            val enabled = GEMINI_API_KEY.isNotBlank()
+
+            // Create the model even if apiKey is blank; the getSuggestions call will guard against disabled state.
+            val model = GenerativeModel(
+                modelName = "gemini-2.5-flash",
+                apiKey = GEMINI_API_KEY,
+            )
+
             GenerativeAiService(
-                visionModel = GenerativeModel(
-                    modelName = "gemini-2.0-flash",
-                    apiKey = GEMINI_API_KEY,
-                ),
+                visionModel = model,
                 maxTokens = 200,
+                enabled = enabled
             )
         }
     }

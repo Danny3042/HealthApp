@@ -1,3 +1,4 @@
+package sub_pages
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -31,6 +32,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import utils.isAndroid
 
 
 const val DarkModeSettingsPageScreen = "DarkModeSettingsScreen"
@@ -95,62 +99,74 @@ fun DarkModeSettingsPage(
             else -> Color(0xFFF5F5F5)
         }
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(24.dp)
-        ) {
-            TopAppBar(
-                title = { Text("Dark Mode Settings") },
-                navigationIcon = {
-                    navController?.let {
-                        IconButton(onClick = { it.popBackStack() }) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+        // Use a scroll state for the content, keeping the TopAppBar fixed at the top
+        val scrollState = rememberScrollState()
+        Column(modifier = Modifier.fillMaxSize()) {
+            if (isAndroid()) {
+                TopAppBar(
+                    title = { Text("Dark Mode Settings") },
+                    navigationIcon = {
+                        navController?.let {
+                            IconButton(onClick = { it.popBackStack() }) {
+                                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                            }
                         }
                     }
-                }
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            // Checkboxes row at the top
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    RadioButton(
-                        selected = useSystemDefault,
-                        onClick = { onUseSystemDefaultToggle(true); onDarkModeToggle(false) }
-                    )
-                    Icon(Icons.Default.Brightness4, contentDescription = "System Default", tint = MaterialTheme.colorScheme.onBackground)
-                    Text("System", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onBackground)
-                }
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    RadioButton(
-                        selected = !useSystemDefault && !isDarkMode,
-                        onClick = { onUseSystemDefaultToggle(false); onDarkModeToggle(false) }
-                    )
-                    Icon(Icons.Default.Brightness7, contentDescription = "Light Mode", tint = MaterialTheme.colorScheme.onBackground)
-                    Text("Light", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onBackground)
-                }
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    RadioButton(
-                        selected = !useSystemDefault && isDarkMode,
-                        onClick = { onUseSystemDefaultToggle(false); onDarkModeToggle(true) }
-                    )
-                    Icon(Icons.Default.Brightness2, contentDescription = "Dark Mode", tint = MaterialTheme.colorScheme.onBackground)
-                    Text("Dark", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onBackground)
-                }
+                )
             }
-            Spacer(modifier = Modifier.height(48.dp))
-            // Large phone illustration in the center
-            Box(
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
-                contentAlignment = Alignment.Center
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+                    .padding(24.dp)
             ) {
-                PhoneIllustrationLarge(bgColor = phoneBgColor)
+                // Checkboxes row at the top
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        RadioButton(
+                            selected = useSystemDefault,
+                            onClick = { onUseSystemDefaultToggle(true); onDarkModeToggle(false) }
+                        )
+                        Icon(Icons.Default.Brightness4, contentDescription = "System Default", tint = MaterialTheme.colorScheme.onBackground)
+                        Text("System", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onBackground)
+                    }
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        RadioButton(
+                            selected = !useSystemDefault && !isDarkMode,
+                            onClick = { onUseSystemDefaultToggle(false); onDarkModeToggle(false) }
+                        )
+                        Icon(Icons.Default.Brightness7, contentDescription = "Light Mode", tint = MaterialTheme.colorScheme.onBackground)
+                        Text("Light", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onBackground)
+                    }
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        RadioButton(
+                            selected = !useSystemDefault && isDarkMode,
+                            onClick = { onUseSystemDefaultToggle(false); onDarkModeToggle(true) }
+                        )
+                        Icon(Icons.Default.Brightness2, contentDescription = "Dark Mode", tint = MaterialTheme.colorScheme.onBackground)
+                        Text("Dark", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onBackground)
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(48.dp))
+
+                // Large phone illustration in the center
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    PhoneIllustrationLarge(bgColor = phoneBgColor)
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
             }
         }
     }

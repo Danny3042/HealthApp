@@ -21,6 +21,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 
 const val OnboardingPageScreen = "OnboardingPageScreen"
 
@@ -34,10 +36,13 @@ fun OnboardingPage(onFinish: () -> Unit) {
     )
     val pagerState = rememberPagerState(pageCount = { features.size }, initialPage = 0)
     val scope = rememberCoroutineScope()
+    val scrollState = rememberScrollState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
+            .padding(24.dp)
+            .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         HorizontalPager(state = pagerState) { page ->

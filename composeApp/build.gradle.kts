@@ -131,6 +131,11 @@ buildkonfig {
             "GEMINI_API_KEY",
             localProperties["gemini_api_key"]?.toString() ?: "",
         )
+        buildConfigField(
+            FieldSpec.Type.BOOLEAN,
+            "DEV_MODE",
+            localProperties["dev_mode"]?.toString() ?: "false",
+        )
     }
 }
 
